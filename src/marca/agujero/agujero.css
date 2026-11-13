@@ -1,0 +1,139 @@
+/*
+ * Z-10 · Agujero negro: las capas de zhonyas-web/components/team-contact.css:109-137,
+ * copiadas con sus valores. Solo cambian los nombres de las clases y lo que en
+ * la web era fontanería del scroll (position: sticky, alturas del panel,
+ * márgenes negativos): aquí la escena es el escenario fijo de 1920 × 1080.
+ *
+ * Las capas solo existen mientras dura la transición (agujero.ts las crea y las
+ * quita): fuera de ella no hay nada montado ni girando (pausa cuando no está activa).
+ *
+ * Las variables --bh-scale, --bh-glow, --bh-dark y --contact-fade llevan el
+ * nombre que tienen en la web para que se puedan buscar en contact-section.tsx:129-136.
+ *
+ * Anti-slop: el resplandor y el anillo son el propio objeto, no un adorno
+ * (02 §9, regla 3: «un halo por pantalla como máximo, y solo si sale de un
+ * objeto (el disco del agujero negro…)»). Sus colores son los de la web y solo
+ * viven en este archivo.
+ */
+
+/* La diapositiva que sale del agujero se recorta con un círculo (team-contact.css:111;
+   el radio lo pone agujero.ts en cada cuadro, contact-section.tsx:121). */
+.capa[data-agujero] > .diapositiva {
+  clip-path: circle(0px at 50% 50%); /* team-contact.css:111 */
+}
+
+/* El texto de la diapositiva que sale aparece entre el 62 y el 95 % (team-contact.css:127;
+   contact-section.tsx:136). En la web se apagan la copia, el rótulo y el pie, no el fondo
+   ni la galaxia: aquí, todo lo que pinta la diapositiva salvo lo marcado data-agujero-fondo. */
+.capa[data-agujero] > .diapositiva > :not([data-agujero-fondo]) {
+  opacity: var(--contact-fade, 0); /* team-contact.css:127 */
+  transition: none; /* team-contact.css:127 */
+}
+
+/* Capas de la escena (agujero.ts las añade a la capa de la diapositiva que sale del agujero). */
+.zh-agujero {
+  position: absolute;
+  inset: 0;
+  /* Siempre encima de lo que pinta la diapositiva, como .contact-blackhole (z 9) sobre
+     .contact-section (z 8) en team-contact.css:57 y 125. */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* El filtro de la lente: definido, nunca pintado (team-contact.css:123). */
+.zh-agujero__lente {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Horizonte: negro encima del texto hasta que la diapositiva «sale» de dentro
+   (team-contact.css:124). En la web es #000, el fondo de .contact-section
+   (team-contact.css:57); aquí toma el fondo de la diapositiva que sale, que es
+   la misma relación: horizonte y fondo, del mismo negro. Se recorta con el mismo
+   círculo (en la web va dentro de la sección recortada). */
+.zh-agujero__horizonte {
+  position: absolute;
+  inset: 0;
+  z-index: 6; /* team-contact.css:124 */
+  background: var(--zh-agujero-fondo, var(--fondo));
+  opacity: var(--bh-dark, 0); /* team-contact.css:124 */
+  pointer-events: none;
+}
+
+/* Contenedor del disco (team-contact.css:125: .contact-blackhole). */
+.zh-agujero__luz {
+  position: absolute;
+  inset: 0;
+  z-index: 9; /* team-contact.css:125 */
+  overflow: hidden; /* team-contact.css:125 */
+  opacity: var(--bh-glow, 0); /* team-contact.css:125 */
+  pointer-events: none;
+}
+
+/* El disco se dibujó para un horizonte de 400 px y se escala con el agujero (team-contact.css:128). */
+.zh-agujero__disco {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1400px;
+  height: 1400px;
+  margin: -700px 0 0 -700px;
+  transform: scale(var(--bh-scale, 0));
+  will-change: transform;
+}
+
+.zh-agujero__disco > i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%; /* team-contact.css:129 */
+}
+
+/* auditar-excepcion-inicio: A-34, A-38 — el disco del agujero negro (Z-10) lleva los colores y
+   degradados de team-contact.css:131-136 tal cual: es el objeto, no un adorno (02 §9, regla 3),
+   y solo existe durante la transición, una vez en la charla. */
+
+/* Borde interior caliente que se apaga en un halo violeta hasta 1,75 radios (team-contact.css:130-131). */
+.zh-agujero__resplandor {
+  background: radial-gradient(circle closest-side, transparent 56.9%, #fff5ff 57.2%, #f6b8ff 58.2%, #c46af2b0 61%, #7b3fd455 68%, #3b1d7a22 80%, transparent 100%);
+}
+
+/* El lado del disco que viene hacia nosotros brilla más (Doppler); no gira con el disco (team-contact.css:132-133). */
+.zh-agujero__doppler {
+  background: conic-gradient(from 180deg, #fff0 0deg, #ffd6ff 50deg, #fff 80deg, #ffd6ff 110deg, #fff0 170deg, #fff0 360deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 56.8%, #000 57.4%, #000 60%, transparent 66%);
+  mask: radial-gradient(circle closest-side, transparent 56.8%, #000 57.4%, #000 60%, transparent 66%);
+  opacity: 0.85;
+  mix-blend-mode: screen;
+}
+
+/* Vetas que giran 360° en 9 s, lineal (team-contact.css:134, 137). */
+.zh-agujero__vetas {
+  background: repeating-conic-gradient(from 0deg, #ffffff1c 0deg 3deg, #fff0 3deg 11deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 57%, #000 58%, #000 64%, transparent 72%);
+  mask: radial-gradient(circle closest-side, transparent 57%, #000 58%, #000 64%, transparent 72%);
+  mix-blend-mode: screen;
+  animation: zh-agujero-giro 9s linear infinite; /* team-contact.css:134 (contact-bh-spin 9s linear infinite) */
+}
+
+/* Anillo de fotones: la línea de luz justo en el horizonte (team-contact.css:135-136). */
+.zh-agujero__disco > .zh-agujero__fotones {
+  inset: calc(50% - 400px);
+  border: 1.5px solid #fff6fd;
+  box-shadow:
+    0 0 14px 3px #f4b9ffd0,
+    0 0 42px 8px #b765f055,
+    inset 0 0 12px 2px #f4b9ff80;
+}
+
+/* auditar-excepcion-fin */
+
+/* team-contact.css:137 */
+@keyframes zh-agujero-giro {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* team-contact.css:139-141 (teléfonos: sin vetas ni Doppler) no aplica: el escenario mide siempre 1920 × 1080. */

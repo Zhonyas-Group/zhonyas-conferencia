@@ -4,17 +4,17 @@
  * En revisión se apagan todas las animaciones (CSS, Web Animations, GSAP y
  * motion) para que cada captura muestre el estado final del paso.
  */
-import { gsap } from 'gsap';
-import { MotionGlobalConfig } from 'motion/react';
 import { configuracion } from '../configuracion';
 import { diapositivas } from '../diapositivas/indice';
 import { estadisticasCanal } from './canal';
 import { obtenerCronometro, transcurrido, type EstadoCronometro } from './cronometro';
 import { obtenerProblemas } from './diagnostico';
 import { esPresentador, esRevision } from './entorno';
-import { avanzar, ir, obtenerEstado, retroceder, total } from './estado';
+import { alternarPruebaSala, avanzar, ir, obtenerEstado, retroceder, total } from './estado';
 import { cuadrosOGL } from './LienzoOGL';
 import { pendientesEnCapa } from './medios';
+import { momentosDe } from './momentos';
+import { aplicarModoRevision } from './revision';
 
 export interface EstadoMotor {
   /** Número de diapositiva, contando desde 1 (como en la URL y en la cuadrícula). */
@@ -28,6 +28,8 @@ export interface EstadoMotor {
   orador: string;
   total: number;
   negro: boolean;
+  /** La sala enseña la prueba de sala (tecla T). */
+  prueba: boolean;
 }
 
 export interface ApiMotor {
@@ -49,6 +51,10 @@ export interface ApiMotor {
   cronometro: () => EstadoCronometro & { transcurrido: number };
   cuadrosOGL: () => Record<string, number>;
   problemas: () => string[];
+  /** Abre (true), cierra (false) o alterna la prueba de sala. */
+  pruebaSala: (abrir?: boolean) => void;
+  /** Momentos animados anotados de una diapositiva (A-54), por su id. */
+  momentos: (id: string) => string[];
 }
 
 declare global {
@@ -87,12 +93,7 @@ async function esperar(limiteMs = 15000): Promise<boolean> {
 }
 
 export function prepararAutomatizacion() {
-  if (esRevision) {
-    document.documentElement.classList.add('revision');
-    MotionGlobalConfig.skipAnimations = true;
-    // Cualquier tween de GSAP termina en el siguiente tic.
-    gsap.globalTimeline.timeScale(1e4);
-  }
+  aplicarModoRevision();
 
   window.__motor = {
     titulo: configuracion.titulo,
@@ -115,6 +116,7 @@ export function prepararAutomatizacion() {
         orador: d.orador,
         total,
         negro: e.negro,
+        prueba: e.prueba,
       };
     },
     esperar,
@@ -134,5 +136,7 @@ export function prepararAutomatizacion() {
     },
     cuadrosOGL: () => ({ ...cuadrosOGL }),
     problemas: () => [...obtenerProblemas()],
+    pruebaSala: (abrir) => alternarPruebaSala(abrir),
+    momentos: (id) => momentosDe(id),
   };
 }

@@ -1,0 +1,41 @@
+/*
+ * TRAMPA del auditor anti-slop (scripts/auditar.mjs). No es de la charla:
+ * cada regla de aquí rompe a propósito una regla de 06-anti-slop.md, para que
+ * scripts/probar-auditor.mjs compruebe que el auditor la encuentra. La
+ * auditoría normal del código deja fuera esta carpeta (src/marca/auditor/).
+ */
+
+/* A-34: un color que no es de los tokens. */
+.trampa-hex {
+  color: #ff8800;
+}
+
+/* A-38 (y A-34): un degradado escrito a mano, con un índigo ajeno. */
+.trampa-degradado {
+  background: linear-gradient(90deg, #4f46e5, #a975ff);
+}
+
+/* A-45: una letra que no es Arial. */
+.trampa-letra {
+  font-family: Inter, sans-serif;
+}
+
+/* A-55: una curva y una duración sin fuente. */
+.trampa-curva {
+  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Esta sí pasa: duración con su fuente y la curva del token. */
+.trampa-bien {
+  transition: opacity 520ms var(--zh-salida); /* globals.css:1387 (service-experience-in, 03 M10) */
+}
+
+/* Esta tampoco falla: es una excepción declarada. */
+.trampa-excepcion {
+  transition: opacity 250ms linear; /* auditar-excepcion: A-55 prueba de la excepción del auditor */
+}
+
+/* Una máscara no pinta color (solo alfa): ni A-34 ni A-38. */
+.trampa-mascara {
+  mask-image: linear-gradient(#000, transparent);
+}

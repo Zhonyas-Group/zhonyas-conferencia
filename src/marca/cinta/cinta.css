@@ -1,0 +1,74 @@
+/*
+ * La escena del logo (Z-02 y la portada), copiada de zhonyas-web:
+ * .logo-stage (globals.css:149-158), .zhonyas-logo (globals.css:174-186),
+ * .fade-target (globals.css:188-190) y responsive.css:16-19.
+ * Sin el halo de .logo-stage::before (globals.css:160-172): síntesis §3.2 y §4.1.
+ */
+
+/* Ocupa el escenario entero, como .logo-stage ocupa la pantalla (100svh). */
+.zh-logo-cinta {
+  position: absolute;
+  inset: 0;
+}
+
+/* globals.css:149-158 */
+.zh-logo-cinta__escenario {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* globals.css:174-186 */
+.zh-logo-cinta__logo {
+  --fade-opacity: 1;
+  position: relative;
+  z-index: 1;
+  display: block;
+  /* min(100vw, 100svh, 1254px) en el escenario de 1920 × 1080 = 1080 px (globals.css:179) */
+  width: 1080px;
+  height: auto;
+  max-width: none;
+  overflow: visible;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* globals.css:188-190 */
+.zh-logo-cinta .fade-target {
+  opacity: var(--fade-opacity);
+}
+
+/*
+ * responsive.css:16-19: mientras se transforma, fuera los filtros SVG (la
+ * sombra con resplandor y la veta), y el rectángulo blanco de la veta se
+ * oculta para que no lave el degradado. La web lo hace desde que el progreso
+ * pasa del fundido (data-logo-morphing, page.tsx:252) y ya no los vuelve a
+ * poner hasta volver arriba.
+ */
+.zh-logo-cinta[data-logo-morphing] .zh-logo-cinta__logo [filter] {
+  filter: none;
+}
+
+.zh-logo-cinta[data-logo-morphing] .zh-logo-cinta__veta {
+  display: none;
+}
+
+/* Lo que aparece por corte cuando la escena termina (GUION, 20). */
+.zh-logo-cinta__despues {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.zh-logo-cinta__despues[data-oculto] {
+  visibility: hidden;
+}
+
+/* La cinta suelta bajo un titular (Cinta.tsx). */
+.zh-cinta {
+  display: block;
+  overflow: visible;
+}

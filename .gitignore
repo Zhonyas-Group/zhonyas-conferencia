@@ -9,3 +9,11 @@ investigacion/
 verificacion/capturas/
 verificacion/pruebas/
 verificacion/pruebas-motor/
+
+# Laboratorio de piezas compilado (npx vite build --mode lab)
+dist-lab/
+
+# Cuadros de las piezas del laboratorio (node scripts/lab-cuadros.mjs)
+verificacion/lab/
+verificacion/fidelidad/
+verificacion/auditoria*

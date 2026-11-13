@@ -9,12 +9,17 @@
   },
   "scripts": {
     "dev": "vite",
+    "lab": "vite --open /lab.html",
+    "lab:compilar": "vite build --mode lab",
+    "lab:cuadros": "node scripts/lab-cuadros.mjs",
     "tipos": "tsc --noEmit -p tsconfig.json",
     "build": "tsc --noEmit -p tsconfig.json && vite build",
     "servir": "node scripts/servir.mjs",
     "capturas": "npm run build && node scripts/capturas.mjs",
     "pdf": "npm run build && node scripts/pdf.mjs",
-    "probar": "npm run build && node scripts/probar.mjs",
+    "probar": "npm run build && node scripts/probar.mjs && node scripts/probar-novedades.mjs && node scripts/probar-auditor.mjs && node scripts/auditar.mjs",
+    "auditar": "node scripts/auditar.mjs",
+    "auditar:probar": "node scripts/probar-auditor.mjs",
     "medio-prueba": "node scripts/generar-medio-prueba.mjs"
   },
   "dependencies": {

@@ -1,0 +1,123 @@
+/**
+ * Z-11 · El personaje de píxeles de una persona del equipo.
+ *
+ * Copia de zhonyas-web/components/sprite-character.tsx: las mismas variables
+ * CSS por fila del atlas (sprite-atlas.json, copiado sin cambios de
+ * lib/sprite-atlas.json) y el mismo CSS (personaje.css). Lo único distinto es
+ * de dónde sale la imagen: una ruta relativa de public/medios/equipo/ (con
+ * medio(), para que funcione desde el USB), no «/sprites/atlas/…».
+ *
+ *   <Personaje atlas="gregory" animacion="wave" />            // a escala 1 (1 px del atlas = 1 px)
+ *   <Personaje atlas="angel" animacion="walk" escala={0.64} />
+ *
+ * Como en la web, el componente se coloca con position: absolute dentro de una
+ * caja con position: relative: su punto de apoyo (ax, ay) queda en el centro
+ * del borde de abajo de esa caja (sprite-character.css:4).
+ *
+ * Para el motor:
+ *   - mientras su <Entrada> está oculta no anima: el ciclo empieza cuando
+ *     aparece (la web lo monta al abrir el perfil; medido en 03 M5, s2: el
+ *     primer cambio de cuadro cae a los 167 ms del clic);
+ *   - en vistas previas y miniaturas (activa = false) y con «menos
+ *     movimiento» se queda en su primer cuadro (sprite-character.css:23-24);
+ *   - con la sala en negro o algo encima (pausada) se congela y sigue desde ahí;
+ *   - en modo revisión el motor apaga las animaciones CSS: primer cuadro.
+ */
+import type { CSSProperties } from 'react';
+import { useDiapositiva, useMovimiento } from '../../motor/contexto';
+import { useVisibleEnEntrada } from '../../motor/Entrada';
+import { medio } from '../../motor/medios';
+import atlas from './sprite-atlas.json';
+import './personaje.css';
+
+/** Las 16 filas de cada atlas (zhonyas-web/lib/sprite-atlas.ts:3-5). */
+export type AnimacionPersonaje =
+  | 'idle' | 'front' | 'walk' | 'run' | 'wave' | 'type' | 'draw' | 'vr' | 'grabbed'
+  | 'nervous' | 'fall' | 'think' | 'laugh' | 'phone' | 'celebrate' | 'leave';
+
+/** Una fila del atlas: cuadros de w×h de izquierda a derecha desde y (sprite-atlas.ts:7-8). */
+interface FilaAtlas {
+  y: number;
+  w: number;
+  h: number;
+  frames: number;
+  fps: number;
+  loop: boolean;
+  ax: number;
+  ay: number;
+}
+
+interface HojaAtlas {
+  src: string;
+  width: number;
+  height: number;
+  animations: Record<AnimacionPersonaje, FilaAtlas>;
+}
+
+/** Personas con atlas en public/medios/equipo/ (los tres oradores). */
+export type IdAtlas = 'jose-leonardo' | 'gregory' | 'angel';
+
+const HOJAS = atlas as unknown as Record<IdAtlas, HojaAtlas>;
+
+/** El atlas de una persona, relativo a index.html. */
+export function rutaAtlas(id: IdAtlas): string {
+  return `medios/equipo/${id}/personaje.webp`;
+}
+
+/** Medidas de una fila (para colocar el personaje a mano). */
+export function filaPersonaje(id: IdAtlas, animacion: AnimacionPersonaje): FilaAtlas {
+  return HOJAS[id].animations[animacion];
+}
+
+interface PropsPersonaje {
+  atlas: IdAtlas;
+  animacion: AnimacionPersonaje;
+  /**
+   * Píxeles de pantalla por píxel del atlas (--s de sprite-character.css:3).
+   * Dentro del relevo no se usa: allí manda 1em / 200 (team-contact.css:40).
+   */
+  escala?: number;
+  /**
+   * Cuántas pasadas da el ciclo antes de quedarse en su primer cuadro. Sin
+   * él, como en la web: sin fin (sprite-character.css:10). En `wave` cada
+   * pasada es una ida o una vuelta de 0,5 s (2 = un saludo completo).
+   */
+  vueltas?: number;
+  className?: string;
+}
+
+export function Personaje({ atlas: id, animacion, escala = 1, vueltas, className }: PropsPersonaje) {
+  const { activa, pausada } = useDiapositiva();
+  const { reducido } = useMovimiento();
+  const visible = useVisibleEnEntrada();
+  const hoja = HOJAS[id];
+  const fila = hoja.animations[animacion];
+  const detenido = !visible || !activa || reducido;
+  return (
+    <span
+      className={className ? `zh-sprite ${className}` : 'zh-sprite'}
+      data-animation={animacion}
+      data-loop={String(fila.loop)}
+      data-detenido={detenido ? '' : undefined}
+      data-pausado={pausada ? '' : undefined}
+      data-vueltas={vueltas !== undefined ? '' : undefined}
+      aria-hidden="true"
+      style={
+        {
+          // sprite-character.tsx:9-13, con la ruta relativa de la copia
+          '--sprite': `url("${medio(rutaAtlas(id))}")`,
+          '--atlas-w': hoja.width,
+          '--y': fila.y,
+          '--w': fila.w,
+          '--h': fila.h,
+          '--ax': fila.ax,
+          '--ay': fila.ay,
+          '--frames': fila.frames,
+          '--duration': `${fila.frames / fila.fps}s`, // sprite-character.tsx:12
+          '--s': escala,
+          '--vueltas': vueltas,
+        } as CSSProperties
+      }
+    />
+  );
+}

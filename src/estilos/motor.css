@@ -1,12 +1,12 @@
 /* ——— Escenario ——— */
 
+/* Las bandas cambian de color con la diapositiva en el mismo cuadro: corte seco (Z-00), sin fundido. */
 .marco {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
   background: var(--fondo);
-  transition: background-color 400ms linear;
 }
 
 .escenario {
@@ -29,7 +29,7 @@
  *
  * Las vecinas ocultas quedan DEBAJO de la actual con opacidad 0,002, no con 0
  * ni con visibility: hidden. Chrome no rasteriza una capa con opacidad 0: la
- * pintaba (foto 4K incluida) en el primer cuadro del fundido, y la primera
+ * pintaba (foto 4K incluida) en el primer cuadro del cambio, y la primera
  * entrada en cada diapositiva daba un cuadro de 33–50 ms (medido en la ronda 2:
  * 3 de 5 entradas; con 0,002, ninguna). Con 0,002 la tiene pintada de
  * antemano; como la actual es opaca y está encima, la vecina no se llega a
@@ -75,24 +75,14 @@
 
 /* ——— Entradas por paso ——— */
 
-.entrada {
-  transition:
-    opacity var(--dur-entrada) var(--curva-salida) var(--retraso, 0ms),
-    transform var(--dur-entrada) var(--curva-salida) var(--retraso, 0ms);
-}
-
+/*
+ * Sin efecto, una entrada aparece y desaparece de golpe (corte, A-53: nada de
+ * «aparece y sube 20 px»). Oculta conserva su hueco. Las entradas con nombre
+ * (src/marca/) animan con WAAPI desde aquí y pueden cambiar su estado oculto en
+ * su CSS: .entrada[data-efecto='x'][data-oculto] { … }.
+ */
 .entrada[data-oculto] {
-  opacity: 0;
-  transform: translate3d(0, var(--entrada-desplazamiento), 0);
-  /* Al ocultarse (retroceder) es rápido y sin retraso. */
-  transition-duration: 200ms;
-  transition-delay: 0ms;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .entrada[data-oculto] {
-    transform: none;
-  }
+  visibility: hidden;
 }
 
 /* ——— Modo revisión: todo en su estado final, sin animar ——— */
@@ -131,6 +121,7 @@
  * Por encima de todo lo que la sala pueda poner sobre la diapositiva (el «Ir a»,
  * la cuadrícula, la ayuda): con la pantalla en negro, el proyector sigue en negro.
  */
+/* El negro entra y sale de golpe, como el cambio de diapositiva (Z-00). */
 .negro {
   position: fixed;
   inset: 0;
@@ -138,7 +129,6 @@
   background: #000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 260ms linear;
 }
 
 .negro[data-activo] {
@@ -602,10 +592,112 @@
   gap: 10px;
 }
 
-.p-notas {
+/* Notas y, debajo, las fuentes: una columna que ocupa las dos filas. */
+.p-columna-notas {
   grid-area: notas;
-  /* Ocupa las dos filas: sin esto, el alto de unas notas largas empujaría la fila del cronómetro y dejaría sin sitio «En pantalla». */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  /* Sin esto, el alto de unas notas largas empujaría la fila del cronómetro y dejaría sin sitio «En pantalla». */
   contain: size;
+}
+
+.p-notas {
+  flex: 1 1 0;
+}
+
+/* Las notas mandan: las fuentes se quedan con lo que sobre, y como mucho un tercio. */
+.p-fuentes {
+  flex: 0 1 auto;
+  max-height: 34%;
+}
+
+.p-fuentes__texto {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--p-suave);
+}
+
+.fuentes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.fuentes__valor {
+  font-weight: 700;
+  color: var(--p-tinta);
+}
+
+.fuentes__origen {
+  color: var(--p-tenue);
+}
+
+.fuentes__aviso,
+.fuentes__dato[data-estado='por-confirmar'] .fuentes__valor {
+  color: var(--p-mal);
+}
+
+.fuentes__nota {
+  color: var(--p-aviso);
+}
+
+/* Nota de un paso: la frase de entrada en grande, las claves y el «si falla» aparte. */
+.nota-paso {
+  display: grid;
+  gap: 0.6em;
+}
+
+.nota-paso__decir {
+  color: var(--p-tinta);
+}
+
+.nota-paso__claves {
+  font-size: 0.8em;
+  font-weight: 700;
+  color: var(--p-aviso);
+}
+
+.nota-paso__falla {
+  padding: 0.4em 0.6em;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--p-mal) 55%, transparent);
+  background: color-mix(in srgb, var(--p-mal) 14%, transparent);
+  font-size: 0.7em;
+}
+
+/* Pasado el +20 % de su duración sugerida, el panel del tiempo se pone en rojo (01 P1-17). */
+.p-tiempos[data-alerta] {
+  border-color: var(--p-mal);
+  background: color-mix(in srgb, var(--p-mal) 16%, var(--p-panel));
+}
+
+/* La sala enseña la prueba de sala: se ve encima de «En pantalla». */
+.p-prueba {
+  position: absolute;
+  inset: 0;
+  background: var(--fondo);
+}
+
+.p-prueba__aviso {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgb(0 0 0 / 0.78);
+  color: var(--p-aviso);
+  font-size: 15px;
+  text-align: center;
 }
 
 .p-rotulo {
@@ -903,6 +995,13 @@
   .p-barra {
     gap: 14px;
   }
+  /* Poca altura para las notas: las fuentes, en una franja corta que se desplaza. */
+  .p-fuentes {
+    max-height: 24%;
+  }
+  .p-fuentes__texto {
+    font-size: 13px;
+  }
   .p-oradores {
     gap: 10px;
   }
@@ -1014,4 +1113,50 @@
 .cortina,
 .marco {
   forced-color-adjust: none;
+}
+
+/* ——— Prueba de sala (tecla T) en la sala: encima de la diapositiva, debajo del «Ir a», la cuadrícula, la ayuda y el negro ——— */
+
+.capa-prueba-sala {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--fondo);
+}
+
+/* ——— Póster de una diapositiva pesada (presentador y miniaturas, C-02) ——— */
+
+.poster-diapositiva {
+  position: absolute;
+  inset: 0;
+  background: var(--fondo);
+}
+
+.poster-diapositiva__imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.poster-diapositiva__vacio {
+  position: absolute;
+  inset: 115px;
+  display: grid;
+  place-items: center;
+  border: 4px dashed var(--tinta-tenue);
+  font: 700 96px/1 var(--fuente-titulo);
+  letter-spacing: -0.065em;
+  color: var(--tinta-suave);
+  text-align: center;
+}
+
+.poster-diapositiva__rotulo {
+  position: absolute;
+  left: 40px;
+  bottom: 36px;
+  padding: 10px 22px;
+  border-radius: 12px;
+  background: rgb(0 0 0 / 0.78);
+  color: #ffc46b;
+  font: 700 44px/1.2 var(--fuente-texto);
 }

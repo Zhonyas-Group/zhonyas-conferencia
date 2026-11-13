@@ -24,9 +24,11 @@ import { Cuadricula } from './Cuadricula';
 import { useProblemas } from './diagnostico';
 import { Escenario } from './Escenario';
 import { alternarNegro, avanzar, retroceder, total, useNavegacion } from './estado';
+import { Fuentes, hayFuentes } from './Fuentes';
 import { useInterfaz } from './interfaz';
 import { Notas } from './Notas';
 import { useEnPantallaDelPublico } from './pantallas';
+import { PruebaSala } from './PruebaSala';
 import {
   desvio,
   duracionPlanificada,
@@ -208,6 +210,9 @@ export function Presentador() {
 
   const tTotal = transcurrido(cron, ahora) / 1000;
   const tDiapositiva = tiempoEnDiapositiva(nav, cron, ahora);
+  // Alerta de color pasado el +20 % de la duración sugerida (01 P1-17); aviso al pasarla.
+  const exceso = d.duracion > 0 ? tDiapositiva / d.duracion : 0;
+  const estadoDiapositiva = exceso > 1.2 ? 'mal' : exceso > 1 ? 'aviso' : 'neutro';
   const dv = desvio(nav, cron, ahora);
   const restante = cron.objetivo - tTotal;
   const progreso = Math.min(1, tTotal / cron.objetivo);
@@ -230,6 +235,7 @@ export function Presentador() {
 
   let rotuloSiguiente = 'Fin de la presentación';
   if (siguiente.tipo === 'encender') rotuloSiguiente = 'Siguiente: vuelve la imagen, sin moverse';
+  else if (siguiente.tipo === 'cerrar-prueba') rotuloSiguiente = 'Siguiente: se cierra la prueba de sala, sin moverse';
   else if (siguiente.tipo === 'paso') rotuloSiguiente = `Siguiente: paso ${siguiente.paso} de ${d.pasos}`;
   else if (siguiente.tipo === 'diapositiva')
     rotuloSiguiente = `Siguiente: ${siguiente.indice + 1} · ${diapositivas[siguiente.indice].titulo}`;
@@ -243,8 +249,21 @@ export function Presentador() {
     return (
       <div className="cortina" style={{ background: d.fondo ?? undefined }}>
         <Escenario fondo={d.fondo}>
-          <Secuencia indice={nav.indice} paso={nav.paso} direccion={nav.direccion} silencio pausada={nav.negro} />
+          <Secuencia
+            indice={nav.indice}
+            paso={nav.paso}
+            direccion={nav.direccion}
+            silencio
+            pausada={nav.negro || nav.prueba}
+          />
         </Escenario>
+        {nav.prueba && (
+          <div className="capa-prueba-sala" aria-label="Prueba de sala">
+            <Escenario>
+              <PruebaSala />
+            </Escenario>
+          </div>
+        )}
         <div className="negro" data-activo={nav.negro ? '' : undefined} aria-hidden />
         <div className="cortina__aviso" role="status">
           <span>
@@ -324,15 +343,25 @@ export function Presentador() {
           <div className="p-vista vista-viva">
             <Escenario fondo="transparent">
               {/* Con vecinas montadas también aquí: el presentador comparte la GPU con la sala, y pintar
-                  de golpe una foto 4K al avanzar le quitaba cuadros a la proyección. */}
+                  de golpe una foto 4K al avanzar le quitaba cuadros a la proyección. Por lo mismo, las
+                  diapositivas pesadas (WebGL, filtros SVG) se ven como póster quieto (C-02). */}
               <Secuencia
                 indice={nav.indice}
                 paso={nav.paso}
                 direccion={nav.direccion}
                 silencio
-                pausada={nav.negro || ui.cuadricula}
+                estatico
+                pausada={nav.negro || ui.cuadricula || nav.prueba}
               />
             </Escenario>
+            {nav.prueba && (
+              <div className="p-prueba">
+                <Escenario fondo="transparent">
+                  <PruebaSala />
+                </Escenario>
+                <span className="p-prueba__aviso">El público ve la prueba de sala · T o Esc para quitarla</span>
+              </div>
+            )}
             {nav.negro && <div className="p-velo">Pantalla en negro · B para volver</div>}
             {!nav.negro && (capasSala.cuadricula || capasSala.ayuda) && (
               <div className="p-velo p-velo--capa" role="status">
@@ -354,7 +383,7 @@ export function Presentador() {
               <div className="p-fin">Última diapositiva</div>
             ) : (
               <Escenario fondo="transparent">
-                <VistaFija indice={siguiente.indice} paso={siguiente.paso} modo="vista" />
+                <VistaFija indice={siguiente.indice} paso={siguiente.paso} modo="vista" estatico />
               </Escenario>
             )}
           </div>
@@ -365,7 +394,11 @@ export function Presentador() {
           )}
         </section>
 
-        <section className="p-panel p-tiempos">
+        <section
+          className="p-panel p-tiempos"
+          data-alerta={estadoDiapositiva === 'mal' ? '' : undefined}
+          title={estadoDiapositiva === 'mal' ? 'Esta diapositiva ya pasó el +20 % de su duración sugerida.' : undefined}
+        >
           <div className="p-total" data-estado={restante < 0 ? 'mal' : restante < 60 ? 'aviso' : 'neutro'}>
             <span className="p-total__cifra">{formatoTiempo(tTotal)}</span>
             <span className="p-total__detalle">
@@ -395,7 +428,7 @@ export function Presentador() {
             </div>
             <div>
               <dt>Esta diapositiva</dt>
-              <dd data-estado={tDiapositiva > d.duracion ? 'aviso' : 'neutro'}>
+              <dd data-estado={estadoDiapositiva}>
                 {formatoTiempo(tDiapositiva)} <span className="p-datos__de">de {formatoTiempo(d.duracion)}</span>
               </dd>
             </div>
@@ -414,22 +447,33 @@ export function Presentador() {
           </div>
         </section>
 
-        <section className="p-panel p-notas">
-          <div className="p-rotulo">
-            Notas
-            <span className="p-tamano">
-              <Boton alPulsar={() => setTamNotas(Math.max(16, tamNotas - 2))} titulo="Letra más pequeña">
-                A−
-              </Boton>
-              <Boton alPulsar={() => setTamNotas(Math.min(64, tamNotas + 2))} titulo="Letra más grande">
-                A+
-              </Boton>
-            </span>
-          </div>
-          <div className="p-notas__texto" style={{ fontSize: `${tamNotas}px` }}>
-            <Notas texto={d.notas} />
-          </div>
-        </section>
+        <div className="p-columna-notas">
+          <section className="p-panel p-notas">
+            <div className="p-rotulo">
+              Notas
+              <span className="p-tamano">
+                <Boton alPulsar={() => setTamNotas(Math.max(16, tamNotas - 2))} titulo="Letra más pequeña">
+                  A−
+                </Boton>
+                <Boton alPulsar={() => setTamNotas(Math.min(64, tamNotas + 2))} titulo="Letra más grande">
+                  A+
+                </Boton>
+              </span>
+            </div>
+            <div className="p-notas__texto" style={{ fontSize: `${tamNotas}px` }}>
+              <Notas notas={d.notas} paso={nav.paso} />
+            </div>
+          </section>
+          {/* Las fuentes, aparte de lo que se dice (01 P1-16). */}
+          {hayFuentes(d) && (
+            <section className="p-panel p-fuentes" aria-label="Fuentes de esta diapositiva">
+              <div className="p-rotulo">Fuentes</div>
+              <div className="p-fuentes__texto">
+                <Fuentes diapositiva={d} />
+              </div>
+            </section>
+          )}
+        </div>
       </main>
 
       <footer className="p-controles">

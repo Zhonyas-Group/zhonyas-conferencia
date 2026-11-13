@@ -6,6 +6,7 @@
 import { esPresentador } from './entorno';
 import {
   alternarNegro,
+  alternarPruebaSala,
   avanzar,
   irAlFinal,
   irAlInicio,
@@ -316,6 +317,11 @@ export function instalarTeclado(opciones: OpcionesTeclado = {}): () => void {
       case 'G':
         if (!e.repeat) abrirCuadricula();
         break;
+      case 't':
+      case 'T':
+        // Diapositiva oculta de prueba de sala (fuera del orden): se ve en la sala y en «En pantalla».
+        if (!e.repeat) alternarPruebaSala();
+        break;
       case 'p':
       case 'P':
         if (opciones.abrirPresentador && !e.repeat) opciones.abrirPresentador();
@@ -334,6 +340,7 @@ export function instalarTeclado(opciones: OpcionesTeclado = {}): () => void {
         // (desde el presentador) y, si no hay nada, salir de pantalla completa
         // (el «terminar» del puntero; ver quedarseConEsc).
         if (ui.ayuda) cambiarInterfaz({ ayuda: false });
+        else if (obtenerEstado().prueba) alternarPruebaSala(false);
         else if (opciones.alEscapeLibre?.()) break;
         else if (document.fullscreenElement) salirDePantallaCompleta();
         else manejada = false;

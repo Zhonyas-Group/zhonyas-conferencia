@@ -19,7 +19,7 @@
  *   sala lleva ESPERA_VECINA_MS quieta en su diapositiva y el navegador está
  *   libre. Crear un contexto y una escena cuesta unos 50 ms de hilo principal
  *   (compilar shaders, idas y vueltas a la GPU, medido en la ronda 2): así no
- *   coincide con el fundido ni con lo que se anima justo al llegar. Si se
+ *   coincide con el cambio de diapositiva ni con lo que se anima justo al llegar. Si se
  *   avanza antes, se crea en ese momento y la transición la espera.
  * - En modo revisión pinta un único fotograma fijo en `tiempoRevision`.
  *

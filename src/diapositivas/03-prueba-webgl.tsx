@@ -131,5 +131,8 @@ export default definirDiapositiva({
     cuadrícula y en la vista previa se ve el póster o un fotograma fijo.
   `,
   medios: ['medios/prueba/webgl-poster.webp'],
+  // Pesada: el presentador la enseña como póster quieto (C-02); la sala, en vivo.
+  pesada: true,
+  poster: 'medios/prueba/webgl-poster.webp',
   Componente: PruebaWebgl,
 });

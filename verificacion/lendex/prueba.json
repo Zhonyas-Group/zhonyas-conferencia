@@ -1,0 +1,187 @@
+{
+  "fecha": "2026-11-13T03:53:14.852Z",
+  "base": "http://localhost:5305/lab.html",
+  "resultados": [
+    {
+      "nombre": "La pieza aparece en el laboratorio sin error",
+      "cumple": true,
+      "detalle": "/src/marca/lendex/demo-lendex.lab.tsx"
+    },
+    {
+      "nombre": "En la escena anterior, Lendex ya se está cargando debajo",
+      "cumple": true,
+      "detalle": "https://lendexgp.com/app"
+    },
+    {
+      "nombre": "El iframe de la escena oculta es inert (no puede quedarse con el teclado)",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Avanzar lleva a la demo",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "El iframe ocupa 1920×1080 a partir de (0, 0)",
+      "cumple": true,
+      "detalle": "{\"x\":0,\"y\":0,\"w\":1920,\"h\":1080,\"inert\":false,\"sandbox\":\"allow-scripts allow-same-origin allow-forms\"}"
+    },
+    {
+      "nombre": "En pantalla ya no es inert",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Sin permiso para ventanas emergentes ni para mover la sala",
+      "cumple": true,
+      "detalle": "allow-scripts allow-same-origin allow-forms"
+    },
+    {
+      "nombre": "Lendex se maqueta a 960×540 (versión estrecha, calculadora entera)",
+      "cumple": true,
+      "detalle": "{\"w\":960,\"h\":540}"
+    },
+    {
+      "nombre": "La calculadora en vivo da la cuota correcta para RD$80.000",
+      "cumple": true,
+      "detalle": "RD$9,026.03 · esperada RD$9,026.03"
+    },
+    {
+      "nombre": "La letra más pequeña de la calculadora se proyecta a ≥ 24 px",
+      "cumple": true,
+      "detalle": "12 px CSS × 2"
+    },
+    {
+      "nombre": "Con el clic en la calculadora, el teclado está en Lendex",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "… y → no mueve la charla (lo recibe Lendex)",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Al pasar el ratón por la franja izquierda, la sala recupera el teclado",
+      "cumple": true,
+      "detalle": "BODY"
+    },
+    {
+      "nombre": "… y por la franja derecha",
+      "cumple": true,
+      "detalle": "BODY"
+    },
+    {
+      "nombre": "… y al salir el ratón de la ventana",
+      "cumple": true,
+      "detalle": "BODY"
+    },
+    {
+      "nombre": "Un clic en la franja no avanza la charla (data-sin-clic)",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "V pasa al video",
+      "cumple": true,
+      "detalle": "{\"t\":1.2361,\"w\":1920,\"h\":1080,\"pausado\":false,\"src\":\"http://localhost:5305/medios/lendex/demo-calculadora.webm\"}"
+    },
+    {
+      "nombre": "El video es 1920×1080 y avanza desde el principio",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "El iframe, escondido y sin teclado, sigue montado debajo",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "En video, → sigue moviendo la charla",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "← vuelve a la demo, aún en video",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Otra V vuelve a lo vivo y la calculadora conserva lo escrito",
+      "cumple": true,
+      "detalle": "monto 80000"
+    },
+    {
+      "nombre": "(teclado otra vez en Lendex)",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Al pasar a la siguiente, el teclado vuelve a la charla (iframe inert)",
+      "cumple": true,
+      "detalle": "BODY"
+    },
+    {
+      "nombre": "… y ← funciona enseguida",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "V en una ventana pone el video en la otra",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "… y V en la otra vuelve a lo vivo en la primera",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Sin red, la sala enseña el video sola",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Con red otra vez, vuelve a lo vivo",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Presentador: sin iframe, con el póster y el aviso del modo",
+      "cumple": true,
+      "detalle": "{\"iframes\":0,\"poster\":\"/medios/lendex/demo-poster.webp\",\"aviso\":\"La sala enseña Lendex en vivo · V pone el video\"}"
+    },
+    {
+      "nombre": "Presentador: V pone el video también allí y lo dice",
+      "cumple": true,
+      "detalle": "{\"aviso\":\"La sala enseña el video · V vuelve a lo vivo\",\"video\":true}"
+    },
+    {
+      "nombre": "… y la sala lo sigue",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Revisión: solo el póster de 1920 px, sin iframe ni video",
+      "cumple": true,
+      "detalle": "{\"iframes\":0,\"videos\":0,\"img\":\"/medios/lendex/demo-poster.webp\",\"lista\":1920}"
+    },
+    {
+      "nombre": "Sin avisos del motor",
+      "cumple": true,
+      "detalle": ""
+    },
+    {
+      "nombre": "Ningún momento animado propio (A-54)",
+      "cumple": true,
+      "detalle": "{\"antes\":[],\"demo-lendex\":[],\"despues\":[]}"
+    },
+    {
+      "nombre": "Sin errores en la consola de la presentación",
+      "cumple": true,
+      "detalle": ""
+    }
+  ],
+  "erroresDeLendex": []
+}

@@ -1,0 +1,92 @@
+/*
+ * Las tres composiciones de la síntesis §4.3, sobre las clases de marca.css
+ * (.zh-reticula, .zh-a-sangre, .zh-dividida, .zh-una-cifra) y su escala de
+ * letra (.zh-titular, .zh-lectura, .zh-fuente, .zh-cifra).
+ */
+
+/* ——— Titular ——— */
+
+/* La segunda línea, entera y en su propia línea (§4.1; A-47). */
+.zh-comp-segunda-linea {
+  display: block;
+}
+
+/* ——— 1. A sangre ——— */
+
+.zh-comp-a-sangre {
+  overflow: hidden;
+}
+
+.zh-comp-evidencia {
+  position: absolute;
+  inset: 0;
+}
+
+.zh-comp-evidencia > :is(img, video, canvas) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--zh-comp-ajuste, cover);
+  object-position: var(--zh-comp-posicion, 50% 50%);
+}
+
+/* El titular lo coloca marca.css (.zh-a-sangre > .zh-titular: left y top de 115 px). */
+
+/* La fuente, abajo a la izquierda, dentro del margen de 115 px (A-30). */
+.zh-comp-fuente {
+  position: absolute;
+  left: var(--zh-margen);
+  bottom: var(--zh-margen);
+  max-width: calc(1920px - 2 * var(--zh-margen));
+}
+
+/* ——— 2. Dividida 1,2 : 0,8 ——— */
+
+/* Una sola fila del alto del área útil (850 px): sin esto, una captura alta estira la fila y se sale por abajo. */
+.zh-comp-dividida {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+/* La columna del texto: titular arriba y lo demás abajo (.capabilities-intro, align-items: end). */
+.zh-comp-dividida__texto {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* La evidencia, centrada en su columna (.capability-visual, capabilities-section.css:29). */
+.zh-comp-dividida__evidencia {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr); /* una celda del tamaño de la columna, para que el 100 % de una imagen sea eso */
+  place-items: center;
+  min-width: 0;
+  min-height: 0;
+}
+
+.zh-comp-dividida__evidencia > :is(img, video, canvas) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--zh-comp-ajuste, contain);
+  object-position: var(--zh-comp-posicion, 50% 50%);
+}
+
+/* Una consola u otra pieza ocupa el ancho de la columna. */
+.zh-comp-dividida__evidencia > .entrada {
+  width: 100%;
+}
+
+/* ——— 3. Una cifra ——— */
+
+/*
+ * La cifra no se parte en dos líneas («92,7 %» entero). Con interlínea 0,84 la
+ * letra se sale de su caja por abajo: (ascendente 0,905 + descendente 0,212 de
+ * Arial − 0,84) / 2 = 0,1385 em. Ese relleno deja la coma y el descendente
+ * dentro de la caja, para que la etiqueta de debajo no los pise.
+ */
+.zh-comp-una-cifra .zh-cifra {
+  white-space: nowrap;
+  padding-bottom: 0.1385em;
+}

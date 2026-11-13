@@ -1,0 +1,130 @@
+/*
+ * Z-06 · La ventana de la consola (capabilities-section.css:53-74, service-terminal.tsx).
+ *
+ * Proporciones: en la web la consola mide 440 px de ancho como máximo
+ * (capabilities-section.css:53) y sus medidas internas están en px y rem.
+ * Aquí la ventana toma el ancho de su sitio (en la Dividida, la columna de
+ * 657 px) y cada medida de la caja (rellenos, márgenes, huecos, puntos) se
+ * escala con ese ancho: medida de la web ÷ 440 px, en cqw (unidades del
+ * contenedor). Es la ventana de la web ampliada a su columna.
+ *
+ * La letra NO se escala con la ventana: mide 32 px o más (síntesis §4.4 Z-06;
+ * 01 P0-1), así que las líneas largas se parten (overflow-wrap, como en la web).
+ * Lo que va con la letra (interlínea, cursor) va en em: medida ÷ 12,48 px, la
+ * letra de la consola a 1920 (clamp(0.65rem, 0.85vw, 0.78rem)).
+ * El radio (14 px) y el borde (1 px #ffffff24) quedan con sus valores exactos,
+ * como pide la síntesis.
+ *
+ * Colores: solo tokens de marca.css (A-34). Donde la web usa un tono sin token,
+ * va el token más cercano, y se dice al lado. Sin la sombra ni el halo del
+ * acento (A-43; MOTOR §4.9: las sombras grandes cuestan un cuadro largo al entrar).
+ */
+
+.zh-consola {
+  container-type: inline-size; /* para medir en cqw contra el ancho de la ventana */
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid var(--zh-borde-consola); /* #ffffff24, capabilities-section.css:53 */
+  border-radius: var(--zh-radio-consola); /* 14 px, capabilities-section.css:53 */
+  overflow: hidden;
+  background: var(--zh-consola); /* #0b0a10, capabilities-section.css:53 */
+  font-family: var(--zh-mono); /* capabilities-section.css:53; la mono solo en una consola de verdad (A-50) */
+  font-size: var(--zh-consola-tamano, 32px);
+  font-weight: 400;
+  line-height: 1.65; /* capabilities-section.css:53 */
+  letter-spacing: 0;
+  text-align: left;
+}
+
+/* Barra: tres puntos, el nombre y ~/ (service-terminal.tsx:23-27; capabilities-section.css:54-59). */
+.zh-consola__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.1818cqw; /* 0.6rem = 9,6 px de 440 */
+  padding: 3.2727cqw 3.6364cqw; /* 0.9rem 1rem = 14,4 · 16 px de 440 */
+  /* La web pone #ffffff04 de fondo: 1,6 % de blanco, que no se ve proyectado (02 §5.1). No va. */
+  border-bottom: 1px solid var(--zh-linea); /* la web: #ffffff0e, sin token; --zh-linea (#ffffff1f) es el borde de 1 px de la marca */
+  color: var(--zh-texto-2); /* la web: #aaa0b6, sin token; el más cercano es --zh-texto-2 (#b6b1be) */
+  font-size: 1em; /* la web la pone a 0.6rem (9,6 px); aquí, el mínimo de 32 px (síntesis §0.2) */
+}
+
+.zh-consola__puntos {
+  display: flex;
+  flex: none;
+  gap: 1.1364cqw; /* 5 px de 440 */
+}
+
+.zh-consola__puntos i {
+  width: 1.5909cqw; /* 7 px de 440 */
+  height: 1.5909cqw;
+  border-radius: 50%;
+  background: var(--zh-punto-rojo); /* #db7887, capabilities-section.css:56 */
+}
+
+.zh-consola__puntos i:nth-child(2) {
+  background: var(--zh-punto-ambar); /* #dbb772, capabilities-section.css:57 */
+}
+
+.zh-consola__puntos i:nth-child(3) {
+  background: var(--zh-punto-verde); /* #83c9a3, capabilities-section.css:58 */
+}
+
+.zh-consola__shell {
+  color: var(--zh-consola-acento); /* capabilities-section.css:59 */
+}
+
+/* Cuerpo (capabilities-section.css:60-69). */
+.zh-consola__cuerpo {
+  padding: 5.0909cqw 4.1818cqw; /* 1.4rem 1.15rem = 22,4 · 18,4 px de 440 */
+}
+
+.zh-consola__comando {
+  display: flex;
+  gap: 2.3636cqw; /* 0.65rem = 10,4 px de 440 */
+  margin-bottom: 5.4545cqw; /* 1.5rem = 24 px de 440 */
+  color: var(--zh-texto); /* la web: #ede6f4, sin token; --zh-texto (#f7f7fa) */
+}
+
+.zh-consola__comando > span:first-child {
+  color: var(--zh-consola-acento); /* capabilities-section.css:62 */
+}
+
+.zh-consola__tecleo {
+  overflow-wrap: anywhere; /* capabilities-section.css:63 */
+}
+
+.zh-consola__lineas {
+  display: grid;
+  gap: 2.1818cqw; /* 0.6rem = 9,6 px de 440 */
+}
+
+.zh-consola__linea {
+  display: flex;
+  align-items: baseline;
+  gap: 2.3636cqw; /* 0.65rem = 10,4 px de 440 */
+  color: var(--zh-rotulo); /* la web: #c1b9cc, sin token; el más cercano es --zh-rotulo (#c5bccb) */
+}
+
+.zh-consola__check {
+  color: var(--zh-check); /* #8ed9af, capabilities-section.css:66 */
+}
+
+.zh-consola__resultado {
+  margin-top: 5.4545cqw; /* 1.5rem = 24 px de 440 */
+  color: var(--zh-consola-acento); /* capabilities-section.css:67 */
+}
+
+.zh-consola__prompt {
+  margin-top: 3.6364cqw; /* 1rem = 16 px de 440 */
+  align-items: center;
+  color: var(--zh-consola-acento); /* capabilities-section.css:62 */
+}
+
+/* El cursor no parpadea en la web: solo aparece con su línea (capabilities-section.css:69). Va con la letra. */
+.zh-consola__cursor {
+  width: 0.5609em; /* 7 px con letra de 12,48 px */
+  height: 1.0417em; /* 13 px con letra de 12,48 px */
+  background: var(--zh-consola-acento);
+  opacity: 0.7;
+}

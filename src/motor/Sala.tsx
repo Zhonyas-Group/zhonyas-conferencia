@@ -15,6 +15,7 @@ import { Escenario } from './Escenario';
 import { avanzar, total, useNavegacion } from './estado';
 import { useInterfaz } from './interfaz';
 import { instalarPantallaSala, parametroSala } from './pantallas';
+import { PruebaSala } from './PruebaSala';
 import { Secuencia } from './Secuencia';
 import { instalarTeclado } from './teclado';
 import { useTituloVentana } from './utilidades';
@@ -176,9 +177,21 @@ export function Sala() {
   return (
     <div className="sala" onClick={alClic} style={{ background: d.fondo ?? undefined }}>
       <Escenario fondo={d.fondo}>
-        {/* Con la pantalla en negro o la cuadrícula encima nadie ve la diapositiva: video y WebGL se paran. */}
-        <Secuencia indice={nav.indice} paso={nav.paso} direccion={nav.direccion} pausada={nav.negro || ui.cuadricula} />
+        {/* Con la pantalla en negro, la cuadrícula o la prueba de sala encima nadie ve la diapositiva: video y WebGL se paran. */}
+        <Secuencia
+          indice={nav.indice}
+          paso={nav.paso}
+          direccion={nav.direccion}
+          pausada={nav.negro || ui.cuadricula || nav.prueba}
+        />
       </Escenario>
+      {nav.prueba && (
+        <div className="capa-prueba-sala" aria-label="Prueba de sala">
+          <Escenario>
+            <PruebaSala />
+          </Escenario>
+        </div>
+      )}
       <div className="negro" data-activo={nav.negro ? '' : undefined} aria-hidden />
       {ui.numero && (
         <div className="salto" aria-live="polite">

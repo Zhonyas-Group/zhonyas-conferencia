@@ -1,0 +1,159 @@
+/*
+ * Z-05 · Relevo de orador: la foto vuela de su tarjeta al retrato, el nombre
+ * entra y el personaje saluda. Copiado del perfil del equipo de zhonyas-web
+ * (components/team-profile.tsx y team-contact.css; 03 M5). Cada valor dice su
+ * línea. Las medidas en px son las de la web a 1920 × 1080.
+ *
+ * Lo que la web tiene y aquí NO está (síntesis §3; A-03, A-31, A-43, A-44):
+ *   - el halo «0 0 100px #a63cca20» y la sombra «-24px 35px 80px #0007» del
+ *     retrato (team-contact.css:31): uno es un brillo de adorno; la otra es
+ *     negra sobre negro, no se ve, y una sombra de 80 px de desenfoque cuesta
+ *     50–67 ms la primera vez que se pinta (MOTOR §4.9);
+ *   - el oscurecido de abajo de la foto y su pie «ZHONYAS 01 / 06»
+ *     (team-contact.css:34-35): el pie va en MAYÚSCULAS y sin él el
+ *     oscurecido no tiene función;
+ *   - la sombra de debajo del personaje, radial-gradient(#0009 → #0000)
+ *     (team-contact.css:41): negra sobre el negro de la marca, no se ve;
+ *   - el fondo con degradado y vidrio (team-contact.css:26): queda el fondo de
+ *     la marca, liso (--zh-fondo), con la misma opacidad y el mismo tiempo;
+ *   - el rótulo «NUESTRO EQUIPO / cargo», la marca de agua «EQUIPO», la bio,
+ *     los enlaces y el botón: en su lugar va lo que esa persona hizo;
+ *   - en la tarjeta: el vidrio y la sombra (globals.css:334-339), el icono
+ *     (:383), el oscurecido (:409), el brillo (:432), el número y el cargo
+ *     (:467), el nombre en MAYÚSCULAS (:507) y la línea con degradado (:577).
+ *     Queda la foto con su borde y su radio.
+ */
+
+.relevo {
+  position: absolute;
+  inset: 0;
+}
+
+/* ——— Paso anterior: las tarjetas del equipo, de donde sale la foto ——— */
+
+.relevo-tarjeta {
+  position: absolute; /* posición y tamaño: geometria.ts (TARJETAS) */
+  overflow: hidden; /* globals.css:331 */
+  border: 1px solid rgba(255, 255, 255, 0.14); /* globals.css:332 */
+  border-radius: 38.4px; /* clamp(1.6rem, 2.3vw, 2.4rem) a 1920 = 2,4rem (globals.css:333) */
+}
+
+.relevo-tarjeta > img {
+  position: absolute; /* globals.css:418-421 */
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* globals.css:422 */
+  filter: saturate(0.92) contrast(1.04); /* globals.css:423 */
+}
+
+/*
+ * Al abrir el perfil, la web saca de la vista TODA la sección del equipo en el
+ * primer cuadro (s2: la tarjeta pasa a top −5510 a los 16 ms del clic; en la
+ * hoja 05, «clic +50 ms» ya no tiene tarjetas). La foto que vuela es la única
+ * que queda: las tarjetas se van de golpe en ese mismo cuadro.
+ */
+.relevo-tarjetas[data-volo] {
+  visibility: hidden;
+}
+
+/* ——— El perfil (la <Entrada efecto="relevo">) ——— */
+
+.relevo-perfil {
+  position: absolute;
+  inset: 0;
+}
+
+/* .team-profile-backdrop (team-contact.css:26), liso en el negro de la marca. */
+.relevo-fondo {
+  position: absolute;
+  inset: 0;
+  background: var(--zh-fondo);
+}
+
+/* .team-profile-scroll (team-contact.css:30): la perspectiva del giro del retrato. */
+.relevo-escena {
+  position: absolute;
+  inset: 0;
+  perspective: 1400px; /* team-contact.css:30 */
+}
+
+/* .team-profile-portrait (team-contact.css:31) en su destino (team-profile.tsx:34-36, 99). */
+.relevo-retrato {
+  position: absolute;
+  z-index: 2; /* team-contact.css:31 */
+  left: 153.6px; /* 8 % de 1920 (team-profile.tsx:36) */
+  top: 230px; /* (1080 − 620) / 2 (team-profile.tsx:36) */
+  width: 440px; /* min(30 % de 1920, 440) (team-profile.tsx:34) */
+  height: 620px; /* min(66 % de 1080, 620) (team-profile.tsx:35) */
+  overflow: hidden; /* team-contact.css:31 */
+  border: 1px solid #ffffff25; /* team-contact.css:31 */
+  border-radius: 25.6px; /* 1.6rem (team-contact.css:31) */
+  transform: scale(0.94) rotateY(12deg) rotateZ(-3deg); /* team-profile.tsx:99 */
+  transform-origin: center; /* team-contact.css:31 */
+}
+
+.relevo-retrato > img {
+  display: block;
+  width: 100%; /* team-contact.css:33 */
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * .team-profile-content (team-contact.css:36): width 44 %, margin-left 48 %, padding-top max(7rem, 17vh).
+ * Sin el rótulo de la web (0,65rem × 1,6 + 1,2rem = 35,84 px, team-contact.css:44), el nombre
+ * empieza en el padding-top. Como va a 128 px y no a 108,8 (A-49), así la segunda línea y el
+ * personaje caen donde en la web: medido en el cuadro final, el pie del nombre y del personaje
+ * a 422 px en las dos; la primera línea, 33 px más arriba (195 frente a 228). Si se baja a
+ * 219,44 (con el hueco del rótulo), la primera línea cuadra y el personaje queda 36 px más abajo.
+ */
+.relevo-texto {
+  position: absolute;
+  z-index: 3; /* team-contact.css:36 */
+  left: 921.6px; /* 48 % de 1920 */
+  top: 183.6px; /* max(112, 17 % de 1080) */
+  width: 844.8px; /* 44 % de 1920 */
+}
+
+/*
+ * El nombre: la portadilla de la escala (128 px, 700, −0,075 em). El h2 de la
+ * web tiene el mismo interletrado, pero mide clamp(3.2rem, 6.5vw, 6.8rem) =
+ * 108,8 px a 1920, con peso 600, que Arial pinta en negrita (team-contact.css:46).
+ * Va a 128 y no a 108,8 porque la escala tiene cinco tamaños (síntesis §4.2,
+ * A-49). Como el personaje mide 1em / 200, sale un 17,6 % más grande que en la
+ * web (71,04 px por cuadro del atlas frente a los 60,384 medidos, 03 M5).
+ * Si José prefiere la medida de la web, se pone aquí font-size: 108.8px.
+ * La interlínea y el ancho son los del h2: 0,95 y 11ch + 0,76em, así que corta
+ * donde corta la web («José / Leonardo»).
+ */
+.relevo-nombre {
+  max-width: calc(11ch + 0.76em); /* team-contact.css:45-46 */
+  line-height: 0.95; /* team-contact.css:46 */
+}
+
+/* La última palabra no se separa del personaje (team-contact.css:38). */
+.relevo-nombre-fin {
+  white-space: nowrap;
+}
+
+/* El personaje pisa la línea base, justo después del nombre, y crece con él (team-contact.css:37-40). */
+.relevo-avatar {
+  position: relative;
+  display: inline-block;
+  width: 0.62em;
+  height: 0.9em;
+  margin-left: 0.14em;
+  vertical-align: baseline;
+  pointer-events: none;
+}
+
+.relevo-avatar .zh-sprite {
+  --px: calc(1em / 200); /* team-contact.css:40 */
+}
+
+/* Lo que hizo, a 60 px (zh-lectura). Separación de la bio: margin-top 2rem + padding-top 1,4rem (team-contact.css:47). */
+.relevo-hizo {
+  margin-top: 54.4px;
+}

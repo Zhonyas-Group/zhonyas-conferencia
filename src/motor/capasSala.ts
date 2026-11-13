@@ -57,7 +57,8 @@ export function instalarCapasSala(): () => void {
   let previo = obtenerEstado();
   const quitarEstado = suscribirEstado(() => {
     const e = obtenerEstado();
-    const movida = e.indice !== previo.indice || e.paso !== previo.paso || e.negro !== previo.negro;
+    const movida =
+      e.indice !== previo.indice || e.paso !== previo.paso || e.negro !== previo.negro || e.prueba !== previo.prueba;
     previo = e;
     if (movida && e.origen !== idVentana) cerrarCapasPropias();
   });

@@ -1,0 +1,235 @@
+/*
+ * Marca de Zhonyas para el escenario de 1920 × 1080.
+ *
+ * Tokens: los valores son los de investigacion/marca/zhonyas-tokens.css,
+ * copiados tal cual de zhonyas-web (commit f542223, 20-oct-2026), con su
+ * archivo y su línea. Qué significa cada color y dónde va: síntesis §4.1.
+ * Escala de letra: síntesis §4.2. Retícula: síntesis §4.3.
+ *
+ * Reglas que este archivo no puede imponer y hay que cumplir al usarlo:
+ *   - solo Arial (400 y 700) y la mono del sistema, y la mono solo en una consola (A-45, A-50);
+ *   - como mucho tres de los cinco tamaños en una diapositiva (A-49);
+ *   - nada de MAYÚSCULAS de rótulo (A-31), ni texto encima del degradado (A-38 a A-42);
+ *   - ningún hex que no esté aquí (A-34).
+ */
+
+:root {
+  /* ——— Fondos, de más oscuro a más claro ——— */
+  --zh-fondo: #010204; /* globals.css:10 (--background) y theme-color de layout.tsx:15 */
+  --zh-fondo-2: #050609; /* globals.css:92, anillo del degradado radial del fondo */
+  --zh-seccion: #09090d; /* capabilities-section.css:1, fondo de Servicios */
+  --zh-consola: #0b0a10; /* capabilities-section.css:53, cuerpo de la consola */
+  --zh-tarjeta: #141318; /* capabilities-section.css:12, tarjeta de servicio */
+  --zh-tile: #151219; /* project-gallery.css:16 (.category-tile) */
+
+  /* ——— Texto ——— */
+  --zh-texto: #f7f7fa; /* globals.css:11 (--foreground) · 19,41:1 sobre --zh-fondo */
+  --zh-texto-2: #b6b1be; /* capabilities-section.css:9, párrafos · 9,91:1: fuentes, pies y créditos */
+  --zh-rotulo: #c5bccb; /* capabilities-section.css:3 */
+  --zh-linea: #ffffff1f; /* capabilities-section.css:12, borde de 1 px de las tarjetas */
+  --zh-borde-consola: #ffffff24; /* borde de la consola (02 §2.1; síntesis Z-06) */
+
+  /* ——— Firma: el degradado del logo (page.tsx:815-827; el mismo orden en navbar.tsx:119) ——— */
+  --zh-magenta: #ef0bb4; /* page.tsx:823 */
+  --zh-fucsia: #db33dc; /* page.tsx:824 */
+  --zh-orquidea: #bc59ef; /* page.tsx:825 */
+  --zh-violeta: #a975ff; /* page.tsx:826 */
+  /* Una sola definición de las paradas (A-38). Nunca lleva texto encima: el blanco da 3,2–3,8:1. */
+  --zh-firma-paradas: #ef0bb4 0%, #db33dc 43%, #bc59ef 76%, #a975ff 100%;
+  /*
+   * Dirección: la del logo, de (386, 700) a (858, 398) en el lienzo de 1254
+   * (page.tsx:816-821), unos 33° sobre la horizontal, magenta abajo a la
+   * izquierda (síntesis §4.1; 02 §2.3). En CSS, 90° − 32,6° = 57,4°.
+   * zhonyas-tokens.css la escribió a 90° (horizontal); manda la de §4.1.
+   */
+  --zh-firma: linear-gradient(57.4deg, var(--zh-firma-paradas));
+
+  /* ——— Acentos de una tinta ——— */
+  --zh-acento: #d65be9; /* globals.css:2213 (.about-kicker), navbar.tsx:127 */
+  --zh-lila: #d6a2f0; /* team-contact.css:66 · 10,17:1: segunda línea de un titular (nunca una palabra suelta, A-47) */
+
+  /* ——— Acentos de disciplina: solo en texto de 48 px o más (6,46 · 6,60 · 5,94:1) ——— */
+  --zh-disciplina-saas: #d65be9; /* globals.css:729 (--category-accent) */
+  --zh-disciplina-3d: #a975ff; /* globals.css:754 */
+  --zh-disciplina-landings: #8c73ff; /* globals.css:758 */
+
+  /* ——— Los cinco servicios (capabilities-section.tsx:27-59): el único color que no es morado ——— */
+  --zh-software: #d5a3ff; /* 10,4:1 */
+  --zh-videojuegos: #f3a3d5; /* 10,9:1 */
+  --zh-vr: #9dbdff; /* 11,0:1 */
+  --zh-sistemas: #a9dec4; /* 13,8:1 */
+  --zh-ia: #f0c889; /* 13,2:1 */
+
+  /* ——— Consola (capabilities-section.css:56-66) ——— */
+  --zh-punto-rojo: #db7887;
+  --zh-punto-ambar: #dbb772;
+  --zh-punto-verde: #83c9a3;
+  --zh-check: #8ed9af;
+
+  /* ——— Fondo del equipo: portal, una sola vez en la charla (globals.css:236-240) ——— */
+  --zh-fondo-equipo:
+    radial-gradient(circle at 4% 88%, rgba(255, 17, 183, 0.82), transparent 38%),
+    radial-gradient(circle at 92% 78%, rgba(119, 45, 212, 0.9), transparent 43%),
+    radial-gradient(circle at 54% 8%, rgba(222, 32, 190, 0.48), transparent 38%),
+    linear-gradient(135deg, #b90f9e 0%, #7d30ad 55%, #4b238e 100%);
+
+  /* ——— Letra (globals.css:69 y capabilities-section.css:53) ——— */
+  --zh-sans: Arial, Helvetica, 'Liberation Sans', Arimo, sans-serif; /* Liberation Sans y Arimo: misma métrica, por si la laptop es Linux (§4.2) */
+  --zh-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  /* ——— Curvas de la web (02 §5.12) ——— */
+  --zh-salida: cubic-bezier(0.22, 1, 0.36, 1); /* 16 usos en CSS; [0.22, 1, 0.36, 1] en motion */
+  --zh-entrada-salida: cubic-bezier(0.76, 0, 0.24, 1); /* globals.css:1403, cierre de la galería */
+
+  /* ——— Radios ——— */
+  --zh-radio-consola: 14px; /* capabilities-section.css:53 */
+  --zh-radio-tarjeta: 24px; /* capabilities-section.css:12 */
+  --zh-radio-tile: 3px; /* project-gallery.css:15 */
+
+  /* ——— Retícula (síntesis §4.3) ——— */
+  /* El clamp(1.25rem, 6vw, 7.5rem) de .team-stage (globals.css:233) a 1920 px: 6vw = 115,2 px. */
+  --zh-margen: 115px;
+  /* Hueco entre las columnas 1,2 : 0,8 de .capabilities-intro: gap 3rem (capabilities-section.css:5). */
+  --zh-hueco-dividida: 48px;
+}
+
+/* ——— Escala de letra (síntesis §4.2): cinco tamaños en todo el mazo ——— */
+
+/* Todos en Arial y con el interletrado negativo de la web (02 §3.2): es lo que la hace reconocible. */
+.zh-cifra,
+.zh-portadilla,
+.zh-titular,
+.zh-lectura,
+.zh-fuente {
+  font-family: var(--zh-sans);
+  margin: 0;
+}
+
+/* Cifra o palabra protagonista: 240–330 px (22–31 % del alto). «Proyectos», globals.css:701-708. */
+.zh-cifra {
+  font-size: 240px;
+  font-weight: 700;
+  letter-spacing: -0.075em;
+  line-height: 0.84;
+  color: var(--zh-texto);
+}
+
+/* El tope de la escala: 330 px (síntesis §4.2; Stripe ~31 % del alto, 05 §11.2). */
+.zh-cifra--maxima {
+  font-size: 330px;
+}
+
+/* Portadilla de una historia: «Proyectos» a 1920 = clamp(4rem, 9vw, 8rem) = 128 px (globals.css:703). */
+.zh-portadilla {
+  font-size: 128px;
+  font-weight: 700;
+  letter-spacing: -0.075em;
+  line-height: 0.84;
+  color: var(--zh-texto);
+}
+
+/* Titular-oración: ≤ 2 líneas; −0,065 em de «Nosotros» (globals.css:2307). */
+.zh-titular {
+  font-size: 96px;
+  font-weight: 700;
+  letter-spacing: -0.065em;
+  line-height: 1;
+  color: var(--zh-texto);
+  text-wrap: balance; /* A-51: ninguna línea final con una sola palabra */
+}
+
+/* Texto de lectura o rótulo junto a la evidencia: párrafo grande de Nosotros (globals.css:2262-2269; 02 §3.3). */
+.zh-lectura {
+  font-size: 60px;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.24;
+  color: var(--zh-texto);
+}
+
+.zh-lectura--fuerte {
+  font-weight: 700;
+}
+
+/* Fuente, pie o crédito: el mínimo de todo el mazo (01 P0-1; 05 §3.2). */
+.zh-fuente {
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.3;
+  color: var(--zh-texto-2);
+}
+
+/* Segunda línea de un titular, si hace falta (§4.1). Siempre la línea entera, nunca una palabra. */
+.zh-segunda-linea {
+  color: var(--zh-lila);
+}
+
+/* La mono del sistema, solo dentro de una consola de verdad (A-50). */
+.zh-mono {
+  font-family: var(--zh-mono);
+}
+
+/* ——— Retícula de 1920 × 1080 (síntesis §4.3) ——— */
+
+/*
+ * Un solo margen de 115 px por los cuatro lados: el área útil mide 1690 × 850.
+ * El titular empieza en x = 115, y = 115, alineado a la izquierda (A-28, A-29).
+ */
+.zh-reticula {
+  position: absolute;
+  inset: 0;
+  padding: var(--zh-margen);
+  box-sizing: border-box;
+  font-family: var(--zh-sans);
+  color: var(--zh-texto);
+}
+
+/* 1. A sangre: la evidencia ocupa la pantalla y el titular va encima, en el margen. */
+.zh-a-sangre {
+  position: absolute;
+  inset: 0;
+}
+
+.zh-a-sangre > .zh-evidencia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zh-a-sangre > .zh-titular {
+  position: absolute;
+  left: var(--zh-margen);
+  top: var(--zh-margen);
+  max-width: calc(1920px - 2 * var(--zh-margen));
+}
+
+/*
+ * 2. Dividida 1,2 : 0,8, las proporciones de .capability-card y .capabilities-intro
+ * (capabilities-section.css:5 y :12). Con el hueco de 48 px, en 1690 px: 985 : 657.
+ */
+.zh-dividida {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  column-gap: var(--zh-hueco-dividida);
+  height: 100%;
+}
+
+/* 3. Una cifra: a la izquierda, y la fuente a 32 px abajo. */
+.zh-una-cifra {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100%;
+}
+
+/* Solo portada, portadillas y cierre (≤ 20 % de las diapositivas, A-28). */
+.zh-centrada {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  height: 100%;
+}

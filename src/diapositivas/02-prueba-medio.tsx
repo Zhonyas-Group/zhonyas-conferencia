@@ -19,7 +19,7 @@ function PruebaMedio() {
       <Entrada desde={1} className="prueba-medio__video">
         <Video src="medios/prueba/video.webm" poster="medios/prueba/video-poster.webp" />
       </Entrada>
-      <Entrada desde={1} retraso={120} className="prueba-medio__pie">
+      <Entrada desde={1} className="prueba-medio__pie">
         Video WebM de 4 s en bucle. Se congela al salir de la diapositiva y vuelve a empezar al regresar.
       </Entrada>
     </>

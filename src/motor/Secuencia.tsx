@@ -19,6 +19,12 @@
  * o la cuadrícula, o avanzar nada más abrir), la transición espera, como mucho
  * ESPERA_MAXIMA_MEDIOS, a que tenga imágenes pintadas, video y WebGL listos,
  * para que entre completa y no a trozos.
+ *
+ * La transición por defecto es el corte seco (Z-00, transiciones.ts): la capa
+ * nueva queda encima, opaca, en el mismo cuadro.
+ *
+ * Con `estatico` (las vistas del presentador), una diapositiva `pesada` se
+ * pinta como su póster quieto en vez de en vivo (C-02). En las miniaturas, siempre.
  */
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { diapositivas } from '../diapositivas/indice';
@@ -27,7 +33,9 @@ import { cuandoLibre, esPresentador, esRevision, useMenosMovimiento } from './en
 import { pasosDe, total } from './estado';
 import { LimiteError } from './LimiteError';
 import { capaLista, esperarCapa, precargar, prepararCapa } from './medios';
-import { ejecutarTransicion, fundido, limpiarCapa, type Controlador } from './transiciones';
+import { anotarMomento, declararExcepcionA54 } from './momentos';
+import { PosterDiapositiva } from './PosterDiapositiva';
+import { corte, ejecutarTransicion, limpiarCapa, type Controlador } from './transiciones';
 import type { Direccion, ModoVista, RolCapa } from './tipos';
 
 /**
@@ -41,10 +49,26 @@ const ESPERA_MAXIMA_MEDIOS = 800;
 /**
  * Opacidad de la diapositiva que entra mientras se espera a que esté lista. No
  * es 0 a propósito: Chrome no pinta una capa con opacidad 0, y entonces la
- * pintaría (foto incluida) en el primer cuadro del fundido. Con 0,002 ya la
+ * pintaría (foto incluida) en el primer cuadro en que se ve. Con 0,002 ya la
  * pinta y el ojo no la ve (medio nivel de 255 como mucho).
  */
 const OPACIDAD_PREPARANDO = '0.002';
+
+/** Cada cuánto se vuelve a mirar si la diapositiva en pantalla ya está quieta para montar sus vecinas. */
+const ESPERA_QUIETA_MS = 100;
+
+/**
+ * ¿Tiene la capa algo animándose que vaya a terminar? Las animaciones en bucle
+ * (un personaje que camina) no cuentan: si no, las vecinas no se montarían nunca.
+ */
+function animandose(capa: HTMLElement | undefined): boolean {
+  if (!capa) return false;
+  return capa.getAnimations({ subtree: true }).some((a) => {
+    if (a.playState !== 'running') return false;
+    const fin = Number(a.effect?.getComputedTiming().endTime ?? Infinity);
+    return Number.isFinite(fin);
+  });
+}
 
 interface PropsCapa {
   indice: number;
@@ -55,6 +79,8 @@ interface PropsCapa {
   modo: ModoVista;
   silencio: boolean;
   pausada?: boolean;
+  /** Pintar las diapositivas pesadas como su póster (vistas del presentador). */
+  estatico?: boolean;
   registrar?: (indice: number, el: HTMLDivElement | null) => void;
 }
 
@@ -68,9 +94,17 @@ export const Capa = memo(function Capa({
   modo,
   silencio,
   pausada = false,
+  estatico = false,
   registrar,
 }: PropsCapa) {
   const d = diapositivas[indice];
+  // A-54: la excepción se declara al pintar, antes de que sus entradas anoten momentos;
+  // la transición propia cuenta como un momento más.
+  declararExcepcionA54(d.id, d.excepcionA54);
+  useEffect(() => {
+    if (d.transicion && d.transicion !== corte) anotarMomento(d.id, 'transición');
+  }, [d]);
+  const comoPoster = !!d.pesada && (estatico || modo === 'miniatura');
   const datos = useMemo<DatosDiapositiva>(
     () => ({ id: d.id, indice, paso, pasos: d.pasos, activa, direccion, modo, rol, silencio, pausada }),
     [d, indice, paso, activa, direccion, modo, rol, silencio, pausada],
@@ -88,7 +122,11 @@ export const Capa = memo(function Capa({
       <div className="diapositiva" style={d.fondo ? { background: d.fondo } : undefined}>
         <LimiteError id={d.id} titulo={d.titulo} discreto={modo === 'escenario' && !esPresentador}>
           <ContextoDiapositiva.Provider value={datos}>
-            <Componente paso={paso} activa={activa} direccion={direccion} />
+            {comoPoster ? (
+              <PosterDiapositiva diapositiva={d} rotulo={modo !== 'miniatura'} />
+            ) : (
+              <Componente paso={paso} activa={activa} direccion={direccion} />
+            )}
           </ContextoDiapositiva.Provider>
         </LimiteError>
       </div>
@@ -105,6 +143,8 @@ interface PropsSecuencia {
   silencio?: boolean;
   /** Nadie ve la diapositiva actual (negro o cuadrícula encima): ver `pausada` en contexto.tsx. */
   pausada?: boolean;
+  /** Las diapositivas pesadas, como póster quieto (vistas del presentador, C-02). */
+  estatico?: boolean;
 }
 
 interface Transito {
@@ -118,7 +158,15 @@ interface Transito {
   n: number;
 }
 
-export function Secuencia({ indice, paso, direccion, vecinos = true, silencio = false, pausada = false }: PropsSecuencia) {
+export function Secuencia({
+  indice,
+  paso,
+  direccion,
+  vecinos = true,
+  silencio = false,
+  pausada = false,
+  estatico = false,
+}: PropsSecuencia) {
   const reducido = useMenosMovimiento();
   const capas = useRef(new Map<number, HTMLDivElement>());
   const registrar = useCallback((i: number, el: HTMLDivElement | null) => {
@@ -141,7 +189,7 @@ export function Secuencia({ indice, paso, direccion, vecinos = true, silencio = 
     const pasoDe = ultimo.current.indice === transito.a ? ultimo.current.paso : pasosDe(transito.a);
     t = { de: transito.a, pasoDe, a: indice, n: transito.n + 1 };
     setTransito(t);
-    // La que sale se queda montada: al terminar el fundido pasa a vecina oculta
+    // La que sale se queda montada: al terminar la transición pasa a vecina oculta
     // (si lo es: avanzar o retroceder de uno en uno) sin desmontarla y volver a
     // montarla. Las vecinas que sobran se quitan después, con el navegador libre;
     // aquí solo las que quedan a más de dos, para que avanzar muy deprisa no
@@ -183,7 +231,7 @@ export function Secuencia({ indice, paso, direccion, vecinos = true, silencio = 
       if (!vigente) return;
       entra?.style.removeProperty('opacity');
       const posterior = diapositivas[Math.max(transito.a, de)];
-      controladores = ejecutarTransicion(posterior?.transicion ?? fundido, entra, sale, {
+      controladores = ejecutarTransicion(posterior?.transicion ?? corte, entra, sale, {
         direccion: transito.a > de ? 1 : -1,
         reducido,
       });
@@ -242,6 +290,14 @@ export function Secuencia({ indice, paso, direccion, vecinos = true, silencio = 
     tareas.push(() => precargar(diapositivas[a + 2]?.medios));
     let cancelar = () => {};
     const siguiente = () => {
+      // Con el corte seco no hay fundido que esperar, pero sí lo que se anima al
+      // llegar (una entrada con nombre, una consola): montar una vecina en medio
+      // le quitaría cuadros. Se espera a que la diapositiva en pantalla esté quieta.
+      if (animandose(capas.current.get(a))) {
+        const espera = window.setTimeout(() => (cancelar = cuandoLibre(siguiente)), ESPERA_QUIETA_MS);
+        cancelar = () => window.clearTimeout(espera);
+        return;
+      }
       tareas.shift()?.();
       if (tareas.length) cancelar = cuandoLibre(siguiente);
     };
@@ -271,6 +327,7 @@ export function Secuencia({ indice, paso, direccion, vecinos = true, silencio = 
             modo="escenario"
             silencio={silencio}
             pausada={rol === 'actual' && pausada}
+            estatico={estatico}
             registrar={registrar}
           />
         );
@@ -280,10 +337,20 @@ export function Secuencia({ indice, paso, direccion, vecinos = true, silencio = 
 }
 
 /** Una diapositiva quieta en un paso dado (vista previa del presentador, miniaturas, PDF). */
-export function VistaFija({ indice, paso, modo }: { indice: number; paso: number; modo: ModoVista }) {
+export function VistaFija({
+  indice,
+  paso,
+  modo,
+  estatico = false,
+}: {
+  indice: number;
+  paso: number;
+  modo: ModoVista;
+  estatico?: boolean;
+}) {
   return (
     <div className="secuencia">
-      <Capa indice={indice} rol="fija" paso={paso} activa={false} direccion={0} modo={modo} silencio />
+      <Capa indice={indice} rol="fija" paso={paso} activa={false} direccion={0} modo={modo} silencio estatico={estatico} />
     </div>
   );
 }

@@ -47,6 +47,7 @@ export function desvio(nav: EstadoNavegacion, cron: EstadoCronometro, ahora: num
 
 export type Siguiente =
   | { tipo: 'encender'; indice: number; paso: number }
+  | { tipo: 'cerrar-prueba'; indice: number; paso: number }
   | { tipo: 'paso'; indice: number; paso: number }
   | { tipo: 'diapositiva'; indice: number; paso: 0 }
   | { tipo: 'fin' };
@@ -58,6 +59,7 @@ export type Siguiente =
  */
 export function siguienteVista(nav: EstadoNavegacion): Siguiente {
   if (nav.negro) return { tipo: 'encender', indice: nav.indice, paso: nav.paso };
+  if (nav.prueba) return { tipo: 'cerrar-prueba', indice: nav.indice, paso: nav.paso };
   if (nav.paso < pasosDe(nav.indice)) return { tipo: 'paso', indice: nav.indice, paso: nav.paso + 1 };
   if (nav.indice < total - 1) return { tipo: 'diapositiva', indice: nav.indice + 1, paso: 0 };
   return { tipo: 'fin' };

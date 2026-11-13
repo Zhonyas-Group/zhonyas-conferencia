@@ -23,6 +23,12 @@ export interface EstadoNavegacion extends Versionado {
   paso: number;
   /** Pantalla de la sala en negro. */
   negro: boolean;
+  /**
+   * La sala enseña la diapositiva oculta de prueba de sala (tecla T): tamaños
+   * de letra, colores, escalones de negro y bordes, para probar el proyector.
+   * Va fuera del orden: no cuenta como diapositiva ni mueve el cronómetro.
+   */
+  prueba: boolean;
   /** Sentido del último movimiento. */
   direccion: Direccion;
   /**
@@ -83,6 +89,7 @@ function estadoInicial(): EstadoNavegacion {
   return {
     ...pos,
     negro: false,
+    prueba: false,
     direccion: 0,
     ...marcaDelCronometro(),
     version: 0,
@@ -130,7 +137,7 @@ function cambiar(parcial: Partial<EstadoNavegacion>) {
 function adoptar(remoto: EstadoNavegacion) {
   if (!gana(remoto, estado)) return;
   const pos = acotar(remoto.indice, remoto.paso);
-  estado = { ...remoto, ...pos };
+  estado = { ...remoto, prueba: remoto.prueba ?? false, ...pos };
   escribirHash(estado);
   avisar();
 }
@@ -165,9 +172,12 @@ escribirHash(estado);
 export function avanzar() {
   if (estado.negro) {
     cambiar({ negro: false });
-    iniciarCronometroSiHaceFalta();
+    // Encender una sala que enseña la prueba de sala no es empezar la charla.
+    if (!estado.prueba) iniciarCronometroSiHaceFalta();
     return;
   }
+  // Con la prueba de sala abierta, avanzar solo la cierra (sin moverse ni arrancar el cronómetro).
+  if (estado.prueba) return cambiar({ prueba: false });
   if (estado.paso < pasosDe(estado.indice)) {
     cambiar({ paso: estado.paso + 1, direccion: 1 });
   } else if (estado.indice < total - 1) {
@@ -181,6 +191,7 @@ export function avanzar() {
 /** Paso anterior; desde el paso 0, la diapositiva anterior ya completa. */
 export function retroceder() {
   if (estado.negro) return cambiar({ negro: false });
+  if (estado.prueba) return cambiar({ prueba: false });
   if (estado.paso > 0) {
     cambiar({ paso: estado.paso - 1, direccion: -1 });
   } else if (estado.indice > 0) {
@@ -192,10 +203,10 @@ export function retroceder() {
 /** Salto directo (índice desde 0). */
 export function ir(indice: number, paso = 0) {
   const pos = acotar(indice, paso);
-  if (pos.indice === estado.indice && pos.paso === estado.paso && !estado.negro) return;
+  if (pos.indice === estado.indice && pos.paso === estado.paso && !estado.negro && !estado.prueba) return;
   const direccion: Direccion =
     pos.indice === estado.indice ? (pos.paso > estado.paso ? 1 : -1) : 0;
-  cambiar({ ...pos, negro: false, direccion });
+  cambiar({ ...pos, negro: false, prueba: false, direccion });
 }
 
 /**
@@ -222,4 +233,11 @@ export function irAlFinal() {
 
 export function alternarNegro(forzar?: boolean) {
   cambiar({ negro: forzar ?? !estado.negro });
+}
+
+/** Abre o cierra la diapositiva oculta de prueba de sala (tecla T). */
+export function alternarPruebaSala(forzar?: boolean) {
+  const prueba = forzar ?? !estado.prueba;
+  if (prueba === estado.prueba) return;
+  cambiar({ prueba });
 }

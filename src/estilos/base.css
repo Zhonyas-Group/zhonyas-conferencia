@@ -1,23 +1,21 @@
 /*
- * Tokens y base. Valores provisionales tomados de la web de Zhonyas
- * (fondo #010204, texto #f7f7fa); la marca completa se aplicará después.
+ * Base del motor. Los colores y la letra salen de la marca (marca.css, que
+ * se carga antes); aquí solo se les da el nombre que usa el motor.
  */
 :root {
-  --fuente-titulo: 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --fuente-texto: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --fuente-mono: 'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  /* Arial y la mono del sistema, nada más (síntesis §4.2; A-45, A-50). */
+  --fuente-titulo: var(--zh-sans);
+  --fuente-texto: var(--zh-sans);
+  --fuente-mono: var(--zh-mono);
 
-  --fondo: #010204;
-  --tinta: #f7f7fa;
+  --fondo: var(--zh-fondo);
+  --tinta: var(--zh-texto);
+
+  /* Solo para la interfaz del motor (cuadrícula, ayuda, «Ir a»), no para las diapositivas. */
   --tinta-suave: rgb(247 247 250 / 0.66);
   --tinta-tenue: rgb(247 247 250 / 0.38);
   --linea: rgb(247 247 250 / 0.14);
   --acento: #7cc4ff;
-
-  /* Movimiento base del motor (las animaciones de marca vendrán de la web). */
-  --curva-salida: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur-entrada: 520ms;
-  --entrada-desplazamiento: 28px;
 
   color-scheme: dark;
 }

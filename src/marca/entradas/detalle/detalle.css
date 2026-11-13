@@ -1,0 +1,21 @@
+/*
+ * Z-08 · La capa del detalle: a pantalla completa, como .service-experience
+ * (globals.css:1379-1388: position: fixed; inset: 0; overflow: hidden).
+ * En el escenario, absoluta sobre los 1920 × 1080 de la diapositiva.
+ */
+.zh-detalle {
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* encima del resto de la diapositiva */
+  overflow: hidden; /* globals.css:1385 */
+  background: var(--zh-fondo); /* la web: #030305 (globals.css:1386), sin token; --zh-fondo (#010204) */
+  /* La escala 0,985 → 1 parte del centro, como en la web (transform-origin por defecto). */
+}
+
+/* Un medio que llena el detalle, entero y sin recortar. */
+.zh-detalle__medio {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

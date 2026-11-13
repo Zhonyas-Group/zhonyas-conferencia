@@ -1,0 +1,1004 @@
+{
+  "angel": {
+    "src": "/sprites/atlas/angel.webp",
+    "width": 404,
+    "height": 2883,
+    "animations": {
+      "idle": {
+        "y": 0,
+        "w": 82,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 42,
+        "ay": 178
+      },
+      "front": {
+        "y": 181,
+        "w": 83,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 41,
+        "ay": 179
+      },
+      "walk": {
+        "y": 362,
+        "w": 101,
+        "h": 184,
+        "frames": 4,
+        "fps": 8,
+        "loop": true,
+        "ax": 53,
+        "ay": 179
+      },
+      "run": {
+        "y": 546,
+        "w": 134,
+        "h": 183,
+        "frames": 3,
+        "fps": 12,
+        "loop": true,
+        "ax": 91,
+        "ay": 179
+      },
+      "wave": {
+        "y": 729,
+        "w": 107,
+        "h": 181,
+        "frames": 3,
+        "fps": 6,
+        "loop": true,
+        "ax": 41,
+        "ay": 179
+      },
+      "type": {
+        "y": 910,
+        "w": 138,
+        "h": 171,
+        "frames": 2,
+        "fps": 4,
+        "loop": true,
+        "ax": 44,
+        "ay": 169
+      },
+      "draw": {
+        "y": 1081,
+        "w": 141,
+        "h": 179,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 40,
+        "ay": 177
+      },
+      "vr": {
+        "y": 1260,
+        "w": 126,
+        "h": 180,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 43,
+        "ay": 178
+      },
+      "grabbed": {
+        "y": 1440,
+        "w": 150,
+        "h": 174,
+        "frames": 2,
+        "fps": 6,
+        "loop": true,
+        "ax": 77,
+        "ay": 172
+      },
+      "nervous": {
+        "y": 1614,
+        "w": 115,
+        "h": 178,
+        "frames": 2,
+        "fps": 8,
+        "loop": true,
+        "ax": 41,
+        "ay": 176
+      },
+      "fall": {
+        "y": 1792,
+        "w": 160,
+        "h": 167,
+        "frames": 2,
+        "fps": 6,
+        "loop": false,
+        "ax": 83,
+        "ay": 165
+      },
+      "think": {
+        "y": 1959,
+        "w": 83,
+        "h": 176,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 43,
+        "ay": 174
+      },
+      "laugh": {
+        "y": 2135,
+        "w": 90,
+        "h": 185,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 48,
+        "ay": 183
+      },
+      "phone": {
+        "y": 2320,
+        "w": 97,
+        "h": 179,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 45,
+        "ay": 177
+      },
+      "celebrate": {
+        "y": 2499,
+        "w": 156,
+        "h": 200,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 79,
+        "ay": 196
+      },
+      "leave": {
+        "y": 2699,
+        "w": 80,
+        "h": 184,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 40,
+        "ay": 182
+      }
+    }
+  },
+  "cristopher": {
+    "src": "/sprites/atlas/cristopher.webp",
+    "width": 504,
+    "height": 2862,
+    "animations": {
+      "idle": {
+        "y": 0,
+        "w": 91,
+        "h": 183,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 46,
+        "ay": 181
+      },
+      "front": {
+        "y": 183,
+        "w": 93,
+        "h": 182,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 46,
+        "ay": 178
+      },
+      "walk": {
+        "y": 365,
+        "w": 103,
+        "h": 181,
+        "frames": 4,
+        "fps": 8,
+        "loop": true,
+        "ax": 57,
+        "ay": 179
+      },
+      "run": {
+        "y": 546,
+        "w": 126,
+        "h": 185,
+        "frames": 4,
+        "fps": 12,
+        "loop": true,
+        "ax": 79,
+        "ay": 180
+      },
+      "wave": {
+        "y": 731,
+        "w": 111,
+        "h": 179,
+        "frames": 3,
+        "fps": 6,
+        "loop": true,
+        "ax": 48,
+        "ay": 177
+      },
+      "type": {
+        "y": 910,
+        "w": 147,
+        "h": 162,
+        "frames": 2,
+        "fps": 4,
+        "loop": true,
+        "ax": 49,
+        "ay": 160
+      },
+      "draw": {
+        "y": 1072,
+        "w": 159,
+        "h": 174,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 42,
+        "ay": 172
+      },
+      "vr": {
+        "y": 1246,
+        "w": 115,
+        "h": 180,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 50,
+        "ay": 178
+      },
+      "grabbed": {
+        "y": 1426,
+        "w": 142,
+        "h": 181,
+        "frames": 2,
+        "fps": 6,
+        "loop": true,
+        "ax": 67,
+        "ay": 179
+      },
+      "nervous": {
+        "y": 1607,
+        "w": 120,
+        "h": 176,
+        "frames": 2,
+        "fps": 8,
+        "loop": true,
+        "ax": 51,
+        "ay": 174
+      },
+      "fall": {
+        "y": 1783,
+        "w": 169,
+        "h": 158,
+        "frames": 2,
+        "fps": 6,
+        "loop": false,
+        "ax": 85,
+        "ay": 156
+      },
+      "think": {
+        "y": 1941,
+        "w": 89,
+        "h": 186,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 44,
+        "ay": 183
+      },
+      "laugh": {
+        "y": 2127,
+        "w": 112,
+        "h": 189,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 46,
+        "ay": 185
+      },
+      "phone": {
+        "y": 2316,
+        "w": 99,
+        "h": 179,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 49,
+        "ay": 176
+      },
+      "celebrate": {
+        "y": 2495,
+        "w": 137,
+        "h": 186,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 68,
+        "ay": 183
+      },
+      "leave": {
+        "y": 2681,
+        "w": 91,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 46,
+        "ay": 179
+      }
+    }
+  },
+  "gregory": {
+    "src": "/sprites/atlas/gregory.webp",
+    "width": 496,
+    "height": 2819,
+    "animations": {
+      "idle": {
+        "y": 0,
+        "w": 84,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 43,
+        "ay": 178
+      },
+      "front": {
+        "y": 181,
+        "w": 83,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 41,
+        "ay": 178
+      },
+      "walk": {
+        "y": 362,
+        "w": 108,
+        "h": 179,
+        "frames": 4,
+        "fps": 8,
+        "loop": true,
+        "ax": 59,
+        "ay": 176
+      },
+      "run": {
+        "y": 541,
+        "w": 124,
+        "h": 179,
+        "frames": 4,
+        "fps": 12,
+        "loop": true,
+        "ax": 82,
+        "ay": 176
+      },
+      "wave": {
+        "y": 720,
+        "w": 100,
+        "h": 178,
+        "frames": 3,
+        "fps": 6,
+        "loop": true,
+        "ax": 58,
+        "ay": 176
+      },
+      "type": {
+        "y": 898,
+        "w": 154,
+        "h": 171,
+        "frames": 2,
+        "fps": 4,
+        "loop": true,
+        "ax": 54,
+        "ay": 169
+      },
+      "draw": {
+        "y": 1069,
+        "w": 147,
+        "h": 172,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 41,
+        "ay": 170
+      },
+      "vr": {
+        "y": 1241,
+        "w": 125,
+        "h": 180,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 51,
+        "ay": 178
+      },
+      "grabbed": {
+        "y": 1421,
+        "w": 132,
+        "h": 177,
+        "frames": 2,
+        "fps": 6,
+        "loop": true,
+        "ax": 68,
+        "ay": 175
+      },
+      "nervous": {
+        "y": 1598,
+        "w": 144,
+        "h": 168,
+        "frames": 2,
+        "fps": 8,
+        "loop": true,
+        "ax": 52,
+        "ay": 166
+      },
+      "fall": {
+        "y": 1766,
+        "w": 168,
+        "h": 160,
+        "frames": 2,
+        "fps": 6,
+        "loop": false,
+        "ax": 78,
+        "ay": 158
+      },
+      "think": {
+        "y": 1926,
+        "w": 85,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 41,
+        "ay": 179
+      },
+      "laugh": {
+        "y": 2107,
+        "w": 111,
+        "h": 180,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 45,
+        "ay": 177
+      },
+      "phone": {
+        "y": 2287,
+        "w": 95,
+        "h": 172,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 43,
+        "ay": 170
+      },
+      "celebrate": {
+        "y": 2459,
+        "w": 135,
+        "h": 180,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 66,
+        "ay": 178
+      },
+      "leave": {
+        "y": 2639,
+        "w": 85,
+        "h": 180,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 45,
+        "ay": 178
+      }
+    }
+  },
+  "jose-carlos": {
+    "src": "/sprites/atlas/jose-carlos.webp",
+    "width": 496,
+    "height": 2878,
+    "animations": {
+      "idle": {
+        "y": 0,
+        "w": 80,
+        "h": 183,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 42,
+        "ay": 180
+      },
+      "front": {
+        "y": 183,
+        "w": 78,
+        "h": 183,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 40,
+        "ay": 180
+      },
+      "walk": {
+        "y": 366,
+        "w": 114,
+        "h": 187,
+        "frames": 4,
+        "fps": 8,
+        "loop": true,
+        "ax": 66,
+        "ay": 183
+      },
+      "run": {
+        "y": 553,
+        "w": 124,
+        "h": 183,
+        "frames": 4,
+        "fps": 12,
+        "loop": true,
+        "ax": 85,
+        "ay": 178
+      },
+      "wave": {
+        "y": 736,
+        "w": 109,
+        "h": 183,
+        "frames": 3,
+        "fps": 6,
+        "loop": true,
+        "ax": 71,
+        "ay": 181
+      },
+      "type": {
+        "y": 919,
+        "w": 142,
+        "h": 165,
+        "frames": 2,
+        "fps": 4,
+        "loop": true,
+        "ax": 43,
+        "ay": 163
+      },
+      "draw": {
+        "y": 1084,
+        "w": 142,
+        "h": 168,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 39,
+        "ay": 166
+      },
+      "vr": {
+        "y": 1252,
+        "w": 114,
+        "h": 180,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 42,
+        "ay": 178
+      },
+      "grabbed": {
+        "y": 1432,
+        "w": 141,
+        "h": 179,
+        "frames": 2,
+        "fps": 6,
+        "loop": true,
+        "ax": 68,
+        "ay": 177
+      },
+      "nervous": {
+        "y": 1611,
+        "w": 116,
+        "h": 186,
+        "frames": 2,
+        "fps": 8,
+        "loop": true,
+        "ax": 44,
+        "ay": 184
+      },
+      "fall": {
+        "y": 1797,
+        "w": 164,
+        "h": 183,
+        "frames": 2,
+        "fps": 6,
+        "loop": false,
+        "ax": 79,
+        "ay": 181
+      },
+      "think": {
+        "y": 1980,
+        "w": 82,
+        "h": 185,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 43,
+        "ay": 182
+      },
+      "laugh": {
+        "y": 2165,
+        "w": 109,
+        "h": 175,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 41,
+        "ay": 173
+      },
+      "phone": {
+        "y": 2340,
+        "w": 90,
+        "h": 174,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 42,
+        "ay": 172
+      },
+      "celebrate": {
+        "y": 2514,
+        "w": 145,
+        "h": 183,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 71,
+        "ay": 181
+      },
+      "leave": {
+        "y": 2697,
+        "w": 85,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 48,
+        "ay": 178
+      }
+    }
+  },
+  "jose-leonardo": {
+    "src": "/sprites/atlas/jose-leonardo.webp",
+    "width": 504,
+    "height": 2844,
+    "animations": {
+      "idle": {
+        "y": 0,
+        "w": 78,
+        "h": 182,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 41,
+        "ay": 179
+      },
+      "front": {
+        "y": 182,
+        "w": 80,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 41,
+        "ay": 178
+      },
+      "walk": {
+        "y": 363,
+        "w": 106,
+        "h": 180,
+        "frames": 4,
+        "fps": 8,
+        "loop": true,
+        "ax": 59,
+        "ay": 177
+      },
+      "run": {
+        "y": 543,
+        "w": 126,
+        "h": 177,
+        "frames": 4,
+        "fps": 12,
+        "loop": true,
+        "ax": 82,
+        "ay": 175
+      },
+      "wave": {
+        "y": 720,
+        "w": 111,
+        "h": 189,
+        "frames": 3,
+        "fps": 6,
+        "loop": true,
+        "ax": 47,
+        "ay": 187
+      },
+      "type": {
+        "y": 909,
+        "w": 155,
+        "h": 159,
+        "frames": 2,
+        "fps": 4,
+        "loop": true,
+        "ax": 48,
+        "ay": 157
+      },
+      "draw": {
+        "y": 1068,
+        "w": 140,
+        "h": 171,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 39,
+        "ay": 169
+      },
+      "vr": {
+        "y": 1239,
+        "w": 126,
+        "h": 180,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 41,
+        "ay": 178
+      },
+      "grabbed": {
+        "y": 1419,
+        "w": 139,
+        "h": 185,
+        "frames": 2,
+        "fps": 6,
+        "loop": true,
+        "ax": 67,
+        "ay": 183
+      },
+      "nervous": {
+        "y": 1604,
+        "w": 115,
+        "h": 185,
+        "frames": 2,
+        "fps": 8,
+        "loop": true,
+        "ax": 43,
+        "ay": 183
+      },
+      "fall": {
+        "y": 1789,
+        "w": 154,
+        "h": 164,
+        "frames": 2,
+        "fps": 6,
+        "loop": false,
+        "ax": 71,
+        "ay": 162
+      },
+      "think": {
+        "y": 1953,
+        "w": 80,
+        "h": 182,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 41,
+        "ay": 179
+      },
+      "laugh": {
+        "y": 2135,
+        "w": 108,
+        "h": 178,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 44,
+        "ay": 175
+      },
+      "phone": {
+        "y": 2313,
+        "w": 91,
+        "h": 175,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 40,
+        "ay": 171
+      },
+      "celebrate": {
+        "y": 2488,
+        "w": 136,
+        "h": 177,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 67,
+        "ay": 175
+      },
+      "leave": {
+        "y": 2665,
+        "w": 84,
+        "h": 179,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 43,
+        "ay": 176
+      }
+    }
+  },
+  "steven": {
+    "src": "/sprites/atlas/steven.webp",
+    "width": 508,
+    "height": 2825,
+    "animations": {
+      "idle": {
+        "y": 0,
+        "w": 75,
+        "h": 181,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 38,
+        "ay": 179
+      },
+      "front": {
+        "y": 181,
+        "w": 77,
+        "h": 180,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 39,
+        "ay": 178
+      },
+      "walk": {
+        "y": 361,
+        "w": 117,
+        "h": 176,
+        "frames": 3,
+        "fps": 8,
+        "loop": true,
+        "ax": 71,
+        "ay": 174
+      },
+      "run": {
+        "y": 537,
+        "w": 127,
+        "h": 174,
+        "frames": 4,
+        "fps": 12,
+        "loop": true,
+        "ax": 85,
+        "ay": 172
+      },
+      "wave": {
+        "y": 711,
+        "w": 107,
+        "h": 175,
+        "frames": 3,
+        "fps": 6,
+        "loop": true,
+        "ax": 40,
+        "ay": 173
+      },
+      "type": {
+        "y": 886,
+        "w": 150,
+        "h": 172,
+        "frames": 2,
+        "fps": 4,
+        "loop": true,
+        "ax": 51,
+        "ay": 170
+      },
+      "draw": {
+        "y": 1058,
+        "w": 147,
+        "h": 178,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 41,
+        "ay": 176
+      },
+      "vr": {
+        "y": 1236,
+        "w": 123,
+        "h": 180,
+        "frames": 2,
+        "fps": 3,
+        "loop": true,
+        "ax": 47,
+        "ay": 178
+      },
+      "grabbed": {
+        "y": 1416,
+        "w": 152,
+        "h": 186,
+        "frames": 2,
+        "fps": 6,
+        "loop": true,
+        "ax": 74,
+        "ay": 184
+      },
+      "nervous": {
+        "y": 1602,
+        "w": 118,
+        "h": 195,
+        "frames": 2,
+        "fps": 8,
+        "loop": true,
+        "ax": 44,
+        "ay": 193
+      },
+      "fall": {
+        "y": 1797,
+        "w": 166,
+        "h": 167,
+        "frames": 2,
+        "fps": 6,
+        "loop": false,
+        "ax": 78,
+        "ay": 165
+      },
+      "think": {
+        "y": 1964,
+        "w": 78,
+        "h": 176,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 39,
+        "ay": 174
+      },
+      "laugh": {
+        "y": 2140,
+        "w": 80,
+        "h": 170,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 38,
+        "ay": 168
+      },
+      "phone": {
+        "y": 2310,
+        "w": 90,
+        "h": 167,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 39,
+        "ay": 165
+      },
+      "celebrate": {
+        "y": 2477,
+        "w": 142,
+        "h": 176,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 73,
+        "ay": 174
+      },
+      "leave": {
+        "y": 2653,
+        "w": 82,
+        "h": 172,
+        "frames": 1,
+        "fps": 1,
+        "loop": true,
+        "ax": 46,
+        "ay": 170
+      }
+    }
+  }
+}

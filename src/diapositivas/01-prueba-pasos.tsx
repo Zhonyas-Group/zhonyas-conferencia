@@ -1,18 +1,22 @@
 /**
- * PRUEBA del motor: varios pasos («builds»). Se borra cuando haya diapositivas reales.
+ * PRUEBA del motor: varios pasos («builds»), notas por paso y un dato del
+ * registro. Se borra cuando haya diapositivas reales.
  */
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
+import { Dato } from '../motor/Dato';
 import { Entrada } from '../motor/Entrada';
 import './prueba.css';
 
-const PUNTOS = ['Primer paso: entra con fundido', 'Segundo: con un retraso escalonado', 'Tercero: y el último paso'];
+const PUNTOS = ['Primer paso: aparece de golpe', 'Segundo: sin animación propia', 'Tercero: y el último paso'];
 
 function PruebaPasos({ paso }: PropsDiapositiva) {
   return (
     <div className="prueba">
       <span className="prueba__sello">PRUEBA</span>
       <h1 className="prueba__titulo">Pasos dentro de una diapositiva</h1>
-      <p className="prueba__bajada">Cada avance muestra una línea. Al retroceder se ocultan en orden inverso.</p>
+      <p className="prueba__bajada">
+        Cada avance muestra una línea. Dato del registro: <Dato id="gem-actividad-emprendedora" />.
+      </p>
       <ol className="prueba__lista">
         {PUNTOS.map((texto, i) => (
           <Entrada key={texto} como="li" desde={i + 1} className="prueba__item">
@@ -36,14 +40,16 @@ export default definirDiapositiva({
   pasos: 3,
   orador: 'jose',
   duracion: 40,
-  notas: `
-    Diapositiva de **prueba** del motor: tiene 3 pasos.
-
-    - Paso 1: aparece la primera línea.
-    - Paso 2: la segunda.
-    - Paso 3: la tercera; el siguiente avance pasa a la diapositiva 2.
-
-    Retroceder desde la diapositiva 2 vuelve aquí con todo mostrado.
-  `,
+  notas: [
+    { decir: 'Esta es la diapositiva de prueba del motor, con tres pasos.', claves: 'prueba · tres pasos' },
+    { decir: 'Primer paso de la prueba: aparece la primera línea.', claves: 'primera línea' },
+    { decir: 'Segundo paso de la prueba: aparece la segunda.', claves: 'segunda línea' },
+    {
+      decir: 'Tercer paso de la prueba: el siguiente avance pasa a la diapositiva 2.',
+      claves: 'última · sigue la 2',
+      siFalla: 'Si no avanza, número 2 + Intro.',
+    },
+  ],
+  fuentes: ['Texto de prueba del motor (docs/MOTOR.md §5).'],
   Componente: PruebaPasos,
 });

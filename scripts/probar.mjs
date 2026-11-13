@@ -18,11 +18,18 @@ import { crearServidor } from './servir.mjs';
 import { AVISO_SIN_PDF, hayPdf } from './respaldo.mjs';
 
 const raiz = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const salida = resolve(raiz, 'verificacion', 'pruebas');
-const indiceCanal = process.argv.indexOf('--canal');
-const canal = indiceCanal > 0 ? process.argv[indiceCanal + 1] : process.env.CANAL_NAVEGADOR ?? 'chrome';
+const argumento = (nombre) => {
+  const i = process.argv.indexOf(nombre);
+  return i > 0 ? process.argv[i + 1] : undefined;
+};
+const canal = argumento('--canal') ?? process.env.CANAL_NAVEGADOR ?? 'chrome';
 process.env.CANAL_NAVEGADOR = canal;
-const URL_ARCHIVO = pathToFileURL(resolve(raiz, 'dist', 'index.html')).href;
+// --dist otra/carpeta prueba otra compilación (p. ej. «npx vite build --outDir …» de una pieza)
+// sin tocar dist/; --salida cambia dónde quedan las capturas y el resultado.
+const DIST = resolve(argumento('--dist') ?? process.env.DIST_PRUEBA ?? resolve(raiz, 'dist'));
+const salida = resolve(argumento('--salida') ?? resolve(raiz, 'verificacion', 'pruebas'));
+const URL_ARCHIVO = pathToFileURL(resolve(DIST, 'index.html')).href;
+const esDistPropio = DIST === resolve(raiz, 'dist');
 
 await mkdir(salida, { recursive: true });
 
@@ -81,7 +88,7 @@ async function tecla(pagina, nombre, esperado, etiqueta) {
 
 const pausa = (ms) => new Promise((r) => setTimeout(r, ms));
 
-console.log(`\nProbando dist/ con ${canal}\n`);
+console.log(`\nProbando ${esDistPropio ? 'dist/' : DIST} con ${canal}\n`);
 const navegador = await abrirNavegador();
 
 // ——— 1. Escalado ———
@@ -423,7 +430,7 @@ console.log('\nCopia de dist/ en una carpeta con espacios y acentos');
 {
   const copia = resolve(salida, 'USB de prueba', 'Presentación Zhonyas (copia ñ)');
   await rm(resolve(salida, 'USB de prueba'), { recursive: true, force: true });
-  await cp(resolve(raiz, 'dist'), copia, { recursive: true });
+  await cp(DIST, copia, { recursive: true });
   const ctx = await navegador.newContext({ viewport: { width: 1280, height: 720 } });
   const p = await ctx.newPage();
   vigilar(p, 'copia usb');
@@ -445,7 +452,7 @@ console.log('\nCopia de dist/ en una carpeta con espacios y acentos');
 // ——— 6. Servidor estático ———
 console.log('\nServidor estático (npm run servir)');
 {
-  const servidor = crearServidor(resolve(raiz, 'dist'));
+  const servidor = crearServidor(DIST);
   await new Promise((r) => servidor.listen(0, '127.0.0.1', r));
   const puerto = servidor.address().port;
   const ctx = await navegador.newContext({ viewport: { width: 1280, height: 720 } });
@@ -476,7 +483,12 @@ console.log('\nServidor estático (npm run servir)');
 //     se avisa y no se cuenta como fallo: no mediría el motor sino el ahorro.
 //  b) Sin tope de fotogramas (sin vsync): cada intervalo es lo que de verdad cuesta
 //     producir un cuadro; da el margen que queda por encima de 60 fps.
-async function medirFluidez(navegadorUsado, ralentizar) {
+//     Con la pantalla quieta, Chrome vuelve a cuadros de 16,7 ms aunque no tenga tope
+//     (no hay nada que pintar), y esos cuadros de reposo no son trabajo: con el corte
+//     seco (Z-00) casi toda la ventana es reposo y salían como «p95 16,9 ms». Por eso
+//     aquí un píxel testigo (1 × 1, del color del fondo ±1) cambia en cada cuadro: el
+//     navegador sigue sin tope y cada intervalo vuelve a medir lo que cuesta el cuadro.
+async function medirFluidez(navegadorUsado, ralentizar, { testigo = false } = {}) {
   const ctx = await navegadorUsado.newContext({ viewport: { width: 1920, height: 1080 } });
   const p = await ctx.newPage();
   vigilar(p, `fluidez ${ralentizar}x`);
@@ -491,17 +503,26 @@ async function medirFluidez(navegadorUsado, ralentizar) {
   const intervalos = [];
   const recorrido = [...Array(6).fill('ArrowRight'), ...Array(6).fill('ArrowLeft')];
   for (const teclaNav of recorrido) {
-    await p.evaluate(() => {
+    await p.evaluate((conTestigo) => {
       window.__intervalos = [];
       window.__midiendo = true;
       let ultimo = 0;
+      let pixel = null;
+      if (conTestigo) {
+        pixel = document.getElementById('testigo-fluidez') ?? document.createElement('div');
+        pixel.id = 'testigo-fluidez';
+        pixel.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:1px;z-index:99;pointer-events:none';
+        document.body.appendChild(pixel);
+      }
+      let par = false;
       const cuadro = (t) => {
         if (ultimo) window.__intervalos.push(t - ultimo);
         ultimo = t;
+        if (pixel) pixel.style.background = (par = !par) ? 'rgb(1, 2, 4)' : 'rgb(1, 2, 5)';
         if (window.__midiendo) requestAnimationFrame(cuadro);
       };
       requestAnimationFrame(cuadro);
-    });
+    }, testigo);
     await p.keyboard.press(teclaNav);
     await pausa(600);
     intervalos.push(
@@ -564,7 +585,7 @@ console.log('\nFluidez al avanzar (12 cambios por toda la presentación)');
     informar('CPU 4 veces más lenta (portátil modesto), orientativo', describir(lento));
   }
   const navegadorLibre = await abrirNavegador({ args: ['--disable-frame-rate-limit', '--disable-gpu-vsync'] });
-  const libre = await medirFluidez(navegadorLibre, 1);
+  const libre = await medirFluidez(navegadorLibre, 1, { testigo: true });
   comprobar(
     'Margen sin vsync: el 95 % de los cuadros cuesta menos de 16,7 ms',
     libre.p95 < 16.7,
@@ -586,4 +607,4 @@ if (fallos.length) {
   for (const f of fallos) console.log(`  - ${f.nombre}${f.detalle ? ` (${f.detalle})` : ''}`);
   process.exitCode = 1;
 }
-if (!(await hayPdf())) console.log(`\n${AVISO_SIN_PDF}`);
+if (esDistPropio && !(await hayPdf())) console.log(`\n${AVISO_SIN_PDF}`);

@@ -1,0 +1,100 @@
+/*
+ * Demo en vivo de Lendex (DemoLendex.tsx). Sin movimiento propio: lo que se
+ * mueve es Lendex (Z-12) y el cambio a video es un corte (Z-00).
+ * Solo tokens de marca.css: los colores de Lendex van dentro de su iframe y de su video (§4.1, A-35).
+ */
+.lendex-demo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--zh-fondo);
+}
+
+/*
+ * 960×540 px CSS escalado ×2 = 1920×1080: Lendex se maqueta en su versión de
+ * pantalla estrecha (< 1024 px, la calculadora a pantalla completa) y su letra
+ * de 12 px sale a 24 px. Chrome pinta el contenido del iframe a la escala final
+ * (nítido; comprobado en captura a 1920×1080 el 12-nov).
+ */
+.lendex-demo__marco {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 960px;
+  height: 540px;
+  border: 0;
+  display: block;
+  transform-origin: 0 0;
+  transform: scale(2);
+  background: transparent;
+}
+
+.lendex-demo[data-modo='video'] .lendex-demo__marco {
+  visibility: hidden;
+}
+
+/* Video y póster: 1920×1080, a sangre (§4.3). */
+.lendex-demo__lleno {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/*
+ * Franjas transparentes a los lados, encima de la calculadora: al pasar el
+ * ratón por ellas la sala recupera el teclado. 64 px: en la pantalla de entrar
+ * de Lendex el botón de tema empieza en x = 1776 (888 px CSS × 2) y la tarjeta
+ * de la calculadora en x = 288, así que ninguna tapa nada que se pulse.
+ */
+.lendex-demo__borde {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 64px;
+  z-index: 2;
+}
+
+.lendex-demo__borde[data-lado='izquierda'] {
+  left: 0;
+}
+
+.lendex-demo__borde[data-lado='derecha'] {
+  right: 0;
+}
+
+/* Recibe el foco un instante para sacarlo del iframe; no se ve. */
+.lendex-demo__ancla {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  outline: none;
+}
+
+/*
+ * Solo en la ventana del presentador (sobre «En pantalla»): qué ve la sala.
+ * Arial 700 a 60 px (escala de lectura, §4.2). Arriba, en la franja libre del
+ * póster (la tarjeta de la calculadora empieza en y = 136 y la X en x = 1552),
+ * para no tapar la cuota.
+ */
+.lendex-demo__aviso {
+  position: absolute;
+  left: var(--zh-margen);
+  top: 16px;
+  margin: 0;
+  padding: 16px 28px;
+  max-width: 1420px; /* hasta antes de la X de Lendex (x = 1552) */
+  font-family: var(--zh-sans);
+  font-weight: 700;
+  font-size: 60px;
+  line-height: 1.24;
+  letter-spacing: -0.035em;
+  color: var(--zh-texto);
+  background: var(--zh-tarjeta);
+  border: 1px solid var(--zh-linea);
+  border-radius: var(--zh-radio-consola);
+}

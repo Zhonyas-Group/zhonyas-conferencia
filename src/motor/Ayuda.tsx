@@ -7,6 +7,7 @@ const TECLAS: Array<[string, string]> = [
   ['número + Intro', 'Saltar a esa diapositiva'],
   ['G', 'Cuadrícula de diapositivas'],
   ['B  o  .', 'Pantalla en negro'],
+  ['T', 'Prueba de sala (tamaños, colores, negros y bordes)'],
   ['F  o  F5', 'Pantalla completa'],
   ['Esc', 'Cerrar esto; sin nada abierto, salir de pantalla completa'],
   ['P', 'Abrir la ventana del presentador'],

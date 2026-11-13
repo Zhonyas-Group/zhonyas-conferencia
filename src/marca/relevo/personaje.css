@@ -1,0 +1,110 @@
+/*
+ * Z-11 · Personaje de píxeles. Copia de zhonyas-web/components/sprite-character.css
+ * (cada regla dice su línea). Una fila del atlas por animación, cuadro a cuadro,
+ * sin JavaScript: background-position con steps(cuadros, end) y duración
+ * cuadros / fps (sprite-character.tsx:12). (--ax, --ay) es el punto que pisa el suelo.
+ *
+ * Lo único añadido es para el motor, no para el movimiento:
+ *   - [data-detenido]: sin animación, como el modo «menos movimiento» de la web
+ *     (sprite-character.css:23-24). Se usa mientras su <Entrada> está oculta
+ *     (así el saludo empieza en el instante en que aparece, como en la web, que
+ *     lo monta al hacer clic) y en las vistas previas.
+ *   - [data-pausado]: congelado donde va mientras nadie ve la diapositiva (sala
+ *     en negro, cuadrícula o prueba de sala encima; MOTOR §4.3).
+ */
+
+.zh-sprite {
+  --px: calc(var(--s) * 1px); /* sprite-character.css:3 (el componente siempre pone --s) */
+  position: absolute; /* :4 */
+  left: calc(50% - var(--ax) * var(--px)); /* :4 */
+  bottom: calc((var(--ay) - var(--h)) * var(--px)); /* :4 */
+  width: calc(var(--w) * var(--px)); /* :5 */
+  height: calc(var(--h) * var(--px)); /* :5 */
+  background: var(--sprite) no-repeat; /* :6 */
+  background-size: calc(var(--atlas-w) * var(--px)) auto; /* :7 */
+  background-position: 0 calc(var(--y) * -1 * var(--px)); /* :8 */
+  transform-origin: calc(var(--ax) * var(--px)) calc(var(--ay) * var(--px)); /* :9 */
+  /* :10 · duración = cuadros / fps (sprite-character.tsx:12); wave: 3 / 6 = 0,5 s */
+  animation: zh-sprite-ciclo var(--duration) steps(var(--frames), end) infinite;
+  pointer-events: none; /* :11 */
+}
+
+/* :13 · las que no se repiten (fall): se quedan en el último cuadro */
+.zh-sprite[data-loop='false'] {
+  animation: zh-sprite-una-vez var(--duration) steps(var(--frames), jump-none) forwards;
+}
+
+/* :14 · el saludo va y vuelve: 0, 1, 2, 2, 1, 0… cada 167 ms (03 M5: 0 → −60,4 → −120,8 px) */
+.zh-sprite[data-animation='wave'] {
+  animation-direction: alternate;
+}
+
+/* :15 · las poses de un cuadro «respiran» 1 px cada 1,6 s (crítica C-11: decidir si salen) */
+.zh-sprite[data-animation='idle'],
+.zh-sprite[data-animation='front'],
+.zh-sprite[data-animation='phone'],
+.zh-sprite[data-animation='think'] {
+  animation: zh-sprite-respiro 1.6s steps(2, end) infinite;
+}
+
+/* :16 */
+.zh-sprite[data-animation='laugh'] {
+  animation: zh-sprite-salto 380ms steps(2, end) infinite alternate;
+}
+
+/* :17 */
+.zh-sprite[data-animation='celebrate'] {
+  animation: zh-sprite-salto 520ms steps(3, end) infinite alternate;
+}
+
+/* Vueltas contadas (Personaje vueltas={n}); sin el atributo, infinite como en la web. */
+.zh-sprite[data-vueltas] {
+  animation-iteration-count: var(--vueltas);
+}
+
+/* :18 */
+@keyframes zh-sprite-ciclo {
+  to {
+    background-position-x: calc(var(--w) * var(--frames) * -1 * var(--px));
+  }
+}
+
+/* :19 */
+@keyframes zh-sprite-una-vez {
+  to {
+    background-position-x: calc(var(--w) * (var(--frames) - 1) * -1 * var(--px));
+  }
+}
+
+/* :20 */
+@keyframes zh-sprite-respiro {
+  to {
+    translate: 0 -1px;
+  }
+}
+
+/* :21 */
+@keyframes zh-sprite-salto {
+  to {
+    translate: 0 -5px;
+  }
+}
+
+/*
+ * :22-24 · con menos movimiento, cada pose es un cuadro quieto. La web lo hace
+ * con html[data-reduced-motion] (:23) y con la media (:24); aquí el componente
+ * pone data-detenido cuando el motor dice «reducido», y la media queda igual.
+ */
+.zh-sprite[data-detenido] {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zh-sprite {
+    animation: none;
+  }
+}
+
+.zh-sprite[data-pausado] {
+  animation-play-state: paused;
+}
