@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+
+# Investigación: se queda solo en el disco de José (capturas de terceros y notas internas del equipo)
+investigacion/
+
+# Resultados de pruebas y capturas (se regeneran con npm run probar / capturas)
+verificacion/capturas/
+verificacion/pruebas/
+verificacion/pruebas-motor/

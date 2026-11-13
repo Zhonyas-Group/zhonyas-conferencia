@@ -1,0 +1,67 @@
+/*
+ * Tokens y base. Valores provisionales tomados de la web de Zhonyas
+ * (fondo #010204, texto #f7f7fa); la marca completa se aplicará después.
+ */
+:root {
+  --fuente-titulo: 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --fuente-texto: 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --fuente-mono: 'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --fondo: #010204;
+  --tinta: #f7f7fa;
+  --tinta-suave: rgb(247 247 250 / 0.66);
+  --tinta-tenue: rgb(247 247 250 / 0.38);
+  --linea: rgb(247 247 250 / 0.14);
+  --acento: #7cc4ff;
+
+  /* Movimiento base del motor (las animaciones de marca vendrán de la web). */
+  --curva-salida: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-entrada: 520ms;
+  --entrada-desplazamiento: 28px;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#raiz {
+  height: 100%;
+}
+
+img,
+video,
+canvas {
+  display: block;
+  max-width: none;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}

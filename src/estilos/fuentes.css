@@ -1,0 +1,23 @@
+/*
+ * Fuentes de la marca.
+ *
+ * Los archivos van en public/fonts/ (se copian tal cual a dist/fonts/) y se
+ * declaran aquí con una ruta RELATIVA SIN barra inicial: «fonts/…».
+ * Vite avisa de que no puede resolverla al compilar y la deja tal cual; en
+ * tiempo de ejecución el CSS vive dentro de index.html, así que «fonts/…» se
+ * resuelve junto a index.html, tanto en el servidor como en file:// desde un USB.
+ *
+ * Ejemplo (cuando estén los archivos):
+ *
+ * @font-face {
+ *   font-family: 'Marca Titular';
+ *   src: url('fonts/marca-titular.woff2') format('woff2');
+ *   font-weight: 100 900;
+ *   font-display: block;
+ * }
+ *
+ * y luego en base.css: --fuente-titulo: 'Marca Titular', <pila de sistema>;
+ * Con font-display: block el texto no aparece en la fuente de sistema y luego
+ * salta (en local carga al instante). Para que el modo revisión y las capturas
+ * esperen a la fuente, __motor.esperar() ya espera a document.fonts.ready.
+ */

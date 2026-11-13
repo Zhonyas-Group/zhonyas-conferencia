@@ -1,0 +1,38 @@
+{
+  "name": "zhonyas-conferencia",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Presentación de Zhonyas para conferencia: motor propio, funciona sin internet y desde un USB.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "tipos": "tsc --noEmit -p tsconfig.json",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "servir": "node scripts/servir.mjs",
+    "capturas": "npm run build && node scripts/capturas.mjs",
+    "pdf": "npm run build && node scripts/pdf.mjs",
+    "probar": "npm run build && node scripts/probar.mjs",
+    "medio-prueba": "node scripts/generar-medio-prueba.mjs"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "motion": "^12.43.0",
+    "ogl": "^1.0.11",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.2.0",
+    "pdf-lib": "^1.17.1",
+    "playwright-core": "^1.56.1",
+    "typescript": "5.9.3",
+    "vite": "^7.3.8",
+    "vite-plugin-singlefile": "^2.3.4"
+  }
+}

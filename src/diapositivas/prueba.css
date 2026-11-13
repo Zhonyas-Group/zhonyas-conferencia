@@ -1,0 +1,133 @@
+/* Estilos de las diapositivas de PRUEBA del motor. Se borran junto con ellas. */
+
+.prueba {
+  position: absolute;
+  inset: 0;
+  padding: 120px 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+.prueba__sello {
+  position: absolute;
+  top: 56px;
+  right: 64px;
+  padding: 8px 16px;
+  border: 2px solid #ffb86b;
+  border-radius: 8px;
+  color: #ffb86b;
+  font: 600 22px/1 var(--fuente-mono);
+  letter-spacing: 0.08em;
+}
+
+.prueba__titulo {
+  font: 650 104px/1.02 var(--fuente-titulo);
+  letter-spacing: -0.02em;
+  max-width: 1400px;
+}
+
+.prueba__bajada {
+  margin-top: 28px;
+  font-size: 36px;
+  color: var(--tinta-suave);
+  max-width: 1200px;
+}
+
+.prueba__lista {
+  margin-top: 72px;
+  display: grid;
+  gap: 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.prueba__item {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  align-items: baseline;
+  font-size: 48px;
+  line-height: 1.2;
+}
+
+.prueba__numero {
+  font: 500 30px/1 var(--fuente-mono);
+  color: var(--acento);
+}
+
+.prueba__pasos {
+  position: absolute;
+  left: 140px;
+  bottom: 96px;
+  display: flex;
+  gap: 14px;
+}
+
+.prueba__punto {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--linea);
+  transition: background-color 300ms linear;
+}
+
+.prueba__punto[data-encendido] {
+  background: var(--acento);
+}
+
+/* Medio */
+
+.prueba-medio__imagen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.prueba-medio__video {
+  position: absolute;
+  right: 120px;
+  top: 340px;
+  width: 880px;
+  border-radius: 20px;
+  overflow: hidden;
+  outline: 1px solid var(--linea);
+}
+
+.prueba-medio__video video,
+.prueba-medio__video img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.prueba-medio__pie {
+  position: absolute;
+  right: 120px;
+  top: 860px;
+  width: 880px;
+  font-size: 28px;
+  color: var(--tinta-suave);
+}
+
+/* WebGL */
+
+.prueba-webgl__lienzo {
+  position: absolute;
+  inset: 0;
+}
+
+.prueba-webgl__texto {
+  position: absolute;
+  left: 140px;
+  bottom: 120px;
+  max-width: 1100px;
+  text-shadow: 0 2px 30px rgb(0 0 0 / 0.6);
+}
+
+.prueba-webgl__contador {
+  margin-top: 24px;
+  font: 500 28px/1.3 var(--fuente-mono);
+  color: var(--tinta-suave);
+}

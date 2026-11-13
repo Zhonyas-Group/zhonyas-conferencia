@@ -1,0 +1,1017 @@
+/* ——— Escenario ——— */
+
+.marco {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--fondo);
+  transition: background-color 400ms linear;
+}
+
+.escenario {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  /* Sin will-change: así Chrome vuelve a rasterizar el texto a la escala real y se ve nítido. */
+}
+
+.secuencia {
+  position: absolute;
+  inset: 0;
+}
+
+/*
+ * Cada diapositiva montada es una capa del compositor (will-change: opacity).
+ *
+ * Las vecinas ocultas quedan DEBAJO de la actual con opacidad 0,002, no con 0
+ * ni con visibility: hidden. Chrome no rasteriza una capa con opacidad 0: la
+ * pintaba (foto 4K incluida) en el primer cuadro del fundido, y la primera
+ * entrada en cada diapositiva daba un cuadro de 33–50 ms (medido en la ronda 2:
+ * 3 de 5 entradas; con 0,002, ninguna). Con 0,002 la tiene pintada de
+ * antemano; como la actual es opaca y está encima, la vecina no se llega a
+ * dibujar en pantalla (queda tapada) y no cuesta nada al componer.
+ */
+.capa {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  contain: layout paint style;
+  will-change: opacity;
+}
+
+.capa[data-rol='actual'] {
+  z-index: 2;
+}
+
+.capa[data-rol='saliente'] {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.capa[data-rol='oculta'] {
+  z-index: 0;
+  opacity: 0.002;
+  pointer-events: none;
+}
+
+/* En las capturas no hace falta pintarlas de antemano, y así no rozan ni un píxel. */
+.revision .capa[data-rol='oculta'] {
+  opacity: 0;
+}
+
+.diapositiva {
+  position: absolute;
+  inset: 0;
+  background: var(--fondo);
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  font-size: 32px;
+  line-height: 1.35;
+}
+
+/* ——— Entradas por paso ——— */
+
+.entrada {
+  transition:
+    opacity var(--dur-entrada) var(--curva-salida) var(--retraso, 0ms),
+    transform var(--dur-entrada) var(--curva-salida) var(--retraso, 0ms);
+}
+
+.entrada[data-oculto] {
+  opacity: 0;
+  transform: translate3d(0, var(--entrada-desplazamiento), 0);
+  /* Al ocultarse (retroceder) es rápido y sin retraso. */
+  transition-duration: 200ms;
+  transition-delay: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrada[data-oculto] {
+    transform: none;
+  }
+}
+
+/* ——— Modo revisión: todo en su estado final, sin animar ——— */
+
+.revision *,
+.revision *::before,
+.revision *::after {
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  caret-color: transparent !important;
+}
+
+.revision body {
+  cursor: none;
+}
+
+/* ——— Sala ——— */
+
+.sala {
+  position: fixed;
+  inset: 0;
+  background: var(--fondo);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cursor-oculto,
+.cursor-oculto * {
+  cursor: none !important;
+}
+
+/*
+ * Por encima de todo lo que la sala pueda poner sobre la diapositiva (el «Ir a»,
+ * la cuadrícula, la ayuda): con la pantalla en negro, el proyector sigue en negro.
+ */
+.negro {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms linear;
+}
+
+.negro[data-activo] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.salto {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: rgb(10 11 14 / 0.88);
+  border: 1px solid var(--linea);
+  font: 500 20px/1.2 var(--fuente-texto);
+  font-variant-numeric: tabular-nums;
+}
+
+.salto--presentador {
+  right: auto;
+  left: 50%;
+  bottom: 76px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 22px;
+  border-color: var(--acento);
+  font-size: 24px;
+  box-shadow: 0 8px 30px rgb(0 0 0 / 0.5);
+}
+
+.salto__aviso {
+  color: #ffc46b;
+  font-size: 18px;
+}
+
+.salto__ayuda {
+  font-size: 15px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.avisos-dev {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 70;
+  max-width: min(720px, 90vw);
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #3a0d12;
+  color: #ffd7da;
+  font: 13px/1.4 var(--fuente-mono);
+}
+
+/* ——— Ayuda ——— */
+
+.ayuda {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 0.72);
+}
+
+.ayuda__lista {
+  margin: 0;
+  padding: 28px 36px;
+  border-radius: 14px;
+  background: #101217;
+  border: 1px solid var(--linea);
+  display: grid;
+  gap: 10px;
+  font-size: 18px;
+}
+
+.ayuda__fila {
+  display: grid;
+  grid-template-columns: 15em 1fr;
+  gap: 20px;
+}
+
+.ayuda__fila dt {
+  font-family: var(--fuente-mono);
+  color: var(--acento);
+}
+
+.ayuda__fila dd {
+  margin: 0;
+  color: var(--tinta);
+}
+
+/* ——— Cuadrícula ——— */
+
+.cuadricula {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  background: rgb(4 5 8 / 0.96);
+  cursor: default;
+}
+
+.cuadricula__cabecera {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 28px 6px;
+  font-size: 15px;
+  color: var(--tinta-suave);
+}
+
+.cuadricula__pista {
+  color: var(--tinta-tenue);
+}
+
+.cuadricula__rejilla {
+  flex: 1;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  align-content: start;
+  gap: 20px;
+  padding: 14px 28px 28px;
+}
+
+.celda {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+.celda__vista {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--linea);
+  transition: box-shadow 120ms linear;
+}
+
+.celda[data-actual] .celda__vista {
+  box-shadow: 0 0 0 2px var(--tinta-tenue);
+}
+
+.celda[data-seleccion] .celda__vista {
+  box-shadow: 0 0 0 3px var(--acento);
+}
+
+.celda__pie {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--tinta-suave);
+  min-width: 0;
+}
+
+.celda__n {
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+  font-weight: 600;
+}
+
+.celda__titulo {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.celda__orador {
+  font-size: 13px;
+}
+
+/* ——— Piezas para diapositivas ——— */
+
+.lienzo-ogl {
+  position: relative;
+  overflow: hidden;
+}
+
+.lienzo-ogl__gl,
+.lienzo-ogl__canvas,
+.lienzo-ogl__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Con WebGL, el lienzo solo se ve cuando la escena está lista (texturas
+ * cargadas) y el contexto vive; mientras tanto se ve el póster que hay debajo.
+ * Con la escena lista el póster se oculta: una escena con transparencias no
+ * debe dejarlo asomar.
+ */
+.lienzo-ogl:not([data-listo]) > .lienzo-ogl__gl,
+.lienzo-ogl[data-perdido] > .lienzo-ogl__gl,
+.lienzo-ogl[data-listo]:not([data-perdido]):not([data-sin-gl]) > .lienzo-ogl__poster,
+.lienzo-ogl[data-listo]:not([data-perdido]):not([data-sin-gl]) > .lienzo-ogl__sustituto,
+.lienzo-ogl:not([data-listo]) > .lienzo-ogl__sustituto {
+  visibility: hidden;
+}
+
+.lienzo-ogl__poster {
+  object-fit: cover;
+}
+
+.lienzo-ogl__sustituto {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgb(124 196 255 / 0.18), transparent 70%);
+}
+
+.diapositiva-rota {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 16px;
+  padding: 120px;
+  text-align: center;
+  background: #1a0a0d;
+  color: #ffd7da;
+}
+
+.diapositiva-rota--discreta {
+  background: var(--fondo);
+}
+
+.diapositiva-rota__titulo {
+  font-size: 44px;
+  font-weight: 600;
+}
+
+.diapositiva-rota__detalle {
+  font-size: 30px;
+}
+
+.diapositiva-rota code {
+  font: 24px/1.4 var(--fuente-mono);
+  opacity: 0.8;
+}
+
+/* ——— Presentador ——— */
+
+.modo-presentador body {
+  background: #08090c;
+}
+
+.presentador {
+  --p-fondo: #08090c;
+  --p-panel: #111319;
+  --p-borde: rgb(255 255 255 / 0.08);
+  --p-tinta: #eceef3;
+  --p-suave: rgb(236 238 243 / 0.62);
+  --p-tenue: rgb(236 238 243 / 0.4);
+  --p-bien: #7ddc9a;
+  --p-aviso: #ffc46b;
+  --p-mal: #ff7a7a;
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--p-fondo);
+  color: var(--p-tinta);
+  font: 15px/1.35 var(--fuente-texto);
+}
+
+.presentador::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  border: 4px solid var(--acento);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease-out;
+}
+
+.presentador[data-destacado]::after {
+  opacity: 1;
+  transition-duration: 80ms;
+}
+
+.p-barra {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 24px;
+  padding: 0 4px;
+}
+
+.p-posicion {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.p-posicion__n {
+  font-size: 30px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.p-posicion__total {
+  font-size: 18px;
+  color: var(--p-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.p-posicion__paso {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.07);
+  color: var(--p-tinta);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.p-posicion__titulo {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--p-suave);
+}
+
+.p-oradores {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.p-orador {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border-left: 4px solid var(--color-orador, var(--p-tenue));
+  background: rgb(255 255 255 / 0.04);
+  white-space: nowrap;
+}
+
+.p-orador strong {
+  font-size: 19px;
+  color: var(--color-orador, var(--p-tinta));
+}
+
+.p-orador--despues {
+  color: var(--p-suave);
+}
+
+.p-orador--despues strong {
+  font-size: 15px;
+}
+
+.p-etiqueta {
+  font-size: 13px;
+  color: var(--p-tenue);
+}
+
+.p-estado {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.p-conexion {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--p-mal);
+  white-space: nowrap;
+}
+
+.p-conexion::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.p-conexion[data-ok] {
+  color: var(--p-bien);
+}
+
+.p-reloj {
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.p-avisos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #3a1216;
+  color: #ffd7da;
+  font-size: 14px;
+}
+
+.p-cuerpo {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.62fr) minmax(0, 1fr);
+  /* La fila de abajo nunca es más baja que el cronómetro: siempre se ve entero y lo que sobra es para «En pantalla». */
+  grid-template-rows: minmax(0, 1.55fr) minmax(min-content, 1fr);
+  grid-template-areas:
+    'actual actual notas'
+    'siguiente tiempos notas';
+  gap: 10px;
+  min-height: 0;
+}
+
+.p-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px 12px 12px;
+  border-radius: 12px;
+  background: var(--p-panel);
+  border: 1px solid var(--p-borde);
+}
+
+.p-actual {
+  grid-area: actual;
+}
+
+.p-siguiente {
+  grid-area: siguiente;
+}
+
+.p-tiempos {
+  grid-area: tiempos;
+  gap: 10px;
+}
+
+.p-notas {
+  grid-area: notas;
+  /* Ocupa las dos filas: sin esto, el alto de unas notas largas empujaría la fila del cronómetro y dejaría sin sitio «En pantalla». */
+  contain: size;
+}
+
+.p-rotulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 26px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--p-suave);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.p-vista {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.p-vista .escenario {
+  outline: 3px solid rgb(255 255 255 / 0.14);
+}
+
+.p-velo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 0.72);
+  font-size: 18px;
+  color: var(--p-suave);
+}
+
+/* La sala tiene la cuadrícula o la ayuda abiertas: lo ve el público. */
+.p-velo--capa {
+  place-content: center;
+  gap: 14px;
+  color: var(--p-aviso);
+  text-align: center;
+  padding: 0 24px;
+}
+
+.p-fin {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 1px dashed var(--p-borde);
+  color: var(--p-tenue);
+}
+
+.p-relevo {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-orador) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-orador) 60%, transparent);
+  font-size: 16px;
+}
+
+.p-relevo strong {
+  color: var(--color-orador);
+}
+
+.p-total {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-total__cifra {
+  font-size: clamp(34px, min(4.2vw, 6.5vh), 64px);
+  font-weight: 650;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+.p-total[data-estado='aviso'] .p-total__cifra {
+  color: var(--p-aviso);
+}
+
+.p-total[data-estado='mal'] .p-total__cifra {
+  color: var(--p-mal);
+}
+
+.p-total__detalle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  margin-top: 6px;
+  color: var(--p-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.p-total__queda {
+  white-space: nowrap;
+}
+
+.p-barra-tiempo {
+  position: relative;
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.08);
+  overflow: visible;
+}
+
+.p-barra-tiempo__lleno {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  background: var(--p-tinta);
+  transform-origin: 0 50%;
+  transition: transform 250ms linear;
+}
+
+.p-barra-tiempo__plan {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 14px;
+  margin-left: -1px;
+  background: var(--acento);
+}
+
+.p-datos {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.p-datos div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.p-datos dt {
+  color: var(--p-suave);
+}
+
+.p-datos dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.p-datos dd[data-estado='bien'] {
+  color: var(--p-bien);
+}
+
+.p-datos dd[data-estado='aviso'] {
+  color: var(--p-aviso);
+}
+
+.p-datos dd[data-estado='mal'] {
+  color: var(--p-mal);
+}
+
+.p-datos__de {
+  font-weight: 400;
+  color: var(--p-tenue);
+}
+
+.p-cronometro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.p-objetivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.p-objetivo input {
+  width: 3.4em;
+  padding: 2px 4px;
+  border-radius: 6px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  background: #0b0c10;
+  color: var(--p-tinta);
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.p-objetivo input:focus {
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
+}
+
+
+.p-tamano {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.p-notas__texto {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  line-height: 1.4;
+  color: var(--p-tinta);
+}
+
+.p-notas__texto p,
+.p-notas__texto ul {
+  margin: 0 0 0.7em;
+}
+
+.p-notas__texto ul {
+  padding-left: 1.1em;
+}
+
+.p-notas__texto li + li {
+  margin-top: 0.25em;
+}
+
+.p-notas__texto strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.notas__vacio {
+  color: var(--p-tenue);
+}
+
+.p-controles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.p-controles__hueco {
+  flex: 1;
+}
+
+.p-boton {
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--p-borde);
+  background: rgb(255 255 255 / 0.05);
+  color: var(--p-tinta);
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.p-boton:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.p-boton[data-activo] {
+  background: var(--p-tinta);
+  color: #08090c;
+}
+
+.p-boton--principal {
+  background: var(--p-tinta);
+  color: #08090c;
+  border-color: transparent;
+}
+
+.p-boton--grande {
+  padding: 11px 22px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/*
+ * Ventanas de presentador estrechas (portátil pequeño, 1024 × 768): dos
+ * columnas. «En pantalla» junto al cronómetro y las notas junto a la
+ * siguiente, así ninguna vista queda diminuta.
+ */
+@media (max-width: 1100px) {
+  .p-cuerpo {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    grid-template-rows: minmax(min-content, 1.2fr) minmax(0, 1fr);
+    grid-template-areas:
+      'actual tiempos'
+      'siguiente notas';
+  }
+  /* «Después» se queda siempre a la vista: es el aviso de relevo. Cede sitio el título. */
+  .p-barra {
+    gap: 14px;
+  }
+  .p-oradores {
+    gap: 10px;
+  }
+}
+
+/* Poca altura (portátil con la pantalla al 150 %: 1280 × 600): menos aire, mismas piezas. */
+@media (max-height: 700px) {
+  .presentador {
+    gap: 8px;
+    padding: 8px 12px;
+  }
+  .p-cuerpo {
+    gap: 8px;
+  }
+  .p-panel {
+    padding: 8px 10px 10px;
+  }
+  .p-rotulo {
+    min-height: 22px;
+    margin-bottom: 4px;
+  }
+  .p-tiempos {
+    gap: 8px;
+  }
+  .p-total__cifra {
+    font-size: 40px;
+  }
+  .p-posicion__n {
+    font-size: 26px;
+  }
+  .p-orador {
+    padding: 4px 10px;
+  }
+  .p-relevo {
+    margin-top: 6px;
+    padding: 6px 10px;
+  }
+  .p-boton--grande {
+    padding: 8px 18px;
+    font-size: 16px;
+  }
+  .salto--presentador {
+    bottom: 64px;
+  }
+}
+
+.p-barra,
+.p-avisos,
+.p-controles {
+  flex-shrink: 0;
+}
+
+/* ——— Presentador en la pantalla del público (pantallas.ts) ——— */
+
+/*
+ * El presentador se reabrió con P y cayó encima de la sala, en el proyector:
+ * enseña lo mismo que la sala y una franja para llevarlo a la pantalla propia.
+ */
+.cortina {
+  --p-borde: rgb(255 255 255 / 0.16);
+  --p-tinta: #eceef3;
+
+  position: fixed;
+  inset: 0;
+  background: var(--fondo);
+  color: var(--p-tinta);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cortina__aviso {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: fit-content;
+  margin-inline: auto;
+  padding: 8px 8px 8px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--p-borde);
+  background: rgb(10 11 14 / 0.88);
+  font: 500 15px/1.3 var(--fuente-texto);
+}
+
+.cortina__teclas {
+  white-space: nowrap;
+}
+
+.cortina__aviso kbd {
+  padding: 1px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--p-borde);
+  background: rgb(255 255 255 / 0.06);
+  font: inherit;
+}
+
+/*
+ * Tema de contraste de Windows (forced-colors). Chrome repintaría lo que ve el
+ * público con los colores del sistema: fondos negros, placas opacas detrás del
+ * texto, puntos y sellos sin color. El escenario (en la sala, en las vistas del
+ * presentador y en las miniaturas) y lo que la sala pone encima se quedan como
+ * están; la interfaz del presentador sí sigue los colores del sistema.
+ */
+.sala,
+.cortina,
+.marco {
+  forced-color-adjust: none;
+}
