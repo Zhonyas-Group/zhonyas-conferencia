@@ -15,9 +15,14 @@
  * (src/marca/relevo/relevo.css).
  *
  * Si la foto o el atlas no cargan, el motor deja el estado final y Gregory sigue.
+ *
+ * Rama diseno-wow: entra con la cortina del cambio de orador (el fondo del
+ * portal del equipo cruza la pantalla con el personaje de Gregory corriendo
+ * encima: src/marca/wow/transiciones.ts) y el perfil deja ver el fondo vivo.
  */
 import { mediosRelevo } from '../marca/relevo/equipo';
 import { Relevo } from '../marca/relevo/Relevo';
+import { cortina } from '../marca/wow';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 
 /** Solo su tarjeta, en la primera caja de la web (docs/GUION.md, 03, paso 0). */
@@ -47,5 +52,6 @@ export default definirDiapositiva({
   ],
   fuentes: ['Pymex es el proyecto final de José y Gregory en el ITLA (decisión 3).'],
   medios: mediosRelevo('gregory', TARJETAS),
+  transicion: cortina('gregory'),
   Componente: RelevoGregory,
 });

@@ -6,6 +6,25 @@
  * .zh-a-sangre > .zh-titular): 96 px en dos líneas, hasta y ≈ 307.
  */
 
+/* La caja de la composición (rama diseno-wow): solo sirve para que las reglas de abajo no toquen otras «a sangre». */
+.zh-libreta-calle {
+  position: absolute;
+  inset: 0;
+}
+
+/*
+ * Rama diseno-wow: sin la foto (M-01), el titular no se queda arriba con la
+ * pantalla vacía debajo: baja al centro de la pantalla, a 128 px (la
+ * portadilla de la escala), sobre el fondo vivo.
+ */
+.zh-libreta-calle > .zh-a-sangre:not(:has(.zh-libreta-calle__foto)) > .zh-titular {
+  top: 50%;
+  translate: 0 -55%;
+  font-size: 128px;
+  letter-spacing: -0.075em;
+  line-height: 0.96;
+}
+
 /* La foto, primer recorte de M-01: 1690 × 620 en x 115, y 345 (termina en y 965). */
 .zh-libreta-calle__foto {
   position: absolute;

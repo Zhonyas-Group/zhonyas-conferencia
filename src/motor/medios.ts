@@ -6,9 +6,15 @@
  * y una ruta absoluta ('/medios/…') apuntaría a la raíz del disco.
  */
 
-/** Ruta lista para usar en src: medio('medios/prueba/foto.webp'). */
+import { enLinea } from 'virtual:medios-en-linea';
+
+/**
+ * Ruta lista para usar en src: medio('medios/prueba/foto.webp'). En la muestra
+ * (un solo HTML), lo que va dentro sale como data: URI (vite.config.ts, mediosEnLinea).
+ */
 export function medio(ruta: string): string {
-  return `${import.meta.env.BASE_URL}${ruta.replace(/^\.?\/+/, '')}`;
+  const limpia = ruta.replace(/^\.?\/+/, '');
+  return enLinea[limpia] ?? `${import.meta.env.BASE_URL}${limpia}`;
 }
 
 const EXT_VIDEO = /\.(mp4|webm|m4v|mov|ogv)(\?.*)?$/i;

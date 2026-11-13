@@ -17,6 +17,7 @@ import { useInterfaz } from './interfaz';
 import { instalarPantallaSala, parametroSala } from './pantallas';
 import { PruebaSala } from './PruebaSala';
 import { Secuencia } from './Secuencia';
+import { FondoVivo } from '../marca/wow/FondoVivo';
 import { instalarTeclado } from './teclado';
 import { useTituloVentana } from './utilidades';
 
@@ -151,6 +152,9 @@ function esInteractivo(objetivo: EventTarget | null): boolean {
   return objetivo instanceof Element && !!objetivo.closest('a, button, input, select, textarea, [data-sin-clic]');
 }
 
+/** ¿Fondo vivo debajo de las diapositivas? (configuracion.fondoVivo; el mazo de prueba no lo tiene). */
+const FONDO_VIVO = !!(configuracion as { fondoVivo?: boolean }).fondoVivo;
+
 export function Sala() {
   const nav = useNavegacion();
   const ui = useInterfaz();
@@ -175,8 +179,15 @@ export function Sala() {
   };
 
   return (
-    <div className="sala" onClick={alClic} style={{ background: d.fondo ?? undefined }}>
+    <div
+      className="sala"
+      onClick={alClic}
+      style={{ background: d.fondo ?? undefined }}
+      data-fondo-vivo={FONDO_VIVO ? '' : undefined}
+    >
       <Escenario fondo={d.fondo}>
+        {/* El fondo vivo (rama diseno-wow) va debajo de la secuencia y sobrevive a los cambios de diapositiva. */}
+        {FONDO_VIVO && <FondoVivo pausado={nav.negro || ui.cuadricula || nav.prueba} />}
         {/* Con la pantalla en negro, la cuadrícula o la prueba de sala encima nadie ve la diapositiva: video y WebGL se paran. */}
         <Secuencia
           indice={nav.indice}

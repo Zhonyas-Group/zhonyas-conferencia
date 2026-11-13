@@ -58,6 +58,11 @@
   pointer-events: none;
 }
 
+/* La que acaba de salir, hasta que React la pasa a vecina oculta (Secuencia.tsx, acabar). */
+.capa[data-rol='saliente'][data-terminada] {
+  opacity: 0.002;
+}
+
 /* En las capturas no hace falta pintarlas de antemano, y así no rozan ni un píxel. */
 .revision .capa[data-rol='oculta'] {
   opacity: 0;

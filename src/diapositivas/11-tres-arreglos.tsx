@@ -1,32 +1,34 @@
 /**
- * 11 · tres-arreglos · Angel · 85 s (docs/GUION.md, «11 · tres-arreglos»).
+ * 11 · tres-arreglos · Angel · 85 s (docs/GUION.md, «11 · tres-arreglos»). Rama diseno-wow.
  * Composición: a sangre (src/marca/composiciones/ASangre.tsx): el titular
  * arriba (x 115, y 115) y la línea de tiempo a escala real en el ancho útil;
- * la fuente abajo a la izquierda. Movimiento: Z-01 («cifra»), una fecha por
- * clic (excepción a A-54 declarada abajo).
+ * la fuente abajo a la izquierda.
  *
- * La línea se dibuja en código (11-tres-arreglos.css):
- *   - una raya de 4 px con el degradado de la firma (var(--zh-firma)), de
- *     x 115 a x 1805, a 67.6 px por día (1690 px ÷ 25 días, juicio de reglas);
- *     es lo que dice «esto es nuestro» (R-15, A-35): las fechas van en --zh-texto;
- *   - marcas en x 115 (25 sep, día 0), 385 (29 sep, día 4), 588 (2 oct, día 7)
- *     y 1805 (20 oct, día 25, con el texto alineado a la derecha);
- *   - 25 sep y 2 oct bajo la raya; 29 sep y 20 oct encima, para que no se pisen;
- *   - muescas de 4 × 32 px en --zh-texto-2; fechas en --zh-texto y «estreno»
- *     en --zh-texto-2, a 60 px.
- * La raya va a media altura (y 538–542): el centro de la pantalla.
+ * La línea (11-tres-arreglos.css), a 67.6 px por día (1690 px ÷ 25 días):
+ *   - la raya de 4 px con el degradado de la firma se DIBUJA de izquierda a
+ *     derecha al llegar (entrada «raya», la cinta que se extiende, 03 M4);
+ *   - las fechas, todas bajo la raya, CAEN a su muesca (entrada «caer»: la
+ *     entrada de letra de capabilities-heading.css, 700 ms);
+ *   - el personaje de píxeles de Angel (Z-11, el de su relevo) camina SOBRE la
+ *     raya de fecha en fecha (walk, 8 fps; el tramo largo hasta el 20 de
+ *     octubre, corriendo: run, 12 fps), y cada fecha cae cuando él llega. En
+ *     el 29 sep y el 2 oct se pone a teclear (type): el arreglo. En el 20 oct
+ *     celebra (celebrate).
  *
- * Pasos: 0, el titular, la raya y «25 sep · estreno» (entran con el corte);
- * 1, «29 sep»; 2, «2 oct»; 3, «20 oct». Cada fecha entra con su muesca, en su
- * sitio, cuando Angel la nombra.
+ * Pasos: 0, el titular se genera palabra a palabra (03 M3, «tres veces.» en
+ * aurora), la raya se dibuja y cae «25 sep · estreno», con Angel encima;
+ * 1, camina al 29 sep; 2, al 2 oct; 3, corre al 20 oct.
  *
  * Sin el video del iPhone (M-05) se cae la 12 y esta suma 10 s: Angel cuenta
  * el fallo en el paso 2 (docs/GUION.md, 12 «Si falla» y «Si falta un medio»).
  */
-import type { CSSProperties } from 'react';
+import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import type { IdDato } from '../datos';
 import { iphone } from '../medios-opcionales';
 import { ASangre } from '../marca/composiciones';
+import { Personaje, type AnimacionPersonaje } from '../marca/relevo/Personaje';
+import { Palabras, cortina } from '../marca/wow';
+import { useDiapositiva, useMovimiento } from '../motor/contexto';
 import { Dato } from '../motor/Dato';
 import { Entrada } from '../motor/Entrada';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
@@ -46,25 +48,39 @@ interface Marca {
   dato: IdDato;
   /** Días desde el estreno (25-sep). */
   dia: number;
-  lado: 'arriba' | 'abajo';
-  /** Paso en que entra (0: ya está). */
+  /** Paso en que entra. */
   paso: number;
   /** La palabra de debajo de la fecha, en --zh-texto-2. */
   palabra?: string;
 }
 
 const MARCAS: readonly Marca[] = [
-  { dato: 'agujero-negro-estreno', dia: 0, lado: 'abajo', paso: 0, palabra: 'estreno' },
-  { dato: 'agujero-negro-arreglo-reloj', dia: 4, lado: 'arriba', paso: 1 },
-  { dato: 'agujero-negro-arreglo-iphone', dia: 7, lado: 'abajo', paso: 2 },
-  { dato: 'agujero-negro-arreglo-escritorio', dia: 25, lado: 'arriba', paso: 3 },
+  { dato: 'agujero-negro-estreno', dia: 0, paso: 0, palabra: 'estreno' },
+  { dato: 'agujero-negro-arreglo-reloj', dia: 4, paso: 1 },
+  { dato: 'agujero-negro-arreglo-iphone', dia: 7, paso: 2 },
+  { dato: 'agujero-negro-arreglo-escritorio', dia: 25, paso: 3 },
 ];
 
+/** Dónde pisa Angel en cada paso: el centro de la muesca de esa fecha. */
+const PIES = MARCAS.map((m) => (m.dia === 0 ? MARGEN + MUESCA / 2 : m.dia === DIAS ? MARGEN + ANCHO_UTIL - MUESCA / 2 : MARGEN + m.dia * PX_POR_DIA));
+
 /**
- * Dónde va cada marca en x. La muesca se centra en su día, salvo la primera y
- * la última, que se quedan dentro de la raya (su borde en x 115 y en x 1805).
- * El texto se alinea con la muesca: a la izquierda, y a la derecha en la última.
+ * Velocidad sobre la raya. Caminando (walk: 4 cuadros a 8 fps, sprite-atlas.json)
+ * da dos pasos por ciclo de 0,5 s; con el personaje a 0,7 cada paso mide unos
+ * 50 px: 200 px/s. Corriendo (run: 3 cuadros a 12 fps), unos 720 px/s.
  */
+const CAMINA_PX_S = 200;
+const CORRE_PX_S = 720;
+const corre = (paso: number) => paso === 3;
+function duracionTramo(paso: number): number {
+  if (paso <= 0) return 0;
+  const distancia = Math.abs(PIES[paso] - PIES[paso - 1]);
+  return Math.round((distancia / (corre(paso) ? CORRE_PX_S : CAMINA_PX_S)) * 1000);
+}
+/** Paso 0: la fecha cae cuando la raya ya va por la mitad (la raya empieza a los 250 ms y dura 900). */
+const retrasoFecha = (paso: number) => (paso === 0 ? 650 : duracionTramo(paso));
+
+/** La muesca se centra en su día, salvo la primera y la última, que se quedan dentro de la raya. */
 function posicion(dia: number): CSSProperties {
   const x = MARGEN + dia * PX_POR_DIA;
   if (dia === 0) return { left: MARGEN };
@@ -72,41 +88,103 @@ function posicion(dia: number): CSSProperties {
   return { left: x - MUESCA / 2 };
 }
 
-function contenido(m: Marca) {
-  return (
-    <>
-      <span className="tres-arreglos__muesca" aria-hidden="true" />
-      {/* El auditor lee «20 oct» como la cifra «20» (la del 20 mensual de la 17): es una fecha. */}
-      <p className="zh-lectura tres-arreglos__fecha" data-auditar-excepcion="A-69: fecha del historial (día y mes), no una cifra">
-        <Dato id={m.dato} />
-      </p>
-      {m.palabra ? <p className="zh-lectura tres-arreglos__palabra">{m.palabra}</p> : null}
-    </>
-  );
+interface Pose {
+  animacion: AnimacionPersonaje;
+  vueltas?: number;
+  luego?: AnimacionPersonaje;
 }
 
-function LineaDeTiempo() {
+/** Lo que hace Angel al llegar a cada fecha. */
+function llegada(paso: number): Pose {
+  if (paso === 0) return { animacion: 'front' };
+  if (paso === DIAS || paso === 3) return { animacion: 'celebrate', vueltas: 4, luego: 'front' };
+  return { animacion: 'type', vueltas: 3, luego: 'idle' };
+}
+
+function AngelEnLaLinea({ paso }: { paso: number }) {
+  const { activa, direccion } = useDiapositiva();
+  const { instantaneo, reducido } = useMovimiento();
+  const caja = useRef<HTMLDivElement>(null);
+  const anterior = useRef(paso);
+  const [pose, setPose] = useState<Pose>(() => llegada(paso));
+
+  useLayoutEffect(() => {
+    const el = caja.current;
+    const de = anterior.current;
+    anterior.current = paso;
+    if (!el) return;
+    for (const a of el.getAnimations()) a.cancel();
+    const animar = activa && !instantaneo && !reducido && direccion === 1 && paso === de + 1;
+    if (!animar) {
+      setPose(llegada(paso));
+      return;
+    }
+    setPose({ animacion: corre(paso) ? 'run' : 'walk' });
+    const tramo = el.animate([{ transform: `translateX(${PIES[de] - PIES[paso]}px)` }, { transform: 'translateX(0)' }], {
+      duration: duracionTramo(paso),
+      easing: 'linear', // a paso constante, como el ciclo del sprite (sprite-character.css:10)
+    });
+    tramo.onfinish = () => setPose(llegada(paso));
+    return () => tramo.cancel();
+  }, [paso, activa]);
+
   return (
-    <div className="tres-arreglos__escala">
-      <div className="tres-arreglos__raya" aria-hidden="true" />
-      {MARCAS.map((m) => {
-        const clase = `tres-arreglos__marca tres-arreglos__marca--${m.lado}${m.dia === DIAS ? ' tres-arreglos__marca--final' : ''}`;
-        return m.paso === 0 ? (
-          <div key={m.dato} className={clase} style={posicion(m.dia)}>
-            {contenido(m)}
-          </div>
-        ) : (
-          <Entrada key={m.dato} desde={m.paso} efecto="cifra" className={clase} style={posicion(m.dia)}>
-            {contenido(m)}
-          </Entrada>
-        );
-      })}
+    <div ref={caja} className="tres-arreglos__angel" style={{ left: PIES[paso] }} aria-hidden="true">
+      <Personaje
+        key={`${pose.animacion}-${paso}`}
+        atlas="angel"
+        animacion={pose.animacion}
+        vueltas={pose.vueltas}
+        luego={pose.luego}
+        escala={0.7}
+      />
     </div>
   );
 }
 
-function TresArreglos(_: PropsDiapositiva) {
-  return <ASangre titular="Hizo falta arreglarlo tres veces." evidencia={<LineaDeTiempo />} fuente="Historial de zhonyas-web, 2026" />;
+function LineaDeTiempo({ paso }: { paso: number }) {
+  return (
+    <div className="tres-arreglos__escala">
+      <Entrada desde={0} efecto="raya" className="tres-arreglos__raya">
+        <span />
+      </Entrada>
+      {MARCAS.map((m) => (
+        <Entrada
+          key={m.dato}
+          desde={m.paso}
+          efecto="caer"
+          className={`tres-arreglos__marca${m.dia === DIAS ? ' tres-arreglos__marca--final' : ''}`}
+          style={posicion(m.dia)}
+        >
+          <span className="tres-arreglos__muesca" data-muesca="" data-retraso={retrasoFecha(m.paso)} aria-hidden="true" />
+          {/* El auditor lee «20 oct» como la cifra «20» (la del 20 mensual de la 17): es una fecha. */}
+          <p className="zh-lectura tres-arreglos__fecha" data-cae="" data-auditar-excepcion="A-69: fecha del historial (día y mes), no una cifra">
+            <Dato id={m.dato} />
+          </p>
+          {m.palabra ? (
+            <p className="zh-lectura tres-arreglos__palabra" data-cae="">
+              {m.palabra}
+            </p>
+          ) : null}
+        </Entrada>
+      ))}
+      <AngelEnLaLinea paso={paso} />
+    </div>
+  );
+}
+
+function TresArreglos({ paso }: PropsDiapositiva) {
+  return (
+    <ASangre
+      titular={
+        <Entrada como="span" desde={0} efecto="palabras">
+          <Palabras texto="Hizo falta arreglarlo tres veces." clave={['tres', 'veces.']} />
+        </Entrada>
+      }
+      evidencia={<LineaDeTiempo paso={paso} />}
+      fuente="Historial de zhonyas-web, 2026"
+    />
+  );
 }
 
 export default definirDiapositiva({
@@ -115,13 +193,11 @@ export default definirDiapositiva({
   orador: 'angel',
   duracion: iphone.hay ? 85 : 95,
   pasos: 3,
-  excepcionA54:
-    'Z-01 clic a clic: cada clic trae la fecha que Angel nombra en ese momento (docs/GUION.md, encabezado, punto 2: la lectura de A-54 que aprueba José).',
   notas: [
     {
       decir: 'El 25 de septiembre lo subí a la web, y en mi computadora se veía perfecto.',
       claves: 'estreno · mi computadora',
-      aparte: '**[CONFIRMAR con Angel; C-16].**',
+      aparte: '**[CONFIRMAR con Angel; C-16].** Mi personaje camina de fecha en fecha: cada clic, a la siguiente.',
     },
     {
       decir:
@@ -147,6 +223,7 @@ export default definirDiapositiva({
       decir:
         'Y el 20 de octubre, el último, en computadora: después de usar el menú, el agujero seguía el trackpad en vez de abrirse a su ritmo.',
       claves: 'menú · trackpad · a su ritmo',
+      despues: 'El personaje corre hasta el 20 y celebra: dejar que llegue (dos segundos) antes de hablar.',
     },
   ],
   fuentes: [
@@ -155,5 +232,7 @@ export default definirDiapositiva({
     'En pantalla van fechas y una palabra nuestra; ningún mensaje de commit (decisión 4).',
     'Es una secuencia de verdad (A-26). La escala está comprobada: 1690 px ÷ 25 días = 67.6 px por día (juicio de reglas).',
   ],
+  medios: ['medios/equipo/angel/personaje.webp'],
+  transicion: cortina('angel'),
   Componente: TresArreglos,
 });

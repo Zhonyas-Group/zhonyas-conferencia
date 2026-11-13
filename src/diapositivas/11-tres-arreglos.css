@@ -2,6 +2,9 @@
  * 11 · tres-arreglos: la línea de tiempo a escala real (docs/GUION.md, 11
  * «Medios»). Todo en px del escenario de 1920 × 1080. La x de cada marca la
  * pone 11-tres-arreglos.tsx (67.6 px por día); aquí, la y y el aspecto.
+ *
+ * Rama diseno-wow: todas las fechas van bajo la raya (Angel camina encima) y
+ * la raya se dibuja de izquierda a derecha (transform-origin a la izquierda).
  */
 
 .tres-arreglos__escala {
@@ -11,8 +14,7 @@
 
 /*
  * La raya: 4 px de alto, de x 115 a x 1805, con el degradado de la firma
- * (A-39, punto 3; una de sus tres apariciones en el mazo, docs/GUION.md,
- * Convenciones, «Color»). A media altura: de y 538 a 542.
+ * (A-39, punto 3). A media altura: de y 538 a 542.
  */
 .tres-arreglos__raya {
   position: absolute;
@@ -20,27 +22,23 @@
   right: var(--zh-margen);
   top: 538px;
   height: 4px;
+  transform-origin: left center;
+}
+
+.tres-arreglos__raya > span {
+  position: absolute;
+  inset: 0;
   background: var(--zh-firma);
 }
 
-/* Cada marca: la muesca pegada a la raya y, más allá, la fecha. */
+/* Cada marca: la muesca pegada a la raya por debajo y, más abajo, la fecha. */
 .tres-arreglos__marca {
   position: absolute;
+  top: 542px;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   white-space: nowrap;
-}
-
-/* Bajo la raya (25 sep, 2 oct): empieza en su borde de abajo, y 542. */
-.tres-arreglos__marca--abajo {
-  top: 542px;
-  flex-direction: column;
-}
-
-/* Encima (29 sep, 20 oct): termina en su borde de arriba, y 538 (1080 − 538 = 542). */
-.tres-arreglos__marca--arriba {
-  bottom: 542px;
-  flex-direction: column-reverse;
 }
 
 /* La última, 20 oct, con el texto alineado a la derecha, en x 1805. */
@@ -48,24 +46,30 @@
   align-items: flex-end;
 }
 
-/* Muesca de 4 × 32 px en --zh-texto-2. */
+/* Muesca de 4 × 32 px en --zh-texto-2; cae desde la raya (scaleY desde arriba). */
 .tres-arreglos__muesca {
   display: block;
   width: 4px;
   height: 32px;
-  background: var(--zh-texto-2);
-}
-
-/* Separación entre la muesca y la caja de la fecha (a 60 px, la caja ya deja 7 px de interlínea). */
-.tres-arreglos__marca--abajo > .tres-arreglos__muesca {
   margin-bottom: 8px;
+  background: var(--zh-texto-2);
+  transform-origin: top center;
 }
 
-.tres-arreglos__marca--arriba > .tres-arreglos__muesca {
-  margin-top: 8px;
+.tres-arreglos__fecha,
+.tres-arreglos__palabra {
+  margin: 0;
 }
 
 /* Fechas en --zh-texto (zh-lectura) y «estreno» en --zh-texto-2, las dos a 60 px. */
 .tres-arreglos__palabra {
   color: var(--zh-texto-2);
+}
+
+/* Angel pisa la raya: su caja (de alto 0) tiene el borde de abajo en y 538. */
+.tres-arreglos__angel {
+  position: absolute;
+  top: 538px;
+  width: 0;
+  height: 0;
 }

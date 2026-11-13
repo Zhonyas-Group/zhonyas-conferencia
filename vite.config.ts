@@ -208,6 +208,60 @@ function mazoDePrueba(): Plugin {
 }
 
 /**
+ * Modo «muestra» (`vite build --mode muestra`, `vite --mode muestra`): las
+ * seis diapositivas de la muestra de la dirección nueva (rama diseno-wow) en
+ * lugar de las 20. Cambia src/diapositivas/indice.ts por
+ * src/diapositivas/muestra/indice.ts; la configuración es la de la charla.
+ */
+function mazoDeMuestra(): Plugin {
+  const original = comparable(join(RAIZ, 'src', 'diapositivas', 'indice.ts'));
+  const muestra = resolve(RAIZ, 'src', 'diapositivas', 'muestra', 'indice.ts');
+  return {
+    name: 'zhonyas:mazo-de-muestra',
+    enforce: 'pre',
+    async resolveId(fuente, importador, opciones) {
+      if (!importador || !/diapositivas\/indice(?:\.ts)?$/.test(fuente)) return null;
+      const resuelto = await this.resolve(fuente, importador, { ...opciones, skipSelf: true });
+      if (!resuelto) return null;
+      return comparable(resuelto.id.split('?')[0]) === original ? muestra : null;
+    },
+  };
+}
+
+/**
+ * Medios dentro del HTML («virtual:medios-en-linea»). En el modo «muestra» la
+ * entrega es UN archivo que se abre por file:// sin carpeta medios/ al lado:
+ * los atlas de los personajes y las fotos del equipo van dentro como data: URI
+ * y medio() (src/motor/medios.ts) los sirve de ahí. En los demás modos, vacío.
+ */
+function mediosEnLinea(activo: boolean): Plugin {
+  const VIRTUAL = 'virtual:medios-en-linea';
+  const RESUELTO = `\0${VIRTUAL}`;
+  const TIPOS: Record<string, string> = { webp: 'image/webp', png: 'image/png', svg: 'image/svg+xml', jpg: 'image/jpeg' };
+  return {
+    name: 'zhonyas:medios-en-linea',
+    resolveId(fuente) {
+      return fuente === VIRTUAL ? RESUELTO : null;
+    },
+    load(id) {
+      if (id !== RESUELTO) return null;
+      if (!activo) return 'export const enLinea = {};\n';
+      const mapa: Record<string, string> = {};
+      const equipo = resolve(RAIZ, 'public', 'medios', 'equipo');
+      for (const persona of readdirSync(equipo)) {
+        for (const archivo of ['personaje.webp', 'foto.webp']) {
+          const ruta = join(equipo, persona, archivo);
+          if (!existsSync(ruta)) continue;
+          const tipo = TIPOS[archivo.split('.').pop()!];
+          mapa[`medios/equipo/${persona}/${archivo}`] = `data:${tipo};base64,${readFileSync(ruta).toString('base64')}`;
+        }
+      }
+      return `export const enLinea = ${JSON.stringify(mapa)};\n`;
+    },
+  };
+}
+
+/**
  * Medios opcionales (src/medios-opcionales.ts; docs/MEDIOS.md): los que el
  * guion espera y todavía pueden no existir. El módulo virtual
  * «virtual:medios-presentes» dice qué archivos hay en public/medios/ al
@@ -285,11 +339,16 @@ function mediosPresentes(): Plugin {
 export default defineConfig(({ mode }) => {
   const lab = mode === 'lab';
   const prueba = mode === 'prueba';
+  const muestra = mode === 'muestra';
   return {
     base: './',
+    // La muestra lleva dentro del HTML lo que usa (mediosEnLinea): sin carpeta medios/ al lado.
+    publicDir: muestra ? false : 'public',
     plugins: [
       ...(lab ? [] : [distLibre()]),
       ...(prueba ? [mazoDePrueba()] : []),
+      ...(muestra ? [mazoDeMuestra()] : []),
+      mediosEnLinea(muestra),
       mediosPresentes(),
       registroDeDatos(),
       react(),
@@ -299,7 +358,7 @@ export default defineConfig(({ mode }) => {
     build: {
       // Margen para navegadores algo viejos en los equipos de la universidad (Chrome/Edge 80+).
       target: 'es2020',
-      outDir: lab ? 'dist-lab' : prueba ? 'dist-prueba' : 'dist',
+      outDir: lab ? 'dist-lab' : prueba ? 'dist-prueba' : muestra ? 'dist-muestra' : 'dist',
       emptyOutDir: true,
       reportCompressedSize: false,
       chunkSizeWarningLimit: 4000,

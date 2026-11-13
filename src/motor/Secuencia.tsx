@@ -36,7 +36,11 @@ import { capaLista, esperarCapa, precargar, prepararCapa } from './medios';
 import { anotarMomento, declararExcepcionA54 } from './momentos';
 import { PosterDiapositiva } from './PosterDiapositiva';
 import { corte, ejecutarTransicion, limpiarCapa, type Controlador } from './transiciones';
-import type { Direccion, ModoVista, RolCapa } from './tipos';
+import type { Direccion, ModoVista, RolCapa, Transicion } from './tipos';
+import { configuracion } from '../configuracion';
+
+/** La transición de los cambios que no declaran la suya (rama diseno-wow); sin ella, el corte seco. */
+const PORDEFECTO: Transicion = (configuracion as { transicionPorDefecto?: Transicion }).transicionPorDefecto ?? corte;
 
 /**
  * Lo más que se espera a que una diapositiva recién montada tenga sus medios
@@ -225,13 +229,19 @@ export function Secuencia({
       vigente = false;
       limpiarCapa(entra);
       limpiarCapa(sale);
+      // Con el fondo vivo las diapositivas son transparentes: la que sale no puede
+      // volver a verse ni un cuadro entre el final de la transición y el render
+      // que la pasa a vecina oculta (motor.css, .capa[data-terminada]).
+      sale?.setAttribute('data-terminada', '');
       terminar();
     };
     const empezar = () => {
       if (!vigente) return;
       entra?.style.removeProperty('opacity');
+      entra?.removeAttribute('data-terminada');
+      sale?.removeAttribute('data-terminada');
       const posterior = diapositivas[Math.max(transito.a, de)];
-      controladores = ejecutarTransicion(posterior?.transicion ?? corte, entra, sale, {
+      controladores = ejecutarTransicion(posterior?.transicion ?? PORDEFECTO, entra, sale, {
         direccion: transito.a > de ? 1 : -1,
         reducido,
       });

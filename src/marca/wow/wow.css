@@ -1,0 +1,115 @@
+/*
+ * Piezas de la dirección nueva (rama diseno-wow): la cortina del cambio de
+ * orador, las palabras que se generan, la palabra en aurora y el orador de
+ * la esquina. Cada valor dice de dónde sale.
+ */
+
+/* auditar-excepcion-inicio: A-34, A-38, A-40, A-43 — piezas de la dirección nueva (rama diseno-wow) copiadas de zhonyas.com: el fondo del portal del equipo (team-stage) y la aurora del titular (capabilities-heading) */
+
+/* ——— Cortina: el fondo del portal del equipo (team-stage, globals.css:236-240) ——— */
+.wow-cortina {
+  position: absolute;
+  top: -108px;
+  left: 0;
+  height: 1296px;
+  z-index: 5;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.wow-cortina__fondo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 25%;
+  height: 100%;
+  transform: scaleX(4);
+  transform-origin: left center;
+  background:
+    radial-gradient(circle at 4% 88%, rgba(255, 17, 183, 0.82), transparent 38%),
+    radial-gradient(circle at 92% 78%, rgba(119, 45, 212, 0.9), transparent 43%),
+    radial-gradient(circle at 54% 8%, rgba(222, 32, 190, 0.48), transparent 38%),
+    linear-gradient(135deg, #b90f9e 0%, #7d30ad 55%, #4b238e 100%);
+}
+
+/* El suelo por el que corre el personaje: a 1000 px de la pantalla (108 + 1000 en la cortina), sin el sesgo del panel. */
+.wow-cortina__piso {
+  position: absolute;
+  left: 2100px;
+  top: 1080px;
+  width: 0;
+  height: 0;
+  transform: skewX(14deg);
+}
+
+/* ——— La palabra clave en aurora: capabilities-heading.css:9, :11 y :15 ——— */
+.zh-aurora {
+  background: linear-gradient(115deg, #b59aff 5%, #f5b7ec 35%, #fff0fd 50%, #bf93f5 70%, #b59aff 95%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: #d1a1eb; /* capabilities-heading.css:8, por si no hay background-clip */
+  animation: wow-aurora 9s ease-in-out infinite; /* capabilities-heading.css:11 */
+}
+
+@keyframes wow-aurora {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* auditar-excepcion-fin */
+
+/* ——— Palabras que se generan (animated-textgenerate.tsx; 03 M3) ——— */
+
+.wow-palabra {
+  position: relative;
+  display: inline-block;
+}
+
+/*
+ * La «píldora» gris que va delante de las palabras que faltan
+ * (animated-textgenerate.tsx:120-130: bg-gray-600 en oscuro, opacidad 0,4,
+ * 0,9 em de alto, redonda). Quieta, invisible: solo la anima la entrada.
+ */
+.wow-palabra::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 0.45em);
+  height: 0.9em;
+  border-radius: 999px;
+  opacity: 0; /* el gris (bg-gray-600) solo lo pone la entrada mientras anima: en reposo no hay píldora */
+  pointer-events: none;
+}
+
+/* ——— El orador de turno, pequeño, en la esquina de abajo a la derecha ——— */
+.wow-orador {
+  position: absolute;
+  right: 172px;
+  bottom: 96px;
+  width: 0;
+  height: 0;
+}
+
+.revision .zh-aurora,
+.revision .wow-cortina {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zh-aurora {
+    animation: none;
+  }
+}
+
+/* Cada letra de la entrada «letras» (fancy-text.tsx: inline-block para que el clip-path recorte la letra). */
+.wow-letra {
+  display: inline-block;
+}

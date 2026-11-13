@@ -18,6 +18,9 @@ import { useLayoutEffect } from 'react';
 import { useDiapositiva } from './contexto';
 import { fijarProblema } from './diagnostico';
 
+/** Rama diseno-wow: José anuló «un solo momento animado por diapositiva». */
+const A54_ACTIVA = false;
+
 const porDiapositiva = new Map<string, Set<string>>();
 const excepciones = new Map<string, string>();
 const oyentes = new Set<() => void>();
@@ -38,6 +41,8 @@ function revisar(id: string) {
     console.info(`[motor] «${id}» tiene ${lista.length} momentos animados (${lista.join(', ')}); excepción A-54: ${excepcion}`);
     return;
   }
+  // Rama diseno-wow: la regla de un solo momento animado por diapositiva (A-54) queda anulada.
+  if (!A54_ACTIVA) return;
   fijarProblema(
     `momentos:${id}`,
     `«${id}» tiene ${lista.length} momentos animados (${lista.join(', ')}). A-54 pide uno por diapositiva; si es a propósito, escribe el motivo en «excepcionA54».`,

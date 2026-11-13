@@ -1,0 +1,192 @@
+/*
+ * Fondo vivo (FondoVivo.tsx). Todo en px del escenario de 1920 × 1080.
+ * Solo se animan transform, translate y opacity: la GPU lo compone sin repintar.
+ */
+
+/* auditar-excepcion-inicio: A-34, A-38, A-40, A-43 — el fondo vivo de la dirección nueva (rama diseno-wow): la viñeta, la aurora y los meteoros copiados de zhonyas.com (cada valor con su línea) */
+
+.fondo-vivo {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+  /* body::before de la web (globals.css:90-93), sobre el negro de la marca */
+  background:
+    radial-gradient(circle at 50% 46%, rgba(25, 23, 34, 0.82) 0%, rgba(12, 13, 19, 0.92) 30%, #050609 67%, #010204 100%),
+    #010204;
+}
+
+/* ——— Aurora ——— */
+
+.fondo-vivo__aurora {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+}
+
+/* team-shell (globals.css:1205): violeta a la derecha (82 % 45 %), más presente para un proyector. */
+.fondo-vivo__aurora--violeta {
+  left: calc(1574px - 800px);
+  top: calc(486px - 800px);
+  width: 1600px;
+  height: 1600px;
+  background: radial-gradient(circle, rgba(115, 75, 255, 0.3), rgba(115, 75, 255, 0.1) 38%, transparent 66%);
+  /* 4 × 9 s: la aurora de la web (capabilities-heading.css:15, 9 s ease-in-out) */
+  animation: fondo-vivo-deriva-violeta 36s ease-in-out infinite alternate;
+}
+
+/* team-shell (globals.css:1206): magenta abajo a la izquierda (18 % 78 %). */
+.fondo-vivo__aurora--magenta {
+  left: calc(346px - 700px);
+  top: calc(842px - 700px);
+  width: 1400px;
+  height: 1400px;
+  background: radial-gradient(circle, rgba(224, 47, 190, 0.24), rgba(224, 47, 190, 0.08) 40%, transparent 66%);
+  /* 3 × 9 s (capabilities-heading.css:15) */
+  animation: fondo-vivo-deriva-magenta 27s ease-in-out infinite alternate;
+}
+
+/* La escena del logo (globals.css:1129: rgba(205, 75, 236, 0.25) en 52 % 45 %), más tenue: es la que queda detrás del texto. */
+.fondo-vivo__aurora--centro {
+  left: calc(998px - 600px);
+  top: calc(486px - 600px);
+  width: 1200px;
+  height: 1200px;
+  background: radial-gradient(circle, rgba(205, 75, 236, 0.13), transparent 62%);
+  /* 2 × 9 s (capabilities-heading.css:15) */
+  animation: fondo-vivo-respira 18s ease-in-out infinite alternate;
+}
+
+@keyframes fondo-vivo-deriva-violeta {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-260px, 150px) scale(1.12);
+  }
+  100% {
+    transform: translate(-90px, -140px) scale(0.94);
+  }
+}
+
+@keyframes fondo-vivo-deriva-magenta {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(300px, -170px) scale(1.1);
+  }
+  100% {
+    transform: translate(120px, 60px) scale(0.92);
+  }
+}
+
+@keyframes fondo-vivo-respira {
+  from {
+    transform: scale(0.88);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.14);
+    opacity: 1;
+  }
+}
+
+/* ——— Meteoros: team-contact.css:146-155 ——— */
+
+.fondo-vivo__meteoros {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55; /* team-contact.css:147 */
+}
+
+.fondo-vivo__meteoro {
+  position: absolute;
+  width: 2px; /* team-contact.css:148 */
+  height: 2px;
+  border-radius: 50%;
+  background: #f6edff;
+  box-shadow: 0 0 7px #d6a2f0;
+  animation: fondo-vivo-meteoro var(--duracion) var(--retraso) linear infinite; /* team-contact.css:148 */
+  will-change: translate, opacity;
+}
+
+/* La estela: team-contact.css:149 (clamp(55px, 8vw, 120px) a 1920 px = 120 px). */
+.fondo-vivo__meteoro::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(to right, #d6a2f0, transparent);
+  transform: rotate(-40deg);
+  transform-origin: left center;
+}
+
+/* team-contact.css:151-155, con los vw de la web pasados a px de 1920 (85vw = 1632 px; 72vw = 1382,4 px). */
+@keyframes fondo-vivo-meteoro {
+  0% {
+    translate: 0 0;
+    opacity: 0;
+  }
+  8%,
+  45% {
+    opacity: 1;
+  }
+  70%,
+  100% {
+    translate: -1632px 1382px;
+    opacity: 0;
+  }
+}
+
+/* Bordes oscuros: el texto del margen (fuentes a 32 px) siempre cae sobre casi negro. */
+.fondo-vivo__vineta {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 75% 70% at 50% 48%, transparent 55%, rgba(1, 2, 4, 0.55) 100%);
+}
+
+/* auditar-excepcion-fin */
+
+/* Nadie ve la diapositiva (negro, cuadrícula, prueba de sala): congelado donde va. */
+.fondo-vivo[data-pausado] *,
+.fondo-vivo[data-pausado] *::after {
+  animation-play-state: paused;
+}
+
+/* En las capturas (modo revisión) y con menos movimiento: quieto y sin meteoros. */
+.revision .fondo-vivo *,
+.fondo-vivo[data-reducido] * {
+  animation: none;
+}
+
+.revision .fondo-vivo__meteoros {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fondo-vivo * {
+    animation: none !important;
+  }
+
+  .fondo-vivo__meteoros {
+    display: none;
+  }
+}
+
+/*
+ * Con el fondo vivo, las diapositivas son transparentes: lo que no pinta una
+ * diapositiva deja ver el fondo, nunca negro plano. Una diapositiva con su
+ * propio `fondo` (el agujero negro de la 10) lo sigue pintando encima.
+ */
+.sala[data-fondo-vivo] .diapositiva {
+  background: transparent;
+}
+
+/* El velo del perfil del relevo (relevo.css, .relevo-fondo) deja ver el fondo, más oscuro. */
+.sala[data-fondo-vivo] .relevo-fondo {
+  background: rgba(1, 2, 4, 0.5);
+}

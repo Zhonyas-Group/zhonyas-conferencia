@@ -1,0 +1,82 @@
+/*
+ * 06 · libreta: la hoja dibujada (rama diseno-wow). Una hoja de libreta de
+ * colmado de 1180 × 800, algo girada, con renglones azules, el margen rojo,
+ * la espiral arriba y tinta de bolígrafo azul. Son los colores de una libreta
+ * de verdad, no de la marca: es la ilustración del objeto (excepción en la
+ * diapositiva).
+ */
+.libreta {
+  position: absolute;
+  inset: 0;
+}
+
+/* auditar-excepcion-inicio: A-34, A-38, A-45, A-43 — la libreta dibujada: papel, renglones, margen, tinta y letra a mano de una libreta de verdad */
+
+.libreta__hoja {
+  position: absolute;
+  left: 340px;
+  top: 150px;
+  width: 1180px;
+  height: 800px;
+  transform: rotate(-2.4deg);
+}
+
+.libreta__papel {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px 6px 10px 10px;
+  background:
+    /* el margen rojo */
+    linear-gradient(to right, transparent 128px, #e08f8f 128px 131px, transparent 131px),
+    /* los renglones, cada 76 px desde y 194 */
+    repeating-linear-gradient(to bottom, transparent 0 74px, #b7c8e6 74px 76px) 0 120px / 100% calc(100% - 120px) no-repeat,
+    #f3eee2;
+  /* el canto de las hojas de debajo, sin sombra difuminada */
+  box-shadow:
+    0 6px 0 #ddd5c4,
+    0 12px 0 #c9c0ae;
+}
+
+.libreta__espiral {
+  position: absolute;
+  left: 0;
+  top: -24px;
+  width: 1180px;
+  height: 60px;
+}
+
+.libreta__renglon {
+  position: absolute;
+  left: 160px;
+  margin: 0;
+  font-family: 'Segoe Print', 'Ink Free', 'Bradley Hand', 'Comic Neue', cursive;
+  font-size: 50px;
+  line-height: 76px;
+  color: #22408f;
+  white-space: nowrap;
+}
+
+.libreta__titulo {
+  left: 170px;
+  font-size: 56px;
+}
+
+.libreta__trazos {
+  position: absolute;
+  inset: 0;
+  width: 1180px;
+  height: 800px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.libreta__trazos path {
+  fill: none;
+  stroke: #22408f;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* auditar-excepcion-fin */

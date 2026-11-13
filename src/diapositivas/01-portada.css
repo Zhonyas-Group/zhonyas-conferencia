@@ -1,0 +1,78 @@
+/*
+ * 01 · portada (rama diseno-wow). El logo 3D en el centro, un poco por encima
+ * de la mitad; «Zhonyas» debajo a 128 px (la portadilla de la escala) y los
+ * tres oradores en píxeles al pie.
+ */
+.portada {
+  position: absolute;
+  inset: 0;
+}
+
+/* El logo: 760 px de ancho (la web: min(95 %, 730 px), globals.css:2036), centrado en y ≈ 400. */
+.portada__logo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40px;
+  display: grid;
+  place-items: center;
+}
+
+.portada__nombre {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 690px;
+  text-align: center;
+}
+
+.portada__nombre .zh-portadilla {
+  margin: 0;
+}
+
+/* Los tres, con los pies en y 1000. */
+.portada__tres {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1000px;
+  height: 0;
+  display: flex;
+  justify-content: center;
+  gap: 120px;
+}
+
+.portada__persona {
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+/* Caen a los 800 ms (entrada «caer») y saludan 500 ms después de aparecer, como en el relevo (relevo.css), 150 ms uno detrás de otro. */
+.portada__persona > .zh-sprite[data-saludo] {
+  animation-delay: calc(1300ms + var(--orden) * 150ms);
+}
+
+/*
+ * Rendimiento (medido en la ThinkPad con scripts/wow-medir.mjs --fps, 13-nov):
+ * el logo con el filo de 1 px (drop-shadow) en cada una de sus 16 capas,
+ * meciéndose, bajaba la sala a 20–33 fps. En la portada las capas van sin ese
+ * filtro (la cara conserva su sombra) y el balanceo se para cuando la portada
+ * no está en pantalla (vecina oculta o la que sale).
+ */
+.portada .zh-logo3d__layer:not(.zh-logo3d__face) {
+  filter: none;
+}
+
+.portada .zh-logo3d__balanceo {
+  will-change: transform;
+}
+
+.capa:not([data-rol='actual']) .portada .zh-logo3d__balanceo {
+  animation-play-state: paused;
+}
+
+/* De vecina oculta (debajo de la 02), el logo no se pinta: 17 capas 3D cuestan aunque no se vean. */
+.capa[data-rol='oculta'] .portada__logo {
+  visibility: hidden;
+}

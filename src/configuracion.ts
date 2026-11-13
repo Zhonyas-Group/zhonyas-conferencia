@@ -8,7 +8,19 @@
  * El mazo de prueba del motor tiene su propia configuración, con las mismas
  * claves (src/diapositivas/prueba/configuracion.ts).
  */
+import { camara } from './marca/wow/transiciones';
+
 export const configuracion = {
+  /**
+   * Fondo vivo y continuo debajo de todas las diapositivas (rama diseno-wow,
+   * src/marca/wow/FondoVivo.tsx): nunca negro plano.
+   */
+  fondoVivo: true,
+  /**
+   * La transición de los cambios que no declaran la suya (rama diseno-wow):
+   * la cámara que avanza (src/marca/wow/transiciones.ts). Ya no hay corte seco.
+   */
+  transicionPorDefecto: camara,
   /** Título de la ventana del navegador. */
   titulo: 'Zhonyas · Charla en el ITLA',
   /**

@@ -1,0 +1,59 @@
+/*
+ * 04 · sin-rnc (rama diseno-wow). A la izquierda, la cifra (300 px) y su
+ * etiqueta (60 px) desde el margen de 115 px; a la derecha, los mil puntos
+ * (40 × 25, 20 px de paso: 800 × 500) que terminan en el margen derecho
+ * (x 1805), centrados en la altura. La fuente, abajo a la izquierda.
+ */
+.sin-rnc {
+  position: absolute;
+  inset: 0;
+}
+
+.sin-rnc__puntos {
+  position: absolute;
+  left: 1005px;
+  top: 290px;
+  width: 800px;
+  height: 500px;
+}
+
+.sin-rnc__cifra {
+  position: absolute;
+  left: var(--zh-margen);
+  top: 300px;
+}
+
+.sin-rnc__cifra .zh-cifra {
+  position: relative;
+  margin: 0;
+  font-size: 300px; /* la cifra de la charla (composiciones.css, <UnaCifra>) */
+  white-space: nowrap;
+}
+
+/* La cuenta, encima del <Dato> mientras corre (cuando termina, se vacía y se ve el <Dato>). */
+.sin-rnc__contador {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.sin-rnc__etiqueta {
+  position: absolute;
+  left: var(--zh-margen);
+  top: 600px;
+  max-width: 860px;
+}
+
+.sin-rnc__etiqueta .zh-lectura {
+  margin: 0;
+}
+
+.sin-rnc__fuente {
+  position: absolute;
+  left: var(--zh-margen);
+  bottom: 75px;
+}
+
+.sin-rnc__fuente .zh-fuente {
+  margin: 0;
+}

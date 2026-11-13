@@ -63,11 +63,18 @@ export interface PropsLogo3D {
   ancho?: number;
   /** El resplandor de la cara y el suelo de la web (cambio 5). Por defecto, no. */
   halo?: boolean;
+  /**
+   * Rama diseno-wow: el objeto se mece solo, despacio, dentro de los topes con
+   * los que sigue al ratón en la web (±18° y ±24°, interactive-logo-3d.tsx:88-89),
+   * para que en la portada esté vivo aunque nadie toque el ratón. El ratón sigue
+   * mandando encima (el balanceo va en una caja aparte, logo3d.css).
+   */
+  balanceo?: boolean;
   className?: string;
   style?: CSSProperties;
 }
 
-export function Logo3D({ interactive: pedidoInteractivo = true, ancho = 730, halo = false, className, style }: PropsLogo3D) {
+export function Logo3D({ interactive: pedidoInteractivo = true, ancho = 730, halo = false, balanceo = false, className, style }: PropsLogo3D) {
   const { activa } = useDiapositiva();
   // Cambio 6: solo en la diapositiva que está en pantalla.
   const interactive = pedidoInteractivo && activa;
@@ -169,6 +176,7 @@ export function Logo3D({ interactive: pedidoInteractivo = true, ancho = 730, hal
           if (!isDragging) updateRotation({ ...REPOSO });
         } : undefined}
       >
+        <div className={balanceo ? 'zh-logo3d__balanceo' : 'zh-logo3d__sin-balanceo'}>
         <div
           ref={objectRef}
           className="zh-logo3d__object"
@@ -238,6 +246,7 @@ export function Logo3D({ interactive: pedidoInteractivo = true, ancho = 730, hal
             <path d={Z_PATH} fill={`url(#${highlightId})`} />
             <path d={H_PATH} fill={`url(#${highlightId})`} />
           </svg>
+        </div>
         </div>
 
         {/* interactive-logo-3d.tsx:205 (cambio 5: solo con `halo`) */}

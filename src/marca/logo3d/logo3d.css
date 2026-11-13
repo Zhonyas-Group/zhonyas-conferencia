@@ -96,3 +96,51 @@
 :root[data-luz] .zh-logo3d__floor {
   display: none;
 }
+
+/*
+ * Rama diseno-wow: la caja del balanceo (Logo3D, `balanceo`). Conserva el 3D
+ * (preserve-3d) para que el objeto de dentro siga siendo de 16 capas. Gira
+ * dentro del tope de la web en Y (±24°: interactive-logo-3d.tsx:89), a ±14°,
+ * con el periodo de la aurora de la web (9 s ease-in-out,
+ * capabilities-heading.css:15), y flota ±10 px en 18 s para que no se repita igual.
+ */
+.zh-logo3d__balanceo,
+.zh-logo3d__sin-balanceo {
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+
+.zh-logo3d__balanceo {
+  animation:
+    zh-logo3d-mecer-y 9s ease-in-out infinite alternate, /* capabilities-heading.css:15 */
+    zh-logo3d-mecer-x 18s ease-in-out infinite alternate; /* capabilities-heading.css:15, el doble */
+}
+
+@keyframes zh-logo3d-mecer-y {
+  from {
+    rotate: y -14deg;
+  }
+  to {
+    rotate: y 14deg;
+  }
+}
+
+@keyframes zh-logo3d-mecer-x {
+  from {
+    translate: 0 -10px;
+  }
+  to {
+    translate: 0 10px;
+  }
+}
+
+.revision .zh-logo3d__balanceo {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zh-logo3d__balanceo {
+    animation: none;
+  }
+}
