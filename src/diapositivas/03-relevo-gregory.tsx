@@ -19,9 +19,14 @@
  * Rama diseno-wow: entra con la cortina del cambio de orador (el fondo del
  * portal del equipo cruza la pantalla con el personaje de Gregory corriendo
  * encima: src/marca/wow/transiciones.ts) y el perfil deja ver el fondo vivo.
+ *
+ * Rama diseno-wow (13-nov): sin paso propio para el vuelo. José pidió que el
+ * relevo no necesite tantos clics: con un solo → entra la diapositiva, se ve
+ * la tarjeta un momento y la foto vuela sola (`automatico`, Relevo.tsx);
+ * el → siguiente ya pasa a la diapositiva que viene.
  */
 import { mediosRelevo } from '../marca/relevo/equipo';
-import { Relevo } from '../marca/relevo/Relevo';
+import { RETRASO_RELEVO, Relevo } from '../marca/relevo/Relevo';
 import { cortina } from '../marca/wow';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 
@@ -29,7 +34,7 @@ import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 const TARJETAS = ['gregory'] as const;
 
 function RelevoGregory(_: PropsDiapositiva) {
-  return <Relevo orador="gregory" desde={1} tarjetas={TARJETAS} hizo="" vueltas={1} />;
+  return <Relevo orador="gregory" tarjetas={TARJETAS} hizo="" vueltas={1} automatico={RETRASO_RELEVO} />;
 }
 
 export default definirDiapositiva({
@@ -37,16 +42,12 @@ export default definirDiapositiva({
   titulo: 'Relevo: Gregory',
   orador: 'gregory',
   duracion: 25,
-  pasos: 1,
+  pasos: 0,
   notas: [
     {
-      decir: 'Nadie habla. José le da el clicker a Gregory (relevo del guion visual).',
-      claves: 'nadie habla · el clicker',
-    },
-    {
       decir:
-        'Gracias, José. Soy Gregory Martínez y hago diseño de producto en Zhonyas. Pymex es nuestro proyecto final del ITLA, el de José y mío. Y en un proyecto final, lo primero que te piden es el problema, con datos.',
-      claves: 'diseño de producto · proyecto final · el problema, con datos',
+        'La foto vuela sola mientras José le da el clicker a Gregory. Gracias, José. Soy Gregory Martínez y hago diseño de producto en Zhonyas. Pymex es nuestro proyecto final del ITLA, el de José y mío. Y en un proyecto final, lo primero que te piden es el problema, con datos.',
+      claves: 'el clicker · diseño de producto · proyecto final · el problema, con datos',
       siFalla: 'Si la foto o el atlas no cargan, el motor deja el estado final (retrato y nombre) y Gregory sigue.',
     },
   ],

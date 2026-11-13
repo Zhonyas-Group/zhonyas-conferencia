@@ -58,6 +58,8 @@ registrarEntrada({
     if (reducido) return; // team-profile.tsx:91-110: con reduceMotion, duración 0
     const animaciones: Animation[] = [];
     const parte = (nombre: string) => el.querySelector<HTMLElement>(`[data-relevo="${nombre}"]`);
+    // Relevo automático (Relevo.tsx, `automatico`): todo empieza estos ms después de llegar.
+    const retraso = Number(el.querySelector<HTMLElement>('[data-retraso]')?.dataset.retraso ?? 0) || 0;
 
     // El retrato vuela de la tarjeta a su sitio (team-profile.tsx:98-101).
     const retrato = parte('retrato');
@@ -83,6 +85,7 @@ registrarEntrada({
           ],
           {
             duration: TIEMPOS.retrato, // 700 ms: team-profile.tsx:101 (duration 0.7)
+            delay: retraso,
             easing: CURVA_MARCA, // team-profile.tsx:101 (ease [0.22, 1, 0.36, 1])
             fill: 'backwards',
           },
@@ -95,6 +98,7 @@ registrarEntrada({
       animaciones.push(
         fondo.animate([{ opacity: 0 }, { opacity: 1 }], {
           duration: TIEMPOS.fondo, // 500 ms: team-profile.tsx:92 (duration 0.5)
+          delay: retraso,
           easing: CURVA_MOTION_POR_DEFECTO, // sin ease en team-profile.tsx:92 → easeOut de motion (geometria.ts)
           fill: 'backwards',
         }),
@@ -111,7 +115,7 @@ registrarEntrada({
           ],
           {
             duration: TIEMPOS.texto, // 450 ms: team-profile.tsx:105 (duration 0.45)
-            delay: TIEMPOS.textoRetraso, // 180 ms: team-profile.tsx:105 (delay 0.18)
+            delay: retraso + TIEMPOS.textoRetraso, // 180 ms: team-profile.tsx:105 (delay 0.18)
             easing: CURVA_MOTION_POR_DEFECTO, // sin ease en team-profile.tsx:105 → easeOut de motion
             fill: 'backwards',
           },
@@ -129,7 +133,7 @@ registrarEntrada({
           ],
           {
             duration: TIEMPOS.avatar, // 400 ms: team-profile.tsx:110 (duration 0.4)
-            delay: TIEMPOS.avatarRetraso, // 500 ms: team-profile.tsx:110 (delay 0.5)
+            delay: retraso + TIEMPOS.avatarRetraso, // 500 ms: team-profile.tsx:110 (delay 0.5)
             easing: CURVA_MOTION_POR_DEFECTO, // sin ease en team-profile.tsx:110 → easeOut de motion
             fill: 'backwards',
           },

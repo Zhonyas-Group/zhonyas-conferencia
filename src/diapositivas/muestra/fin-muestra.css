@@ -43,5 +43,5 @@
 }
 
 .fin-muestra__persona > .zh-sprite[data-saludo] {
-  animation-delay: calc(1100ms + var(--orden) * 150ms);
+  animation-delay: calc(1100ms + var(--orden) * 150ms); /* 01-portada.css: caen a los 600 ms (aquí) y saludan 500 ms después, 150 ms uno detrás de otro (relevo.css, team-profile.tsx:110) */
 }

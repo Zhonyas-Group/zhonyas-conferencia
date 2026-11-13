@@ -16,14 +16,19 @@
  * equipo.ts, que el guion no pone. El nombre a 96 px como pide el guion y el
  * personaje al tamaño de la web, como en la 03, los pone la pieza
  * (src/marca/relevo/relevo.css).
+ *
+ * Rama diseno-wow (13-nov): sin paso propio para el vuelo. José pidió que el
+ * relevo no necesite tantos clics: con un solo → entra la diapositiva, se ve
+ * la tarjeta un momento y la foto vuela sola (`automatico`, Relevo.tsx);
+ * el → siguiente ya pasa a la diapositiva que viene.
  */
-import { Relevo } from '../marca/relevo/Relevo';
+import { RETRASO_RELEVO, Relevo } from '../marca/relevo/Relevo';
 import { mediosRelevo } from '../marca/relevo/equipo';
 import { TARJETAS } from '../marca/relevo/geometria';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 
 function RelevoJose(_: PropsDiapositiva) {
-  return <Relevo orador="jose" origen={TARJETAS[0]} nombre="José Leonardo Reyes" hizo="" vueltas={1} />;
+  return <Relevo orador="jose" origen={TARJETAS[0]} nombre="José Leonardo Reyes" hizo="" vueltas={1} automatico={RETRASO_RELEVO} />;
 }
 
 export default definirDiapositiva({
@@ -31,17 +36,13 @@ export default definirDiapositiva({
   titulo: 'Relevo: José',
   orador: 'jose',
   duracion: 20,
-  pasos: 1,
+  pasos: 0,
   // La foto de José y su personaje: se precargan al llegar a la 13 y el motor avisa si faltan.
   medios: mediosRelevo('jose', ['jose']),
   notas: [
     {
-      decir: 'Nadie habla. Angel entrega el clicker y se queda junto a la laptop para la 18.',
-      claves: 'nadie habla · el clicker · Angel a la laptop',
-    },
-    {
       decir:
-        'Yo otra vez. Mi historia es la de un prestamista y la de Lendex, un producto mío: ahí el prestamista lleva los préstamos y los cobros que hoy apunta en un cuaderno.',
+        'La foto vuela sola mientras Angel entrega el clicker y se queda junto a la laptop para la 18. Yo otra vez. Mi historia es la de un prestamista y la de Lendex, un producto mío: ahí el prestamista lleva los préstamos y los cobros que hoy apunta en un cuaderno.',
       claves: 'prestamista · Lendex · cuaderno · Angel a la laptop',
       siFalla:
         'Si la foto o el atlas no cargan, como en la 03: el motor deja el estado final (retrato y nombre) y José sigue.',

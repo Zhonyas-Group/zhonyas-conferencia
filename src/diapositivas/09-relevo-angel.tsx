@@ -25,9 +25,14 @@
  * sacado con ?revision=1 a 1920 × 1080 y pasado a WebP con el Chrome del
  * equipo (calidad 0,9), como el de la 10. Si cambia lo que se ve en la 09, se
  * vuelve a sacar igual (docs/MEDIOS.md, M-04).
+ *
+ * Rama diseno-wow (13-nov): sin paso propio para el vuelo. José pidió que el
+ * relevo no necesite tantos clics: con un solo → entra la diapositiva, se ve
+ * la tarjeta un momento y la foto vuela sola (`automatico`, Relevo.tsx);
+ * el → siguiente ya pasa a la diapositiva que viene.
  */
 import { mediosRelevo } from '../marca/relevo/equipo';
-import { Relevo } from '../marca/relevo/Relevo';
+import { RETRASO_RELEVO, Relevo } from '../marca/relevo/Relevo';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 
 /** Solo la tarjeta de Angel, en la primera caja de la web (la del guion de la 03). */
@@ -35,7 +40,7 @@ const TARJETAS = ['angel'] as const;
 
 function RelevoAngel(_: PropsDiapositiva) {
   // vueltas 1: un saludo, cuadros 1-2-3-2-1 a 6 fps, 0,83 s (GUION 03; personaje.css).
-  return <Relevo orador="angel" tarjetas={TARJETAS} hizo="" vueltas={1} />;
+  return <Relevo orador="angel" tarjetas={TARJETAS} hizo="" vueltas={1} automatico={RETRASO_RELEVO} />;
 }
 
 export default definirDiapositiva({
@@ -43,16 +48,12 @@ export default definirDiapositiva({
   titulo: 'Relevo: Angel',
   orador: 'angel',
   duracion: 25,
-  pasos: 1,
+  pasos: 0,
   notas: [
     {
-      decir: 'Nadie habla. Gregory entrega el clicker.',
-      claves: 'nadie habla · el clicker',
-    },
-    {
       decir:
-        'Yo soy Angel Grullon. En la web de Zhonyas armé los muñequitos de píxeles que ven saludando y el agujero negro de la página de contacto. Fíjense en el centro de la pantalla.',
-      claves: 'muñequitos · agujero negro · «fíjense en el centro» · clic y callarse',
+        'La foto vuela sola mientras Gregory entrega el clicker. Yo soy Angel Grullon. En la web de Zhonyas armé los muñequitos de píxeles que ven saludando y el agujero negro de la página de contacto. Fíjense en el centro de la pantalla.',
+      claves: 'el clicker · muñequitos · agujero negro · «fíjense en el centro» · clic y callarse',
       aparte:
         'El clic siguiente abre Z-10 y lleva a la 10.\n\n' +
         '**[CONFIRMAR con Angel cómo escribe su nombre].**\n\n' +

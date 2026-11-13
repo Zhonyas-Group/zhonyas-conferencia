@@ -65,14 +65,27 @@ interface PropsRelevo {
    * Sin él, como en la web: saluda mientras esté en pantalla (crítica C-11).
    */
   vueltas?: number;
+  /**
+   * Rama diseno-wow (13-nov, José: «que no se necesite darle tantas veces a
+   * la tecla»): el vuelo arranca solo, estos ms después de llegar a la
+   * diapositiva, sin un paso propio. Mientras tanto la foto espera en la caja
+   * de su tarjeta (el primer cuadro de la animación), así que sigue saliendo
+   * de algo que ya estaba (C-10 b). Con él, `desde` es 0 y la diapositiva
+   * puede ir con `pasos: 0`.
+   */
+  automatico?: number;
 }
+
+/** Lo que espera el vuelo automático: que la cortina (850 ms) destape la tarjeta y se vea un momento. */
+export const RETRASO_RELEVO = 1100;
 
 function estiloCaja(c: Caja): CSSProperties {
   return { left: c.left, top: c.top, width: c.width, height: c.height };
 }
 
-export function Relevo({ orador, desde = 1, tarjetas = ORDEN_TARJETAS, origen, nombre, hizo, vueltas }: PropsRelevo) {
+export function Relevo({ orador, desde: desdePedido, tarjetas = ORDEN_TARJETAS, origen, nombre, hizo, vueltas, automatico }: PropsRelevo) {
   const { id, paso } = useDiapositiva();
+  const desde = desdePedido ?? (automatico !== undefined ? 0 : 1);
   const persona = EQUIPO[orador];
   const volo = paso >= desde;
 
@@ -83,13 +96,13 @@ export function Relevo({ orador, desde = 1, tarjetas = ORDEN_TARJETAS, origen, n
   const salida = cajas.find((c) => c.id === orador)?.caja;
 
   useLayoutEffect(() => {
-    if (desde < 1)
+    if (desde < 1 && automatico === undefined)
       registrarProblema(`«${id}»: el relevo de ${persona.nombre} vuela en el paso ${desde}; tiene que ser ≥ 1 para que antes se vea la tarjeta de la que sale (C-10 b).`);
     if (!origen && tarjetas.length > TARJETAS.length)
       registrarProblema(`«${id}»: el relevo tiene ${tarjetas.length} tarjetas y solo caben ${TARJETAS.length} (las posiciones de la web).`);
     if (!salida)
       registrarProblema(`«${id}»: ${persona.nombre} no está entre las tarjetas del relevo; la foto no tiene de dónde salir y aparece de golpe.`);
-  }, [id, desde, origen, tarjetas, salida, persona.nombre]);
+  }, [id, desde, automatico, origen, tarjetas, salida, persona.nombre]);
 
   // team-profile.tsx:31-33: la última palabra del nombre lleva al lado el personaje.
   const palabras = (nombre ?? persona.nombre).split(' ');
@@ -97,7 +110,7 @@ export function Relevo({ orador, desde = 1, tarjetas = ORDEN_TARJETAS, origen, n
   const principio = palabras.join(' ');
 
   return (
-    <div className="relevo">
+    <div className="relevo" style={automatico ? ({ '--relevo-retraso': `${automatico}ms` } as CSSProperties) : undefined}>
       {/* Las tarjetas se van de golpe en el cuadro del clic, como en la web (relevo.css). */}
       <div className="relevo-tarjetas" data-volo={volo ? '' : undefined}>
         {cajas.map(({ id: quien, caja }) => (
@@ -108,6 +121,7 @@ export function Relevo({ orador, desde = 1, tarjetas = ORDEN_TARJETAS, origen, n
       </div>
 
       <Entrada desde={desde} efecto="relevo" className="relevo-perfil">
+        {automatico ? <span data-retraso={automatico} hidden /> : null}
         <div className="relevo-fondo" data-relevo="fondo" />
         <div className="relevo-escena">
           <div
