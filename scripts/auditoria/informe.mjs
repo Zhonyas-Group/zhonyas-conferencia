@@ -5,6 +5,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join, relative } from 'node:path';
 import { contar } from './auditor.mjs';
+import { MOTIVO_FUERA } from './codigo.mjs';
 import { AVISO, FALLO, REGLAS, UMBRAL } from './reglas.mjs';
 
 const celda = (t) => String(t ?? '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
@@ -38,7 +39,7 @@ export async function escribirInforme(resultado, { rutaMd, origen, raiz }) {
   if (resultado.codigo) {
     const a = resultado.codigo.archivos;
     L.push(
-      `- **Código:** ${plural(a.mazo + a.tokens, 'archivo', 'archivos')} del mazo (src/diapositivas, src/marca y marca.css), ${a.letra} de la letra del motor y ${a.motor} del motor${a.trampa ? ` y ${a.trampa} de la trampa del auditor` : ''}.${resultado.codigo.fuera.length ? ` Fuera: ${resultado.codigo.fuera.map(codigo).join(', ')} (la trampa del propio auditor; la revisa \`scripts/probar-auditor.mjs\`).` : ''}`,
+      `- **Código:** ${plural(a.mazo + a.tokens, 'archivo', 'archivos')} del mazo (src/diapositivas, src/marca y marca.css), ${a.letra} de la letra del motor y ${a.motor} del motor${a.trampa ? ` y ${a.trampa} de la trampa del auditor` : ''}.${resultado.codigo.fuera.length ? ` Fuera: ${resultado.codigo.fuera.map((f) => `${codigo(f)} (${MOTIVO_FUERA[f] ?? 'sin motivo'})`).join('; ')}.` : ''}`,
     );
   }
   L.push(`- **Cuándo:** ${fecha(resultado.fecha)} (hora de RD).`);

@@ -29,7 +29,9 @@ Hace falta Node 22.12 o superior solo para desarrollar. Para presentar basta Chr
 | `npm run servir` | Sirve `dist/` en http://localhost:4180 con un servidor mínimo de Node; si el 4180 está ocupado usa el siguiente libre y lo dice. `-- 8080` pide otro puerto (si está ocupado, lo avisa y sale) y `-- --red` lo deja ver desde otro equipo. |
 | `npm run capturas` | Compila, captura cada diapositiva y cada paso a 1920 × 1080 en `verificacion/capturas/NN-id-pP.png` y vuelve a crear el PDF de respaldo en `dist/`. |
 | `npm run pdf` | Compila y genera `dist/zhonyas-conferencia.pdf`: una página por diapositiva en su estado final. |
-| `npm run probar` | Compila y pasa las dos pruebas automáticas: la del motor (`probar.mjs`, 85 comprobaciones) y la de las novedades (`probar-novedades.mjs`, 38). Ver §8. Después prueba el auditor y **audita el mazo contra el slop**: si encuentra algo, falla (§12). |
+| `npm run probar` | Compila la charla y el mazo de prueba (§5) y pasa las pruebas automáticas: la del motor (`probar.mjs`, 85 comprobaciones) y la de las novedades (`probar-novedades.mjs`, 38), sobre el mazo de prueba; la de las notas del presentador (`probar-notas.mjs`, 11), sobre la charla. Ver §8. Después prueba el auditor y **audita la charla contra el slop**: si encuentra algo, falla (§12). Deja `dist/` sin el PDF: después, `npm run pdf`. |
+| `npm run compilar:prueba` · `npm run dev:prueba` | Compila el mazo de prueba del motor en `dist-prueba/` · lo sirve en desarrollo (§5). |
+| `npm run qr` | Regenera el QR del cierre (`public/medios/cierre/qr-zhonyas.svg`) y lo comprueba leyéndolo (docs/MEDIOS.md, M-08). |
 | `npm run auditar` | El auditor anti-slop sobre `dist/` (cada paso a 1920 × 1080) y sobre el código de `src/`. Deja `verificacion/auditoria.md` con una captura anotada de cada pantalla con fallos. `-- --dist otra/carpeta`, `-- --url http://localhost:5306/`, `-- --lab --pieza cinta`. Ver §12. |
 | `npm run auditar:probar` | Prueba el propio auditor contra su trampa (`src/marca/auditor/`): cada regla tiene que encontrar lo suyo y nada más (§12.5). |
 | `npm run medio-prueba` | Regenera los medios de las diapositivas de prueba (los dibuja y graba Chrome; no descarga nada). |
@@ -46,21 +48,34 @@ Si algo de `dist/` está abierto en un programa que lo bloquea (el PDF en Acroba
 
 ## 2. El día de la charla
 
+### Qué llevar
+
+- La laptop del día (la ThinkPad) con **su cargador**, y el adaptador de video que case con el proyector.
+- **Dos USB con la carpeta `dist/` entera** (la presentación es su `index.html`; no hace falta Node ni internet para presentar).
+- El PDF de respaldo (`zhonyas-conferencia.pdf`, dentro de `dist/`) también **en el teléfono**.
+- El puntero (clicker) que se va a usar, probado antes con el mazo (GUION, R-04).
+- Para la demo de la 18, **red en la laptop**: el Wi-Fi de la sala o el teléfono de José como punto de acceso (GUION, R-01). Es lo único que necesita internet.
+
 ### Antes de salir
 
 1. `npm run pdf` (compila y deja el PDF de respaldo dentro de `dist/`).
 2. Copia **la carpeta `dist/` entera** al USB. Se puede renombrar; da igual que la ruta tenga espacios o acentos.
 3. Lleva también el PDF en el teléfono o en otro USB.
+4. En la laptop del día, abre el `index.html` **del USB** con el Wi-Fi apagado y pasa las diapositivas con el presentador abierto: todo tiene que verse igual que con red, salvo la 18, que sin red pone sola el video de respaldo (ver «La demo de Lendex»). Comprobado el 13-nov con Playwright: sin red, la única petición que sale de `file://` es la de `lendexgp.com`. De paso, el agujero negro de la 10 mide la lente en esa carpeta y guarda la decisión (src/marca/agujero/lente.ts; GUION, R-02): así la charla no la mide delante del público. La decisión es de cada carpeta: si el USB cambia de letra de unidad, se vuelve a medir.
 
 ### En la sala
 
 1. Conecta el cargador. Con batería, Chrome y Edge activan el ahorro de energía y reducen la frecuencia de imágenes. Si no hay enchufe, desactívalo en `chrome://settings/performance` (Edge: `edge://settings/system`).
 2. Proyector en modo **Extender** (Win + P → Extender), con la salida de Windows a la **resolución nativa del proyector** (si no, el proyector reescala y el texto de 32 px se ve borroso).
-3. Doble clic en `index.html`. Si Windows lo abre con otro navegador: clic derecho → Abrir con → Chrome (o Edge). Abierto así (sin `#` en la dirección) empieza siempre en la diapositiva 1, aunque el ensayo terminara en otra.
+3. Doble clic en `index.html`. Si Windows lo abre con otro navegador (en la ThinkPad, hoy los `.html` los abre Edge, que también vale): clic derecho → Abrir con → Chrome (o Edge). Abierto así (sin `#` en la dirección) empieza siempre en la diapositiva 1, aunque el ensayo terminara en otra.
 4. Pulsa **P** (con la sala todavía en el portátil): se abre la ventana del presentador. Si ya hay uno abierto, P no abre otro: lo destaca con un marco (y lo trae delante si Windows lo permite).
 5. Arrastra la ventana de la sala (la que no es el presentador) al proyector y pulsa **F** para ponerla a pantalla completa. El presentador se queda en el portátil. Al entrar en pantalla completa el navegador avisa «mantén pulsada Esc para salir»: es lo esperado (ver Esc en la tabla de teclas).
 6. **Prueba de sala:** pulsa **T**, con las luces como van a estar, y mírala desde la última fila (§2.1). T o Esc la quitan.
-7. Mira el presentador: arriba a la derecha debe decir **«Sala conectada»** en verde y no debe haber franja roja de avisos.
+7. Mira el presentador: arriba a la derecha debe decir **«Sala conectada»** en verde y no debe haber franja roja de avisos (con los medios que hay hoy no sale ninguna: comprobado el 13-nov en los 39 pasos).
+   - Si la franja dice **«Agujero negro: el primer recorrido con lente midió … fps (< 50); la lente queda apagada en esta máquina»**, no hay que hacer nada: es lo previsto (GUION, R-02) y la 10 entra igual, sin la lente. En esta ThinkPad la medida da 31–32 fps, así que lo normal es verla después del ensayo del punto 4 de «Antes de salir».
+   - Si la franja dice **«Lendex saldrá en claro en la demo…»**, la pantalla de entrar de Lendex (paso 1 de la 18) saldría **blanca en media pantalla del proyector**, entre diapositivas negras, justo cuando José pide el monto. Pon Windows con las apps en oscuro (Configuración → Personalización → Colores → modo de aplicación: **Oscuro**) o abre Chrome con `--force-dark-mode` al final del destino de su acceso directo (GUION, R-14: `"C:\Program Files\Google\Chrome\Application\chrome.exe" --force-dark-mode`), con Chrome **cerrado del todo** antes: si ya hay una ventana abierta, la bandera no se aplica. El aviso se va solo en cuanto el navegador pasa a oscuro. La nota del paso 0 de la 18 lo repite en sus avisos.
+   - En la ThinkPad (Chrome y Edge 157) no sale aunque Windows tenga las apps en claro: la sala declara `color-scheme: dark` y el navegador se lo pasa al iframe de Lendex (`ESQUEMA_LENDEX` en `src/marca/lendex/DemoLendex.tsx`). Medido el 13-nov con Playwright **sin emular el tema** (`colorScheme: null`); con la emulación por defecto de Playwright (`'light'`), Lendex sale en claro porque la emulación manda también dentro del iframe.
+   - Lo que el aviso no ve: Lendex **recuerda su sol/luna** en ese navegador, y lo recordado manda sobre el tema. Si en un ensayo alguien lo pasó a claro, sale en claro sin aviso. Al recorrer la demo esa mañana (GUION, R-01), mira que la pantalla de entrar salga oscura; si no, la luna de arriba a la derecha la pasa a oscuro y se queda guardado.
 8. El cronómetro arranca solo con el primer movimiento hacia delante: un avance (también el → que enciende la sala si esperaba en negro a que te presentaran) o un salto hacia delante con número + Intro, la cuadrícula o Fin. Volver atrás (Inicio, ←) no lo arranca, y cerrar la prueba de sala tampoco. Si quedó tiempo de un ensayo de hace menos de una hora (el cronómetro no marca 0:00), pulsa **Reiniciar**; uno más viejo (parado hace más de una hora, o en marcha más de tres) vuelve a cero solo al abrir.
 9. Desactiva las notificaciones de Windows (Asistente de concentración) para que no salgan encima.
 
@@ -77,6 +92,8 @@ Una diapositiva oculta, fuera del orden (no está en la cuadrícula ni cuenta pa
 - **líneas de 1 px** (verticales, horizontales y en damero): si salen grises o con muaré, el proyector está reescalando;
 - un **patrón de bordes**: el borde de la imagen, el 2,5 % y el 5 % (lo que suelen recortar los proyectores) y el margen de 115 px de la retícula, en discontinua.
 
+**Modo sala con luz (tecla L).** Si desde la última fila no se leen las fuentes, los créditos ni las etiquetas grises (en un aula con luz el proyector sube el negro y lava los grises: con el negro al 30 % y el blanco al 92 %, `--zh-texto-2` queda en unos 4,4:1), pulsa **L** en la sala o en el presentador: la raíz lleva `[data-luz]`, `--zh-texto-2` pasa a `--zh-texto` y el logo pierde su sombra y su halo, sin colores nuevos (`marca.css`, `cinta.css`, `logo3d.css`). Viaja con la posición a la otra ventana, se recuerda en localStorage (por carpeta) y el presentador lo enseña arriba («Sala con luz · L»). La prueba de sala dice si está puesto y vuelve a medir el contraste en vivo (con la luz, «texto 2» da 19,4:1). Otra L lo quita.
+
 Se abre con T desde la sala o desde el presentador (que la enseña sobre «En pantalla» con el aviso «El público ve la prueba de sala»). T o Esc la cierran, y cualquier avance o retroceso también, **sin moverse** de diapositiva («Siguiente: se cierra la prueba de sala, sin moverse»). Mientras está abierta, el video y el WebGL de la diapositiva de debajo se paran. También se ve como pieza del laboratorio: `lab.html?pieza=prueba-sala`.
 
 ### Teclas
@@ -92,6 +109,8 @@ Funcionan igual en la sala y en el presentador.
 | G | Cuadrícula con todas las diapositivas. Se abre con la actual elegida; flechas para elegir (↑ y ↓ cambian de fila; si no hay otra fila, no se mueven), Intro o clic para ir, Esc o G para cerrar. Elegir la actual la deja como está, con los pasos ya mostrados (como cerrar con Esc); las demás empiezan en su paso 0. El ratón solo cambia la elección cuando se mueve: si la rejilla aparece debajo del puntero quieto, no elige nada. |
 | B · . | Pantalla en negro, de golpe (sin fundido), también con la cuadrícula abierta. Cualquier avance o retroceso la vuelve a encender sin moverse. |
 | T | Prueba de sala (§2.1). |
+| V | Solo en la 18: pone el video de respaldo de la demo, desde el principio, y otra V vuelve a Lendex en vivo. Las dos ventanas lo siguen. Con el foco dentro de la calculadora la sala no oye ninguna tecla: V en el presentador. (En la 10, cuando llegue su video, M-04.) |
+| L | Modo sala con luz: fuentes, créditos y etiquetas en blanco (§2.1). Se recuerda. |
 | F · F5 | Pantalla completa (F5 no recarga). |
 | Esc | Cierra lo que haya abierto: la ayuda, la prueba de sala, la cuadrícula, el «Ir a» o, desde el presentador, lo que tenga abierto la sala. Si no hay nada abierto, sale de pantalla completa (el «terminar» del puntero). Funciona igual a pantalla completa: la página se queda con Esc (Keyboard Lock), y **mantener Esc pulsado** sale siempre de pantalla completa. |
 | P | Abre el presentador (solo desde la sala). |
@@ -112,6 +131,20 @@ Cada diapositiva dice quién la presenta (`orador`). En el presentador:
 
 El que habla lleva el puntero; el que entra mira esa franja para saber cuándo le toca.
 
+### La demo de Lendex (18)
+
+La única parte que necesita internet: la calculadora pública de `https://lendexgp.com/app?calculadora`, dentro de la diapositiva (un `iframe`). Angel está al teclado y José habla (GUION, 18).
+
+1. **La víspera:** `node scripts/lendex-grabar-demo.mjs --guion --comprobar` dice si Lendex se sigue dejando embeber, si el camino da RD$2,252.65 y si ya abre la calculadora sola con `?calculadora` (entonces se pone `LENDEX_ABRE_LA_CALCULADORA = true` en `src/marca/lendex/DemoLendex.tsx` y se vuelve a compilar: la 18 pasa a dos pasos). Si ya no se deja embeber, va el plan B del guion (M-07).
+2. **La mañana de la charla**, con la red de la sala: recorre la demo una vez. La pantalla de entrar de Lendex tiene que salir **oscura** (si sale clara, la luna de arriba la pasa a oscuro y queda guardado; §2, «En la sala», punto 7).
+3. **Con la 17 en pantalla**, la 18 ya carga Lendex por debajo: al llegar no se ve su presentación.
+4. **Paso 0:** «Díganme un monto.» José repite el monto. Clic.
+5. **Paso 1** (mientras Lendex no abra solo con `?calculadora`, como hoy): se ve la pantalla de entrar de Lendex, sin ampliar. Angel pulsa «Calculadora de Préstamos», abajo a la izquierda; la sala recupera el teclado sola. Clic de José.
+6. **Paso 2:** la calculadora ampliada al doble. Angel hace clic en el monto, Ctrl + A y lo escribe **sin punto ni coma** («10.000» calcula diez pesos); igual con la tasa, 20. Las 12 cuotas, «Mensual» y «Francesa» ya vienen. José lee la cuota y el total **en la pantalla de la sala**: el presentador solo tiene el póster quieto (con las cifras de diez mil).
+7. **Al terminar**, Angel hace clic en la ventana del presentador. Hasta ese clic José no toca el puntero: con el foco en la calculadora, las flechas cambian la tasa. En la 18, con la calculadora a la vista, un clic en la sala no avanza y «número + Intro» no salta.
+
+**El respaldo (V).** `public/medios/lendex/respaldo.webm`: la propia 18 grabada con red, con RD$10,000 al 20 % (cuota de RD$2,252.65, total de RD$27,031.75). Si Lendex no carga en 5 s, sale en blanco o no hay red, **V en el presentador**; José dice «La señal no quiso participar. Esto es lo mismo, grabado antes de la charla con diez mil pesos» y lee las cifras del video. Corre una vez y se queda en su último cuadro; otra V vuelve a lo vivo. **Si la laptop sabe que no tiene red** (Wi-Fi apagado, cable fuera), la sala pone el video sola y el presentador dice «Sin red: la sala enseña el video».
+
 ### Si algo falla
 
 | Problema | Qué hacer |
@@ -122,6 +155,11 @@ El que habla lleva el puntero; el que entra mira esa franja para saber cuándo l
 | «Sala sin conectar» en el presentador | Las ventanas están en navegadores o perfiles distintos, o se abrieron desde carpetas distintas. Cierra el presentador y pulsa P en la sala. La sala sigue funcionando sola con su teclado o el puntero. |
 | Franja roja de avisos en el presentador | Falta un archivo de `medios/` (se copió mal), una diapositiva falló, una pesada no tiene póster o una cifra está por confirmar. Dice cuál. |
 | El equipo no tiene WebGL, o se pierde (al cambiar de proyector) | Esas diapositivas muestran su imagen fija (`poster`) y el presentador lo avisa («Este equipo no tiene WebGL…», con cómo activar la aceleración gráfica). La charla funciona igual. Si el navegador recupera WebGL, la animación vuelve sola. |
+| La pantalla de entrar de Lendex sale en tema claro en la demo (fondo blanco con «Bienvenido de nuevo»; si sale vacía, es el «Si falla» de la 18: V) | Angel pulsa la luna de arriba a la derecha de esa pantalla (en el proyector, hacia el centro, arriba): Lendex pasa a oscuro en el acto, sin recargar, y lo recuerda. El clic no mueve la charla. |
+| Lendex no carga en 5 s, sale en blanco o no hay red | **V en el presentador**: el video de respaldo con diez mil pesos (§2, «La demo de Lendex»). Sin red la sala ya lo pone sola. |
+| Un monto de menos de mil o de más de diez millones | Se usa 10,000. Un error al teclear se borra en vivo y se sigue. |
+| El puntero no avanza al terminar la demo | El foco sigue en la calculadora: clic en la ventana del presentador. |
+| Lendex ya no se deja embeber (lo dice el `--comprobar` de la víspera) | Plan B del guion (M-07): una ventana aparte de Chrome con la calculadora, ya abierta en la laptop; Angel la lleva a la sala (Win + Mayús + →), F11 y zoom del 200 %; al terminar, Alt + Tab al mazo. |
 | Nada funciona | Abre `zhonyas-conferencia.pdf` y preséntalo a pantalla completa. |
 
 ---
@@ -132,13 +170,14 @@ Se abre con **P** desde la sala o con `index.html?presentador`. Es una ventana a
 
 - **En pantalla:** la diapositiva actual **en vivo** (el mismo componente, con sus animaciones; el video va sin sonido). Las **pesadas** (`pesada: true`: WebGL, filtros SVG, el agujero negro) se ven como su **póster quieto**, con el rótulo «Póster quieto · en la sala se ve en vivo»: así la laptop no pinta lo más caro dos o tres veces a la vez. Si la sala está en negro, se ve un velo con el aviso; si la sala tiene abierta la cuadrícula o la ayuda, un aviso con el botón para cerrarla (también Esc); si enseña la prueba de sala, la prueba con el aviso «El público ve la prueba de sala».
 - **Siguiente:** lo que aparecerá al avanzar. Si quedan pasos, la misma diapositiva en el paso siguiente; si no, la próxima diapositiva (las pesadas, como póster). Con la sala en negro o con la prueba de sala abierta, la actual tal como está: avanzar solo enciende o cierra.
-- **Notas por paso**, en letra grande, con A− / A+ (el tamaño se recuerda): la **frase de entrada completa** (`decir`), debajo las **3–4 palabras clave** en ámbar y, si la hay, la caja **«Si falla:»** en rojo. Cambian con cada paso. Las notas de texto libre (una para toda la diapositiva) siguen funcionando.
+- **Notas por paso**, en el orden en que se dice: la **frase de entrada completa** (`decir`) en grande; justo debajo, **lo que se dice después en el mismo paso** (`despues`: el remate, el segundo tiempo, el «En vivo»); luego las **3–4 palabras clave** en ámbar. Al final, plegado en una línea («▸ Si falla», «▸ Avisos»), **lo que no se dice**: el «Si falla» en rojo y los avisos (`aparte`: medios que faltan, frases por confirmar, instrucciones para quien maneja la demo). Un clic en esa línea lo abre (sin quedarse con el teclado: Espacio e Intro siguen avanzando) y se vuelve a plegar al cambiar de paso. Cambian con cada paso. Las notas de texto libre (una para toda la diapositiva) siguen funcionando.
+- **Las notas caben sin desplazar.** La letra parte del tamaño de A− / A+ (30 px, o 24 px con menos de 800 px de alto; cada alto recuerda el suyo) y baja sola, de 1 en 1 px hasta 18, mientras la nota del paso no quepa en el panel. Si ni a 18 cabe, sale **«sigue ↓»** abajo a la derecha hasta que se desplaza al final. Con menos de 800 px de alto (la ThinkPad de 1920 × 1080 al 150 % da 1280 × 720), las **Fuentes** se pliegan en la línea de su rótulo, con «Ver». Comprobado el 13-nov con el mazo de hoy: los 39 pasos caben a 1920 × 1080 (letra de 26 a 30 px), a 1366 × 768 (21–24 px) y a 1280 × 720 (19–24 px).
 - **Fuentes**, en un panel aparte debajo de las notas: cada cifra de la diapositiva (de su `<Dato>`) con su texto, su fuente, su fecha y su «Ojo:» si lo tiene, y las `fuentes` escritas a mano. Si la diapositiva no tiene ninguna, el panel no sale y las notas ocupan toda la columna. Una cifra por confirmar sale en rojo.
 - **Quién habla ahora y quién después**, y la franja de relevo (ver §2).
-- **Cronómetro total** con el objetivo y lo que queda o lo que te pasaste: «0:42 · de [18] min · quedan 17:18». El objetivo se edita en ese mismo campo (18 por defecto; admite 18,5 o 18:30); Intro aplica y Esc cancela. Debajo, una barra con la marca de dónde deberías ir.
+- **Cronómetro total** con el objetivo y lo que queda o lo que te pasaste: «0:42 · de [16:35] min · quedan 15:53». El objetivo va en minutos y segundos, como lo que tiene al lado (16:35 por defecto, el del guion; «16,58» se leía como 16:58), y se edita en ese mismo campo (admite 16:35 o 16,5); Intro aplica y Esc cancela. Debajo, una barra con la marca de dónde deberías ir.
 - **Ritmo:** compara el tiempo real con las duraciones sugeridas de cada diapositiva. «A tiempo» (±10 s), «Adelantado 0:30» o «Atrasado 0:45» (en rojo pasado un minuto). Si la suma de las duraciones no coincide con el objetivo, muestra «plan 17:20» al lado.
 - **Esta diapositiva:** tiempo en la actual frente a su duración sugerida: en ámbar al pasarla y, **pasado el +20 %, todo el panel del tiempo se pone en rojo** (01 P1-17). Se mide con el cronómetro de la charla: no cuenta la espera antes del primer avance ni las pausas (en pausa se congelan el total, el ritmo y este tiempo).
-- **Hora** y estado de la conexión con la sala.
+- **Hora** y estado de la conexión con la sala; si el modo sala con luz está puesto, «Sala con luz · L».
 - Botones: Anterior, Siguiente, Pantalla en negro, Cuadrícula, Pantalla completa, Iniciar / Pausar / Reiniciar. La prueba de sala va con T.
 - Cabe entero (cronómetro, objetivo, «Después», relevo, notas y fuentes) desde 1280 × 600 (portátil con la pantalla al 150 %) y 1024 × 768; por debajo de 1100 px de ancho pasa a dos columnas y las fuentes se quedan en una franja corta que se desplaza, para que las notas manden.
 
@@ -205,7 +244,7 @@ export const diapositivas = [portada, problema, informales, cierre];
 | `titulo` | texto | Interno: solo lo ven el presentador y la cuadrícula. |
 | `pasos` | entero ≥ 0 | Sub-pasos («builds»). Con `pasos: 2` hay tres estados: 0, 1 y 2. |
 | `orador` | clave | Quién la dice: una clave de `oradores` en `src/configuracion.ts`. |
-| `notas` | lista o texto | **Por paso:** `pasos + 1` notas `{ decir, claves, siFalla? }` (la del paso 0, la del 1…). `decir` es la frase de entrada completa (≤ 40 palabras); `claves`, 3–4 palabras; `siFalla`, qué hacer si algo falla (demos, video, WebGL). **Texto libre:** una nota para toda la diapositiva (línea en blanco = párrafo, «- » = viñeta, `**negrita**`). |
+| `notas` | lista o texto | **Por paso:** `pasos + 1` notas `{ decir, claves, despues?, siFalla?, aparte? }` (la del paso 0, la del 1…). `decir` es la frase de entrada completa (≤ 40 palabras); `despues`, lo que se dice después en el mismo paso (`**Remate:** …`, un segundo tiempo, el «En vivo»), que se ve justo bajo la entrada; `claves`, 3–4 palabras; `siFalla`, qué hacer si algo falla (demos, video, WebGL), y `aparte`, lo que no se dice (medios que faltan, [CONFIRMAR], instrucciones): estos dos van plegados al final (§3). **Texto libre:** una nota para toda la diapositiva (línea en blanco = párrafo, «- » = viñeta, `**negrita**`). |
 | `fuentes` | lista de textos (opcional) | Créditos y fuentes de lo que se afirma; van al panel «Fuentes». Las de las cifras salen solas del registro. |
 | `duracion` | segundos | Duración sugerida (ritmo y alerta del +20 %). |
 | `Componente` | componente React | Dibuja la diapositiva en el escenario de 1920 × 1080. |
@@ -379,13 +418,17 @@ Se carga antes que todo lo demás (en la presentación y en el laboratorio).
 
 Más `.zh-segunda-linea` (la línea entera en lila, nunca una palabra suelta, A-47) y `.zh-mono` (solo en una consola de verdad).
 
+En la charla, dos piezas fijan el tamaño que pide el guion (docs/GUION.md, Convenciones: «cifra a 300 px, frase protagonista a 128 px, titular a 96 px»): `<UnaCifra>` pone la cifra a **300 px** (`src/marca/composiciones/composiciones.css`, dentro del 240–330 de §4.2) y el relevo (Z-05) pone el nombre a **96 px**, con el personaje y la interlínea al tamaño del perfil de la web (0,544 px por píxel del atlas y 103,36 px, para que el personaje quepa en su línea) y un solo saludo, que empieza cuando aparece el personaje (500 ms) y termina quieto en `idle`, sin respiro (`src/marca/relevo/relevo.css`, `Personaje.tsx` con `vueltas` y `luego`). La prueba de sala sigue enseñando la clase `.zh-cifra` a 240 px: lo que se proyecta en la charla es más grande.
+
 **Retícula** (síntesis §4.3): `.zh-reticula` (margen de 115 px: área útil de 1690 × 850; el titular empieza en x = 115, y = 115) y sus tres composiciones: `.zh-a-sangre` (con `.zh-evidencia` a pantalla completa y el `.zh-titular` en el margen), `.zh-dividida` (1,2 : 0,8 con 48 px de hueco: 985 : 657) y `.zh-una-cifra` (la cifra a la izquierda y la fuente abajo). `.zh-centrada` solo para portada, portadillas y cierre (≤ 20 % de las diapositivas).
 
 ---
 
 ## 5. Diapositivas y piezas de prueba
 
-`01-prueba-pasos`, `02-prueba-medio` y `03-prueba-webgl` (títulos «PRUEBA · …») ejercitan pasos, notas por paso, un `<Dato>` y sus fuentes, imagen 4K, video local, cambio de orador, WebGL con textura y una diapositiva pesada con póster. Cuando haya diapositivas reales: bórralas de `indice.ts`, borra sus archivos, `prueba.css`, `recursos/textura-prueba.png` y `public/medios/prueba/`. Las pruebas automáticas están escritas para ellas; habrá que adaptar sus posiciones esperadas. **No cumplen la marca** (sello «PRUEBA» en mono a 22 px, pesos 500 a 650, una lista, texto sobre el WebGL con sombra…): mientras estén, el auditor de §12 hace fallar `npm run probar`, y es lo correcto.
+La charla son las 20 diapositivas de `src/diapositivas/NN-id.tsx`, en el orden de `src/diapositivas/indice.ts` (la 12 solo entra con su video, M-05: docs/MEDIOS.md).
+
+El **mazo de prueba del motor** vive aparte, en `src/diapositivas/prueba/`: `01-prueba-pasos`, `02-prueba-medio` y `03-prueba-webgl` (títulos «PRUEBA · …») ejercitan pasos, notas por paso, un `<Dato>` y sus fuentes, imagen 4K, video local, cambio de orador, WebGL con textura y una diapositiva pesada con póster. Tiene su índice y su configuración (`prueba/indice.ts`, `prueba/configuracion.ts`) y solo se compila con `--mode prueba`: `npm run compilar:prueba` lo deja en `dist-prueba/` (ignorada por git) y `npm run dev:prueba` lo sirve. Es lo que miran `probar.mjs` y `probar-novedades.mjs`, así que las pruebas del motor no dependen de lo que tenga la charla. **No cumple la marca** (sello «PRUEBA» en mono a 22 px, pesos 500 a 650, una lista…) y por eso el auditor no lo mira. Sus medios, `public/medios/prueba/`, son también los suplentes de `?con=` (docs/MEDIOS.md); se copian a `dist/` aunque la charla no los use (1,5 MB).
 
 En el laboratorio, `src/motor/laboratorio/prueba-motor.lab.tsx` (una entrada con nombre que se abre y se cierra con los valores de Z-08, una entrada sin efecto, una excepción a A-54 y una transición entre dos escenas) y `prueba-sala.lab.tsx` (la prueba de sala) son del motor: no son de la charla. `src/marca/auditor/` (`lab.html?pieza=auditor`) es la **trampa del auditor**: una escena por regla rota a propósito (§12.5). No es de la charla ni sirve de modelo.
 
@@ -478,7 +521,7 @@ Decisiones medidas en este equipo:
 
 ## 8. Pruebas automáticas
 
-`npm run probar` compila y pasa dos pruebas sobre `dist/`, casi todo en `file://`. Con `--dist otra/carpeta` (y `--salida`) prueban otra compilación; con `--canal msedge`, Edge. Al final pasa la prueba del auditor (`probar-auditor.mjs`) y el auditor anti-slop (`auditar.mjs`), que no prueba el motor sino el contenido: ver §12.
+`npm run probar` compila la charla (`dist/`) y el mazo de prueba (`dist-prueba/`, §5) y pasa, casi todo en `file://`: las dos pruebas del motor sobre `dist-prueba/`, la de las notas sobre `dist/`, la prueba del auditor (`probar-auditor.mjs`) y el auditor anti-slop sobre `dist/` (`auditar.mjs`), que no prueba el motor sino el contenido: ver §12. Con `--dist otra/carpeta` (y `--salida`) prueban otra compilación; con `--canal msedge`, Edge. Última pasada completa, el 13-nov con el mazo de la charla: 85 de 85, 38 de 38, 11 de 11, 59 de 59 y la auditoría PASA (0 fallos, 4 avisos del motor, 26 excepciones declaradas).
 
 **`scripts/probar.mjs`** (85 comprobaciones, el motor):
 
@@ -503,7 +546,9 @@ Sobre el margen sin vsync: con la pantalla quieta, Chrome vuelve a cuadros de 16
 - `vite build` falla con un dato por confirmar y compila con uno confirmado;
 - laboratorio compilado: índice, entradas registradas, `?pieza=&paso=`, reproducción cuadro a cuadro que sigue la curva y la duración exactas (±0,02), dos reproducciones iguales, salida animada, transición entre escenas, momentos y `?revision=1`.
 
-Dejan capturas y el resultado en `verificacion/pruebas/` (y `verificacion/pruebas/novedades/`).
+**`scripts/probar-notas.mjs`** (11 comprobaciones, el mazo de la charla en `dist/`): en cada paso de cada diapositiva, la nota del presentador cabe en su panel sin desplazar a 1920 × 1080, 1366 × 768 y 1280 × 720 (la ThinkPad al 150 %), y la letra no baja de 18 px (§3). Y el aviso de Lendex en claro (§2, «En la sala», punto 7): sin emular el tema no sale; emulando el claro sale en la franja roja y en la nota del paso 0 de la demo, y se va solo al pasar a oscuro. También con `npm run probar:notas` después de `npm run build`.
+
+Dejan capturas y el resultado en `verificacion/pruebas/` (y `verificacion/pruebas/novedades/` y `verificacion/pruebas/notas/`).
 
 Los fallos que encontró la primera ronda de pruebas (desfase del presentador, cronómetro, campo del objetivo, copias en otra carpeta, presentador en pantallas pequeñas, WebGL al saltar o al perder el contexto, video en un paso, puerto ocupado) tienen su propia comprobación: `node verificacion/pruebas-motor/arreglos-r1/verificar.mjs dist despues` (añade `--canal msedge` para Edge o `--solo T1,T11` para unas pocas). Con el corte seco da lo mismo que antes: todo bien salvo dos comprobaciones de T6 y T7 (escribir «17.5» en el campo del objetivo), que ya fallaban con el motor anterior porque desde la tercera ronda el punto es la tecla de negro del puntero (los decimales van con coma o dos puntos). Los scripts de `ronda-1/aula-scripts/` miden el fundido de antes y ya no aplican.
 
@@ -591,16 +636,16 @@ registrarEntrada({
 
 Cargadas hoy:
 
-- **Las 15 filas de la síntesis §6.1** (contexto dominicano, todas confirmadas), una entrada por cifra que se puede enseñar sola: 26 entradas (`gem-actividad-emprendedora`, `gem-negocio-establecido`, `gem-habilidades`, `gem-nota-financiamiento`, `mipymes-total`, `mipymes-informales`, `mipymes-efectivo`, `mipymes-santiago`, `mipymes-credito`, `mipymes-prestamista-informal`, `prestamista-privado`, `findex-prestamo-negocio`, `findex-prestamo-negocio-latam`, `findex-san`, `findex-san-latam`, `dgii-plazo-factura`, `dgii-emisores`, `dgii-proveedores`, `tic-exportaciones`, `tic-exportaciones-porcentaje`, `nini-rd`, `nini-latam`, `tic-universitarios`, `tic-universitarias-mujeres`). Las advertencias de la síntesis van en `nota` (el 54,8 %, «no decir cobra en efectivo», el 15,5 % no es del monto, C-17, C-25).
-- **Las cifras de trabajo de §6.2 que José permitió**, confirmadas: `commits-organizacion` (300), `agujero-negro-dias` (25 días), `agujero-negro-abre` (1,5 s, contact-section.tsx:19) y `agujero-negro-cierra` (1,2 s, contact-section.tsx:20).
-- **El resto de §6.2, por confirmar** (pregunta 4 de la síntesis): `dias-desde-primer-commit` (135), `dias-antes-de-la-tesis` (87), `dias-con-commits` (53), `dia-con-mas-commits` (31), `animaciones-por-personaje` (16), `web-iphone-fps` (12 fps), `dias-hasta-el-nombre-pymex` (42). No pasan la compilación hasta que José dé el OK.
+- **Las 15 filas de la síntesis §6.1** (contexto dominicano, todas confirmadas), una entrada por cifra que se puede enseñar sola: 26 entradas (`gem-actividad-emprendedora`, `gem-negocio-establecido`, `gem-habilidades`, `gem-nota-financiamiento`, `mipymes-total`, `mipymes-informales`, `mipymes-efectivo`, `mipymes-santiago`, `mipymes-credito`, `mipymes-prestamista-informal`, `prestamista-privado`, `findex-prestamo-negocio`, `findex-prestamo-negocio-latam`, `findex-san`, `findex-san-latam`, `dgii-plazo-factura`, `dgii-emisores`, `dgii-proveedores`, `tic-exportaciones`, `tic-exportaciones-porcentaje`, `nini-rd`, `nini-latam`, `tic-universitarios`, `tic-universitarias-mujeres`). Las advertencias de la síntesis van en `nota` (el 54.8 %, «no decir cobra en efectivo», el 15.5 % no es del monto, C-17, C-25), con punto decimal y coma de miles como todo lo que ve la sala (GUION, encabezado, punto 3).
+- **Las cifras de trabajo de §6.2 que José permitió**, confirmadas: `commits-organizacion` (300), `agujero-negro-dias` (25 días), `agujero-negro-abre` (1.5 s, contact-section.tsx:19) y `agujero-negro-cierra` (1.2 s, contact-section.tsx:20), con el repo privado de zhonyas-web como url.
+- **El resto de §6.2, por confirmar** (pregunta 4 de la síntesis): `dias-desde-primer-commit` (135), `dias-con-commits` (53), `dia-con-mas-commits` (31) y `web-iphone-fps` (12 fps). No pasan la compilación hasta que José dé el OK. Se quitaron `dias-antes-de-la-tesis`, `dias-hasta-el-nombre-pymex` y `animaciones-por-personaje`: contaban el origen de Pymex antes del proyecto final o cómo se usa la IA (decisiones 3 y 4 de José; revisión del 13-nov).
 
 ### 10.1 Pintarlas
 
 ```tsx
 import { Dato, useDato } from '../motor/Dato';
 
-<Dato id="gem-actividad-emprendedora" />                 // «41,9 %»
+<Dato id="gem-actividad-emprendedora" />                 // «41.9 %»
 <Dato id="gem-actividad-emprendedora" campo="texto" />   // la frase
 <Dato id="gem-actividad-emprendedora" campo="fuente" />  // «GEM 2021/2022 Global Report, pp. 44 y 106»
 <Dato id="gem-actividad-emprendedora" campo="fecha" />   // «2021»

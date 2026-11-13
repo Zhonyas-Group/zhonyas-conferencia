@@ -6,7 +6,7 @@
  * cronómetro con su objetivo, el ritmo y la hora. Se maneja con las mismas
  * teclas que la sala y ambas ventanas quedan sincronizadas.
  */
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { diapositivas } from '../diapositivas/indice';
 import { colorOrador, nombreOrador } from '../configuracion';
 import { Ayuda } from './Ayuda';
@@ -84,9 +84,16 @@ function soltarCampoDeTexto() {
   if (activo instanceof HTMLInputElement || activo instanceof HTMLTextAreaElement) activo.blur();
 }
 
-/** 1110 s → «18,5»; 1080 s → «18». */
+/**
+ * 1080 s → «18»; 995 s → «16:35»; 1110 s → «18:30». En minutos y segundos,
+ * como «quedan 16:35» y «plan 15:55» que van al lado: «16,58» se leía de reojo
+ * como 16:58, 23 s de más (docs/GUION.md, encabezado: «el objetivo del
+ * cronómetro pasa de 18 a 16:35»). leerMinutos acepta lo mismo de vuelta.
+ */
 function minutosLegibles(segundos: number): string {
-  return String(Math.round((segundos / 60) * 100) / 100).replace('.', ',');
+  const s = Math.round(segundos);
+  if (s % 60 === 0) return String(s / 60);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 
 /** «18», «18,5», «18.5» o «18:30» → minutos. null si no se entiende. */
@@ -102,11 +109,12 @@ function leerMinutos(texto: string): number | null {
 const SUELTA_EL_CAMPO_MS = 6000;
 
 /**
- * Minutos objetivo. Muestra exactamente lo que usa el cronómetro (18,5 = 18:30).
- * Se aplica con Intro o al salir del campo (también al pulsar cualquier botón
- * del presentador); Esc cancela. Lleva data-numerico: cualquier tecla que no
- * edite un número (flechas o AvPág del puntero, «b» o «.», Espacio…) suelta el
- * campo y se obedece (teclado.ts). Los decimales, con coma o dos puntos.
+ * Minutos objetivo. Muestra exactamente lo que usa el cronómetro, en minutos y
+ * segundos (16:35). Se aplica con Intro o al salir del campo (también al pulsar
+ * cualquier botón del presentador); Esc cancela. Lleva data-numerico: cualquier
+ * tecla que no edite un número (flechas o AvPág del puntero, «b» o «.»,
+ * Espacio…) suelta el campo y se obedece (teclado.ts). Se escribe «16:35», o
+ * en minutos con coma (16,5).
  */
 function CampoObjetivo({ segundos }: { segundos: number }) {
   const [texto, setTexto] = useState('');
@@ -129,7 +137,7 @@ function CampoObjetivo({ segundos }: { segundos: number }) {
   return (
     <label
       className="p-objetivo"
-      title="Duración objetivo de la charla, en minutos (admite 18,5 o 18:30). Intro aplica, Esc cancela. Las flechas y AvPág/RePág sueltan el campo y pasan diapositiva, como el puntero; «b» y «.» ponen la sala en negro."
+      title="Duración objetivo de la charla, en minutos y segundos (16:35; también admite 16,5). Intro aplica, Esc cancela. Las flechas y AvPág/RePág sueltan el campo y pasan diapositiva, como el puntero; «b» y «.» ponen la sala en negro."
     >
       <input
         ref={campo}
@@ -168,6 +176,73 @@ function colorVar(color: string): CSSProperties {
   return { '--color-orador': color } as CSSProperties;
 }
 
+/**
+ * Por debajo de este alto de ventana (un portátil de 1920 × 1080 al 150 % da
+ * 1280 × 720; uno de 1366 × 768, menos de 700 útiles), las notas arrancan a
+ * 24 px en vez de 30 y las fuentes se pliegan en una línea (GUION, M-02 y R-14:
+ * la laptop del día puede ser la ThinkPad).
+ */
+const ALTO_BAJO = 800;
+/** Letra de las notas por defecto, en px, con alto de sobra y con poco alto. */
+const NOTAS_ALTO = 30;
+const NOTAS_BAJO = 24;
+/** Hasta aquí baja sola la letra para que la nota del paso quepa entera. */
+const NOTAS_MINIMO = 18;
+
+function useAltoVentana(): number {
+  const [alto, setAlto] = useState(() => window.innerHeight);
+  useEffect(() => {
+    const medir = () => setAlto(window.innerHeight);
+    window.addEventListener('resize', medir);
+    return () => window.removeEventListener('resize', medir);
+  }, []);
+  return alto;
+}
+
+/**
+ * Ajusta la letra de las notas para que la del paso quepa sin desplazar: parte
+ * del tamaño elegido (A− / A+) y baja de 1 en 1 px hasta NOTAS_MINIMO mientras
+ * el texto sea más alto que el panel. Si ni así cabe, `sigue` es true mientras
+ * quede texto por debajo (el panel enseña «sigue ↓»). Se vuelve a medir al
+ * cambiar de paso, al cambiar el tamaño de la ventana o del panel, y al abrir o
+ * plegar el «Si falla» (un ResizeObserver sobre el texto).
+ */
+function useNotasQueCaben(base: number, clave: string) {
+  const caja = useRef<HTMLDivElement>(null);
+  const [sigue, setSigue] = useState(false);
+  const mirarSiSigue = useCallback(() => {
+    const el = caja.current;
+    if (!el) return;
+    setSigue(el.scrollHeight > el.clientHeight + 1 && el.scrollTop + el.clientHeight < el.scrollHeight - 2);
+  }, []);
+  const ajustar = useCallback(() => {
+    const el = caja.current;
+    if (!el) return;
+    const minimo = Math.min(NOTAS_MINIMO, base);
+    let tam = base;
+    el.style.fontSize = `${tam}px`;
+    while (tam > minimo && el.scrollHeight > el.clientHeight + 1) {
+      tam -= 1;
+      el.style.fontSize = `${tam}px`;
+    }
+    el.dataset.tam = String(tam);
+    mirarSiSigue();
+  }, [base, mirarSiSigue]);
+  useLayoutEffect(() => {
+    if (caja.current) caja.current.scrollTop = 0;
+    ajustar();
+  }, [ajustar, clave]);
+  useEffect(() => {
+    const el = caja.current;
+    if (!el || typeof ResizeObserver !== 'function') return;
+    const observador = new ResizeObserver(() => ajustar());
+    observador.observe(el);
+    if (el.firstElementChild) observador.observe(el.firstElementChild);
+    return () => observador.disconnect();
+  }, [ajustar, clave]);
+  return { caja, sigue, mirarSiSigue };
+}
+
 export function Presentador() {
   const nav = useNavegacion();
   const cron = useCronometro();
@@ -176,7 +251,13 @@ export function Presentador() {
   const problemas = useProblemas();
   const salaConectada = useConectado('sala');
   const capasSala = useCapasSala();
-  const [tamNotas, setTamNotas] = usePreferencia('tamano-notas', 30);
+  // Un tamaño elegido para cada alto de ventana: el de la ThinkPad al 150 % no pisa el de una pantalla grande.
+  const bajo = useAltoVentana() < ALTO_BAJO;
+  const [tamAlto, setTamAlto] = usePreferencia('tamano-notas', NOTAS_ALTO);
+  const [tamBajo, setTamBajo] = usePreferencia('tamano-notas-bajo', NOTAS_BAJO);
+  const tamNotas = bajo ? tamBajo : tamAlto;
+  const setTamNotas = bajo ? setTamBajo : setTamAlto;
+  const [fuentesAbiertas, setFuentesAbiertas] = useState(false);
   const [enPantallaDelPublico, usarAqui] = useEnPantallaDelPublico();
 
   // P en la sala con este presentador abierto: no se abre otro, este se destaca.
@@ -204,6 +285,11 @@ export function Presentador() {
   useTituloVentana(`Presentador · ${nav.indice + 1}/${total}`);
 
   const d = diapositivas[nav.indice];
+  // La clave también cambia al volver de la pantalla del público: el panel de notas se monta de nuevo.
+  const notas = useNotasQueCaben(tamNotas, `${d.id}:${nav.paso}:${enPantallaDelPublico ? 'publico' : 'propio'}`);
+  // Las fuentes plegadas vuelven a plegarse en cada diapositiva.
+  useEffect(() => setFuentesAbiertas(false), [d.id]);
+  const fuentesPlegadas = bajo && !fuentesAbiertas;
   const siguiente = siguienteVista(nav);
   const cambio = proximoCambioDeOrador(nav.indice);
   const relevoAlAvanzar = siguiente.tipo === 'diapositiva' && diapositivas[siguiente.indice].orador !== d.orador;
@@ -311,6 +397,11 @@ export function Presentador() {
           </span>
         </div>
         <div className="p-estado">
+          {nav.luz && (
+            <span className="p-luz" title="Modo sala con luz: fuentes, créditos y etiquetas en blanco. L lo quita.">
+              Sala con luz · L
+            </span>
+          )}
           <span
             className="p-conexion"
             data-ok={salaConectada ? '' : undefined}
@@ -460,15 +551,38 @@ export function Presentador() {
                 </Boton>
               </span>
             </div>
-            <div className="p-notas__texto" style={{ fontSize: `${tamNotas}px` }}>
-              <Notas notas={d.notas} paso={nav.paso} />
+            {/* La letra la pone useNotasQueCaben (de tamNotas hasta 18 px, para que quepa la nota entera). */}
+            <div className="p-notas__texto" ref={notas.caja} onScroll={notas.mirarSiSigue}>
+              <div className="p-notas__contenido">
+                <Notas key={`${d.id}:${nav.paso}`} notas={d.notas} paso={nav.paso} />
+              </div>
             </div>
+            {notas.sigue && (
+              <span className="p-notas__sigue" aria-hidden>
+                sigue ↓
+              </span>
+            )}
           </section>
-          {/* Las fuentes, aparte de lo que se dice (01 P1-16). */}
+          {/* Las fuentes, aparte de lo que se dice (01 P1-16). Con poco alto, plegadas en una línea. */}
           {hayFuentes(d) && (
-            <section className="p-panel p-fuentes" aria-label="Fuentes de esta diapositiva">
-              <div className="p-rotulo">Fuentes</div>
-              <div className="p-fuentes__texto">
+            <section
+              className="p-panel p-fuentes"
+              aria-label="Fuentes de esta diapositiva"
+              data-plegadas={fuentesPlegadas ? '' : undefined}
+            >
+              <div className="p-rotulo">
+                Fuentes
+                {bajo && (
+                  <Boton
+                    alPulsar={() => setFuentesAbiertas(!fuentesAbiertas)}
+                    titulo={fuentesAbiertas ? 'Plegar las fuentes' : 'Ver las fuentes de esta diapositiva'}
+                  >
+                    {fuentesAbiertas ? 'Plegar' : 'Ver'}
+                  </Boton>
+                )}
+              </div>
+              {/* Plegadas siguen en la página, ocultas: se pueden buscar y leer (como el «Si falla» de las notas). */}
+              <div className="p-fuentes__texto" hidden={fuentesPlegadas}>
                 <Fuentes diapositiva={d} />
               </div>
             </section>

@@ -104,10 +104,18 @@
 /*
  * .team-profile-content (team-contact.css:36): width 44 %, margin-left 48 %, padding-top max(7rem, 17vh).
  * Sin el rótulo de la web (0,65rem × 1,6 + 1,2rem = 35,84 px, team-contact.css:44), el nombre
- * empieza en el padding-top. Como va a 128 px y no a 108,8 (A-49), así la segunda línea y el
- * personaje caen donde en la web: medido en el cuadro final, el pie del nombre y del personaje
- * a 422 px en las dos; la primera línea, 33 px más arriba (195 frente a 228). Si se baja a
- * 219,44 (con el hueco del rótulo), la primera línea cuadra y el personaje queda 36 px más abajo.
+ * empieza en el padding-top: x 921,6, y 183,6. (Se midió con el nombre a 128 px; a 96, que es
+ * lo que pide el guion, el pie del nombre y del personaje sube.)
+ *
+ * EXCEPCIÓN DECLARADA a A-29 y a la retícula del guion («los titulares empiezan en x 115,
+ * y 115», docs/GUION.md, Convenciones): el nombre NO arranca en y 115 como los titulares y las
+ * cifras del resto del mazo. La composición del relevo es la del perfil del equipo de la web
+ * (GUION 03: «dividida 1,2:0,8, la del perfil del equipo en la web»), con su columna en
+ * x 921,6 (tampoco en x 115) y su padding-top de max(7rem, 17vh) = 183,6 px
+ * (team-contact.css:36). Subirlo a 115 lo dejaría por encima del retrato (y 230) y rompería
+ * esa composición. Al pasar 02 → 03 → 04 el texto baja unos 69 px. Está pendiente de que José
+ * la apruebe y quede en R-15 del guion (revisión del 13-nov); si prefiere la retícula,
+ * basta con top: var(--zh-margen) aquí.
  */
 .relevo-texto {
   position: absolute;
@@ -118,16 +126,31 @@
 }
 
 /*
- * El nombre: la portadilla de la escala (128 px, 700, −0,075 em). El h2 de la
- * web tiene el mismo interletrado, pero mide clamp(3.2rem, 6.5vw, 6.8rem) =
- * 108,8 px a 1920, con peso 600, que Arial pinta en negrita (team-contact.css:46).
- * Va a 128 y no a 108,8 porque la escala tiene cinco tamaños (síntesis §4.2,
- * A-49). Como el personaje mide 1em / 200, sale un 17,6 % más grande que en la
- * web (71,04 px por cuadro del atlas frente a los 60,384 medidos, 03 M5).
- * Si José prefiere la medida de la web, se pone aquí font-size: 108.8px.
- * La interlínea y el ancho son los del h2: 0,95 y 11ch + 0,76em, así que corta
- * donde corta la web («José / Leonardo»).
+ * El nombre, a 96 px: el titular de la escala, que es lo que pide el guion en
+ * los tres relevos (docs/GUION.md, 03, 09 y 14: «(96 px)»; Convenciones:
+ * «titular a 96 px»), con su interletrado (−0,065 em, marca.css .zh-titular;
+ * «Nosotros», globals.css:2307). El h2 de la web mide clamp(3.2rem, 6.5vw,
+ * 6.8rem) = 108,8 px a 1920, con peso 600, que Arial pinta en negrita
+ * (team-contact.css:46); no va a 108,8 porque la escala tiene cinco tamaños
+ * (síntesis §4.2, A-49). Lo traían como ajuste local la 03, la 09 y la 14
+ * (informes de los bloques de Gregory, Angel y José, 13-nov); ahora es de la pieza.
+ * Sigue con la clase de la portadilla (peso 700 y color) y sin el «balance» del
+ * titular: corta donde cortaba, por el ancho del h2.
+ * La interlínea y el ancho son los del h2: 0,95 y 11ch + 0,76em (team-contact.css:45-46).
  */
+.relevo-texto > .relevo-nombre {
+  font-size: 96px; /* GUION, 03, 09 y 14: 96 px */
+  letter-spacing: -0.065em; /* marca.css, .zh-titular («Nosotros», globals.css:2307) */
+  /*
+   * La interlínea, la del h2 de la web en px: 0,95 × 108,8 = 103,36 px
+   * (team-contact.css:46). Con 0,95 × 96 = 91,2 px el personaje, que va al
+   * tamaño de la web (más abajo), sobresale 12 px por encima de su línea y en
+   * «José Leonardo / Reyes» pisaba la tinta de «Leonardo» (auditor: P0-10 y
+   * A-36 en la 14). Así cabe en su línea como en la web.
+   */
+  line-height: calc(0.95 * 108.8px); /* team-contact.css:46, a 1920 de ancho */
+}
+
 .relevo-nombre {
   max-width: calc(11ch + 0.76em); /* team-contact.css:45-46 */
   line-height: 0.95; /* team-contact.css:46 */
@@ -149,8 +172,27 @@
   pointer-events: none;
 }
 
+/*
+ * El personaje, «al tamaño del perfil de la web» (docs/GUION.md, 03; la 09 y
+ * la 14, «con los valores de la 03»): en la web mide 1em / 200 del h2
+ * (team-contact.css:40), y el h2 mide 108,8 px a 1920 (team-contact.css:46):
+ * 0,544 px por píxel del atlas. Con el nombre a 96 px, 1em / 200 lo dejaría
+ * en 0,48, más chico que en la web (era el ajuste local de la 03 y la 09; a la
+ * 14 le faltaba y su personaje salía más chico que los otros dos).
+ */
 .relevo-avatar .zh-sprite {
-  --px: calc(1em / 200); /* team-contact.css:40 */
+  --px: calc(108.8px / 200); /* team-contact.css:40 y :46, a 1920 de ancho */
+}
+
+/*
+ * Un solo saludo (vueltas contadas) que se vea entero: empieza cuando aparece
+ * el personaje, a los 500 ms (team-profile.tsx:110, delay 0.5; relevo.entrada.ts),
+ * y no al abrir el perfil. En la web saluda sin fin y da igual cuándo empieza;
+ * con una sola vuelta, empezando a los 0 ms la mitad caía con el personaje
+ * todavía invisible. Así Z-05 dura unos 1,5 s con el saludo (GUION, A-56: «unos 1.7 s»).
+ */
+.relevo-avatar .zh-sprite[data-vueltas]:not([data-quieto]) {
+  animation-delay: 500ms; /* team-profile.tsx:110 (delay 0.5), cuando aparece el personaje */
 }
 
 /* Lo que hizo, a 60 px (zh-lectura). Separación de la bio: margin-top 2rem + padding-top 1,4rem (team-contact.css:47). */

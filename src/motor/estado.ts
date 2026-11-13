@@ -11,7 +11,7 @@
  */
 import { useSyncExternalStore } from 'react';
 import { diapositivas } from '../diapositivas/indice';
-import { aperturaVentana, idVentana } from './entorno';
+import { almacen, aperturaVentana, idVentana } from './entorno';
 import { enviar, escuchar, gana, type Versionado } from './canal';
 import { iniciarCronometroSiHaceFalta, obtenerCronometro, transcurrido } from './cronometro';
 import type { Direccion } from './tipos';
@@ -29,6 +29,15 @@ export interface EstadoNavegacion extends Versionado {
    * Va fuera del orden: no cuenta como diapositiva ni mueve el cronómetro.
    */
   prueba: boolean;
+  /**
+   * Modo «sala con luz» (tecla L; docs/GUION.md, «Lo que necesita el motor»,
+   * 10; síntesis §4.1; A-36 y A-37): en un aula con luz el proyector sube el
+   * negro y lava los grises, y --zh-texto-2 (fuentes, créditos, etiquetas) se
+   * queda por debajo de 7:1. Con él, la raíz lleva [data-luz] y marca.css pasa
+   * esos textos a --zh-texto. Viaja con la posición, como la prueba de sala, y
+   * se recuerda en localStorage: se decide una vez en la sala con la prueba (T).
+   */
+  luz: boolean;
   /** Sentido del último movimiento. */
   direccion: Direccion;
   /**
@@ -40,6 +49,9 @@ export interface EstadoNavegacion extends Versionado {
   /** Época del cronómetro en la que se tomó `cronoAlEntrar` (si se reinició, la marca ya no vale). */
   epocaCrono: string;
 }
+
+/** Dónde se recuerda el modo «sala con luz» (localStorage, con el prefijo de la carpeta). */
+const CLAVE_LUZ = 'sala-con-luz';
 
 type MensajeEstado = { tipo: 'estado'; estado: EstadoNavegacion } | { tipo: 'hola' };
 
@@ -90,6 +102,7 @@ function estadoInicial(): EstadoNavegacion {
     ...pos,
     negro: false,
     prueba: false,
+    luz: almacen.leer<boolean>(CLAVE_LUZ) === true,
     direccion: 0,
     ...marcaDelCronometro(),
     version: 0,
@@ -100,6 +113,16 @@ function estadoInicial(): EstadoNavegacion {
 
 let estado: EstadoNavegacion = estadoInicial();
 const oyentes = new Set<() => void>();
+
+/** La raíz del documento lleva [data-luz] mientras el modo «sala con luz» está puesto (marca.css). */
+function aplicarLuz() {
+  try {
+    document.documentElement.toggleAttribute('data-luz', estado.luz === true);
+  } catch {
+    /* sin documento (pruebas): nada que pintar */
+  }
+}
+aplicarLuz();
 
 function avisar() {
   for (const oyente of oyentes) oyente();
@@ -128,7 +151,9 @@ function cambiar(parcial: Partial<EstadoNavegacion>) {
     origen: idVentana,
   };
   if (siguiente.indice !== estado.indice) Object.assign(siguiente, marcaDelCronometro());
+  if (siguiente.luz !== estado.luz) almacen.escribir(CLAVE_LUZ, siguiente.luz);
   estado = siguiente;
+  aplicarLuz();
   escribirHash(estado);
   enviar({ tipo: 'estado', estado } satisfies MensajeEstado);
   avisar();
@@ -137,7 +162,8 @@ function cambiar(parcial: Partial<EstadoNavegacion>) {
 function adoptar(remoto: EstadoNavegacion) {
   if (!gana(remoto, estado)) return;
   const pos = acotar(remoto.indice, remoto.paso);
-  estado = { ...remoto, prueba: remoto.prueba ?? false, ...pos };
+  estado = { ...remoto, prueba: remoto.prueba ?? false, luz: remoto.luz ?? false, ...pos };
+  aplicarLuz();
   escribirHash(estado);
   avisar();
 }
@@ -240,4 +266,11 @@ export function alternarPruebaSala(forzar?: boolean) {
   const prueba = forzar ?? !estado.prueba;
   if (prueba === estado.prueba) return;
   cambiar({ prueba });
+}
+
+/** Pone o quita el modo «sala con luz» (tecla L), en las dos ventanas. */
+export function alternarLuz(forzar?: boolean) {
+  const luz = forzar ?? !estado.luz;
+  if (luz === estado.luz) return;
+  cambiar({ luz });
 }

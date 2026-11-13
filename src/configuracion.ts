@@ -2,18 +2,27 @@
  * Datos generales de la presentación.
  *
  * Los oradores se declaran aquí una sola vez y cada diapositiva dice quién la
- * presenta con la clave (`orador: 'jose'`). El presentador usa esto para avisar
- * de los cambios de orador.
+ * presenta con la clave (`orador: 'gregory'`). El presentador usa esto para
+ * avisar de los cambios de orador. Reparto y duración: docs/GUION.md, «Encabezado».
+ *
+ * El mazo de prueba del motor tiene su propia configuración, con las mismas
+ * claves (src/diapositivas/prueba/configuracion.ts).
  */
 export const configuracion = {
   /** Título de la ventana del navegador. */
-  titulo: 'Zhonyas · Conferencia',
-  /** Duración objetivo de la charla, en minutos (se puede cambiar en la ventana del presentador). */
-  objetivoMinutos: 18,
+  titulo: 'Zhonyas · Charla en el ITLA',
+  /**
+   * Duración objetivo de la charla, en minutos: 16 min 35 s, la suma de las 20
+   * diapositivas del guion (995 s). Se puede cambiar en la ventana del presentador.
+   */
+  objetivoMinutos: 16 + 35 / 60,
   oradores: {
-    jose: { nombre: 'José', color: '#7cc4ff' },
-    orador2: { nombre: 'Orador 2', color: '#ffb86b' },
-    orador3: { nombre: 'Orador 3', color: '#9be28f' },
+    /** 01–02 y 14–20 (480 s). */
+    jose: { nombre: 'José Leonardo Reyes', color: '#7cc4ff' },
+    /** 03–08 (280 s). */
+    gregory: { nombre: 'Gregory Martínez', color: '#ffb86b' },
+    /** 09–13 (235 s); además, el teclado en la demo de la 18. */
+    angel: { nombre: 'Angel Grullon', color: '#9be28f' },
   },
 } as const;
 

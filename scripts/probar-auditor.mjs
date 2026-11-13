@@ -149,7 +149,7 @@ comprobar(
   titular && titular.tamEf === 96 && Math.abs(titular.contraste - 19.41) < 0.05,
   JSON.stringify(titular),
 );
-comprobar('limpia: la cifra mide 240 px', limpia?.medidas.some((m) => m.texto === '41,9 %' && m.tamEf === 240), JSON.stringify(limpia?.medidas));
+comprobar('limpia: la cifra mide 240 px', limpia?.medidas.some((m) => m.texto === '41.9 %' && m.tamEf === 240), JSON.stringify(limpia?.medidas));
 const cruce = r.pantallas.find((p) => p.id === 'cruce');
 comprobar('cruce: la raya y la diagonal SVG, cada una en su texto', cruce?.hallazgos.filter((h) => h.regla === 'P0-10').length === 2);
 const repetida = r.pantallas.find((p) => p.id === 'cifra-repetida');

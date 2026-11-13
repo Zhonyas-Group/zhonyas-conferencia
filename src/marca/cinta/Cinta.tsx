@@ -66,11 +66,13 @@ export function Cinta({ ancho = 630, className, style }: PropsCinta) {
           <stop offset="1" stopColor="#a975ff" />
         </linearGradient>
         {/* page.tsx:829-840 */}
+        {/* auditar-excepcion-inicio: A-34 — el brillo del logo (mark-shine), copiado tal cual de page.tsx:829-840: va encima de la firma, al 4–18 %, y sin texto; en pantalla, la misma excepción A-38 de 01-portada.tsx */}
         <linearGradient id={brillo} x1="421" y1="420" x2="819" y2="699" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#ff79ec" stopOpacity="0.18" />
           <stop offset="0.48" stopColor="#ffffff" stopOpacity="0.04" />
           <stop offset="1" stopColor="#7b48ff" stopOpacity="0.12" />
         </linearGradient>
+        {/* auditar-excepcion-fin */}
         <clipPath id={recorte} clipPathUnits="userSpaceOnUse">
           <path d={TRAZADO} />
         </clipPath>

@@ -9,7 +9,7 @@
  *   public/medios/prueba/video.webm           1280×720, ~4 s, VP9
  *   public/medios/prueba/video-poster.webp    primer fotograma del video
  *   public/medios/prueba/webgl-poster.webp    imagen fija para la miniatura WebGL
- *   src/diapositivas/recursos/textura-prueba.png  textura (se incrusta en el HTML)
+ *   src/diapositivas/prueba/recursos/textura-prueba.png  textura (se incrusta en el HTML)
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
@@ -176,5 +176,5 @@ await guardar('public/medios/prueba/imagen-grande.webp', resultado.imagen);
 await guardar('public/medios/prueba/webgl-poster.webp', resultado.webglPoster);
 await guardar('public/medios/prueba/video-poster.webp', resultado.poster);
 await guardar('public/medios/prueba/video.webm', resultado.video);
-await guardar('src/diapositivas/recursos/textura-prueba.png', resultado.textura);
+await guardar('src/diapositivas/prueba/recursos/textura-prueba.png', resultado.textura);
 await navegador.close();

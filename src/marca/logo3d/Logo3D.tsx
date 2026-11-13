@@ -206,6 +206,7 @@ export function Logo3D({ interactive: pedidoInteractivo = true, ancho = 730, hal
             aria-hidden="true"
           >
             <defs>
+              {/* auditar-excepcion-inicio: A-34 — la cara del logo 3D (Z-09) con su degradado y su brillo, copiados tal cual de interactive-logo-3d.tsx:173-196; es el objeto, no un adorno, y ninguna diapositiva de la charla usa Z-09 (docs/GUION.md) */}
               <linearGradient
                 id={gradientId}
                 x1="386"
@@ -230,6 +231,7 @@ export function Logo3D({ interactive: pedidoInteractivo = true, ancho = 730, hal
                 <stop offset="0.52" stopColor="#ffffff" stopOpacity="0.03" />
                 <stop offset="1" stopColor="#7d42ff" stopOpacity="0.18" />
               </linearGradient>
+              {/* auditar-excepcion-fin */}
             </defs>
             <path d={Z_PATH} fill={`url(#${gradientId})`} />
             <path d={H_PATH} fill={`url(#${gradientId})`} />

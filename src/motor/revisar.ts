@@ -14,6 +14,17 @@ export function contarPalabras(texto: string): number {
 const MAX_PALABRAS_DECIR = 40;
 const MAX_PALABRAS_CLAVES = 4;
 
+/**
+ * Cuántos apoyos tienen las claves. El «Apoyo» del guion (docs/GUION.md,
+ * Convenciones) son 3 o 4 apoyos separados por « · »; cada uno puede tener
+ * varias palabras («diseño de producto · proyecto final · el problema, con
+ * datos»). Sin «·», cuenta palabras.
+ */
+export function contarClaves(texto: string): number {
+  if (!texto.includes('·')) return contarPalabras(texto);
+  return texto.split('·').filter((trozo) => /[\p{L}\p{N}]/u.test(trozo)).length;
+}
+
 /** Comprueba una diapositiva y devuelve los avisos (sin registrarlos). */
 export function revisarDiapositiva(d: Diapositiva, donde: string): string[] {
   const avisos: string[] = [];
@@ -33,11 +44,13 @@ export function revisarDiapositiva(d: Diapositiva, donde: string): string[] {
       if (!nota?.claves?.trim()) avisos.push(`${donde}, paso ${i}: la nota no tiene «claves».`);
       if (import.meta.env.DEV) {
         const decir = contarPalabras(nota?.decir ?? '');
-        const claves = contarPalabras(nota?.claves ?? '');
+        const claves = contarClaves(nota?.claves ?? '');
         if (decir > MAX_PALABRAS_DECIR)
           avisos.push(`${donde}, paso ${i}: «decir» tiene ${decir} palabras (máximo ${MAX_PALABRAS_DECIR}).`);
         if (claves > MAX_PALABRAS_CLAVES)
-          avisos.push(`${donde}, paso ${i}: «claves» tiene ${claves} palabras (son 3 o 4).`);
+          avisos.push(
+            `${donde}, paso ${i}: «claves» tiene ${claves} ${nota?.claves?.includes('·') ? 'apoyos' : 'palabras'} (son 3 o 4).`,
+          );
       }
     });
   }

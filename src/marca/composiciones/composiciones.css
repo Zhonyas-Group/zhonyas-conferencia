@@ -90,3 +90,18 @@
   white-space: nowrap;
   padding-bottom: 0.1385em;
 }
+
+/*
+ * La cifra a 300 px (docs/GUION.md, Convenciones: «cifra a 300 px»; 04, 05,
+ * 10, 15 y 16). marca.css trae 240 y 330; el guion fija 300, dentro del
+ * 240–330 de la síntesis §4.2. Lo traían como ajuste local la 04, la 05, la
+ * 10, la 15 y la 16 (informes de los bloques, 13-nov); ahora es de la pieza.
+ * Con `maxima`, el tope de la escala (330 px, marca.css .zh-cifra--maxima).
+ */
+.zh-comp-una-cifra .zh-cifra {
+  font-size: 300px; /* GUION, Convenciones: cifra a 300 px */
+}
+
+.zh-comp-una-cifra .zh-cifra--maxima {
+  font-size: 330px; /* síntesis §4.2 (marca.css, .zh-cifra--maxima) */
+}

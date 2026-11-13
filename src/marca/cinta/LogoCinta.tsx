@@ -316,6 +316,7 @@ export function LogoCinta({ desde, sentido = 'logo-a-cinta', ritmo = 'menu', chi
               <stop offset="1" stopColor="#a975ff" />
             </linearGradient>
 
+            {/* auditar-excepcion-inicio: A-34 — los dos degradados del logo que no son la firma, copiados tal cual de page.tsx:829-853: el brillo (mark-shine, al 4–18 % encima de la firma) y el blanco de la palabra «Zhonyas» (word-gradient), que es parte del logo; en pantalla, la excepción A-38 de 01-portada.tsx */}
             <linearGradient id={ids.brillo} x1="421" y1="420" x2="819" y2="699" gradientUnits="userSpaceOnUse">
               <stop offset="0" stopColor="#ff79ec" stopOpacity="0.18" />
               <stop offset="0.48" stopColor="#ffffff" stopOpacity="0.04" />
@@ -327,6 +328,7 @@ export function LogoCinta({ desde, sentido = 'logo-a-cinta', ritmo = 'menu', chi
               <stop offset="0.56" stopColor="#f6f6f8" />
               <stop offset="1" stopColor="#dddde4" />
             </linearGradient>
+            {/* auditar-excepcion-fin */}
 
             <filter id={ids.sombra} x="-20%" y="-20%" width="140%" height="150%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="blur" />

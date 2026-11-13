@@ -15,15 +15,26 @@
  * (no los ve el público como parte de la charla; lo que el motor pinte dentro
  * de una diapositiva ya lo mide la auditoría de pantallas). La TRAMPA del
  * propio auditor (src/marca/auditor/) queda fuera; la revisa probar-auditor.mjs.
+ * El MAZO DE PRUEBA del motor (src/diapositivas/prueba/) también queda fuera:
+ * no es de la charla y rompe la marca a propósito (MOTOR §5); lo prueban
+ * probar.mjs y probar-novedades.mjs.
  */
 import { readdir, readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { AVISO, EXCEPCION_CODIGO, FALLO, REFERENCIA, aHex, coloresEn } from './reglas.mjs';
 
 export const CARPETA_TRAMPAS = 'src/marca/auditor/';
+export const CARPETA_PRUEBA_MOTOR = 'src/diapositivas/prueba/';
+
+/** Por qué queda fuera cada carpeta (sale en la cabecera del informe). */
+export const MOTIVO_FUERA = {
+  [CARPETA_TRAMPAS]: 'la trampa del propio auditor; la revisa `scripts/probar-auditor.mjs`',
+  [CARPETA_PRUEBA_MOTOR]: 'el mazo de prueba del motor; lo prueban `scripts/probar.mjs` y `probar-novedades.mjs`',
+};
 
 export function ambitoDe(rel) {
   if (rel.startsWith(CARPETA_TRAMPAS)) return 'trampa';
+  if (rel.startsWith(CARPETA_PRUEBA_MOTOR)) return 'prueba-motor';
   if (rel.startsWith('src/diapositivas/') || rel.startsWith('src/marca/')) return 'mazo';
   if (rel === 'src/estilos/marca.css') return 'tokens';
   if (rel === 'src/estilos/base.css' || rel === 'src/estilos/fuentes.css') return 'letra';
@@ -360,6 +371,10 @@ export async function auditarCodigo({ raiz, soloTrampas = false }) {
   const lista = await archivos(raiz, 'src');
   for (const rel of lista.sort()) {
     const ambito = ambitoDe(rel);
+    if (ambito === 'prueba-motor') {
+      if (!soloTrampas && !fuera.includes(CARPETA_PRUEBA_MOTOR)) fuera.push(CARPETA_PRUEBA_MOTOR);
+      continue;
+    }
     if (soloTrampas ? ambito !== 'trampa' : ambito === 'trampa') {
       if (!soloTrampas && !fuera.includes(CARPETA_TRAMPAS)) fuera.push(CARPETA_TRAMPAS);
       continue;

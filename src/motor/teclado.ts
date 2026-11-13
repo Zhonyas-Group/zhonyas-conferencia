@@ -5,6 +5,7 @@
  */
 import { esPresentador } from './entorno';
 import {
+  alternarLuz,
   alternarNegro,
   alternarPruebaSala,
   avanzar,
@@ -321,6 +322,11 @@ export function instalarTeclado(opciones: OpcionesTeclado = {}): () => void {
       case 'T':
         // Diapositiva oculta de prueba de sala (fuera del orden): se ve en la sala y en «En pantalla».
         if (!e.repeat) alternarPruebaSala();
+        break;
+      case 'l':
+      case 'L':
+        // Modo «sala con luz» (estado.ts): los grises de las fuentes y las etiquetas pasan a blanco, en las dos ventanas.
+        if (!e.repeat) alternarLuz();
         break;
       case 'p':
       case 'P':

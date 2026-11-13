@@ -1,0 +1,71 @@
+/*
+ * 11 · tres-arreglos: la línea de tiempo a escala real (docs/GUION.md, 11
+ * «Medios»). Todo en px del escenario de 1920 × 1080. La x de cada marca la
+ * pone 11-tres-arreglos.tsx (67.6 px por día); aquí, la y y el aspecto.
+ */
+
+.tres-arreglos__escala {
+  position: absolute;
+  inset: 0;
+}
+
+/*
+ * La raya: 4 px de alto, de x 115 a x 1805, con el degradado de la firma
+ * (A-39, punto 3; una de sus tres apariciones en el mazo, docs/GUION.md,
+ * Convenciones, «Color»). A media altura: de y 538 a 542.
+ */
+.tres-arreglos__raya {
+  position: absolute;
+  left: var(--zh-margen);
+  right: var(--zh-margen);
+  top: 538px;
+  height: 4px;
+  background: var(--zh-firma);
+}
+
+/* Cada marca: la muesca pegada a la raya y, más allá, la fecha. */
+.tres-arreglos__marca {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  white-space: nowrap;
+}
+
+/* Bajo la raya (25 sep, 2 oct): empieza en su borde de abajo, y 542. */
+.tres-arreglos__marca--abajo {
+  top: 542px;
+  flex-direction: column;
+}
+
+/* Encima (29 sep, 20 oct): termina en su borde de arriba, y 538 (1080 − 538 = 542). */
+.tres-arreglos__marca--arriba {
+  bottom: 542px;
+  flex-direction: column-reverse;
+}
+
+/* La última, 20 oct, con el texto alineado a la derecha, en x 1805. */
+.tres-arreglos__marca--final {
+  align-items: flex-end;
+}
+
+/* Muesca de 4 × 32 px en --zh-texto-2. */
+.tres-arreglos__muesca {
+  display: block;
+  width: 4px;
+  height: 32px;
+  background: var(--zh-texto-2);
+}
+
+/* Separación entre la muesca y la caja de la fecha (a 60 px, la caja ya deja 7 px de interlínea). */
+.tres-arreglos__marca--abajo > .tres-arreglos__muesca {
+  margin-bottom: 8px;
+}
+
+.tres-arreglos__marca--arriba > .tres-arreglos__muesca {
+  margin-top: 8px;
+}
+
+/* Fechas en --zh-texto (zh-lectura) y «estreno» en --zh-texto-2, las dos a 60 px. */
+.tres-arreglos__palabra {
+  color: var(--zh-texto-2);
+}

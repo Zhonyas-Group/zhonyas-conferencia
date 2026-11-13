@@ -1,10 +1,10 @@
 /**
- * PRUEBA del motor: imagen grande (3840×2160) y video local. Se borra cuando haya diapositivas reales.
+ * PRUEBA del motor: imagen grande (3840×2160) y video local. Es del mazo de prueba del motor (prueba/indice.ts), no de la charla.
  */
-import { definirDiapositiva } from '../motor/tipos';
-import { Entrada } from '../motor/Entrada';
-import { medio } from '../motor/medios';
-import { Video } from '../motor/Video';
+import { definirDiapositiva } from '../../motor/tipos';
+import { Entrada } from '../../motor/Entrada';
+import { medio } from '../../motor/medios';
+import { Video } from '../../motor/Video';
 import './prueba.css';
 
 function PruebaMedio() {

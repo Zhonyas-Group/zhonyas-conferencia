@@ -56,6 +56,15 @@
   display: none;
 }
 
+/*
+ * Sala con luz (tecla L; marca.css, :root[data-luz]): fuera la sombra con
+ * resplandor del monograma y la sombra de la palabra (los filtros mark-shadow
+ * y word-shadow de LogoCinta.tsx). La veta se queda: es la textura, no un halo.
+ */
+:root[data-luz] .zh-logo-cinta__logo [filter*='shadow-'] {
+  filter: none;
+}
+
 /* Lo que aparece por corte cuando la escena termina (GUION, 20). */
 .zh-logo-cinta__despues {
   position: absolute;

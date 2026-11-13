@@ -12,7 +12,8 @@
  * De dónde sale cada valor:
  *   - La DURACIÓN, de Vercel Ship 2025 («140B» y «1T», medidos cuadro a cuadro):
  *     de invisible a estable en 0,27–0,30 s (05-oficio-conferencias.md:387).
- *     Se usa el extremo de 300 ms, el instante que la síntesis pide comparar.
+ *     El guion ya eligió dentro de ese rango: 280 ms (docs/GUION.md,
+ *     Convenciones, «Movimiento», y «Lo que necesita el motor», 3).
  *   - La CURVA, de la marca: cubic-bezier(0.22, 1, 0.36, 1), la salida de
  *     zhonyas.com (globals.css:1387; 16 usos en CSS, 00-SINTESIS.md:34; 02 §5.12).
  *
@@ -47,11 +48,11 @@ registrarEntrada({
   nombre: 'cifra',
   movimiento: 'Z-01',
   fuente:
-    'Duración: Vercel Ship 2025, 0,27–0,30 s (05-oficio-conferencias.md:387). Curva: la de la marca, ' +
+    'Duración: 280 ms, Vercel Ship 2025 (05 §11.3; 05-oficio-conferencias.md:387), la que fija docs/GUION.md. Curva: la de la marca, ' +
     'cubic-bezier(0.22, 1, 0.36, 1) (globals.css:1387), como propone C-14 (00-SINTESIS.md:861).',
   aparecer: (el) =>
     el.animate(FUNDIDO, {
-      duration: 300, // Z-01: de invisible a estable en 0,27–0,30 s (05-oficio-conferencias.md:387); el extremo, 300 ms (síntesis §4.4)
+      duration: 280, // duración: Vercel Ship 2025 (05 §11.3); curva: la de la marca (C-14). docs/GUION.md:68 y :652
       easing: 'cubic-bezier(0.22, 1, 0.36, 1)', // la salida de la marca: globals.css:1387 (03 §1 regla 1); elegida por C-14
       fill: 'backwards', // contrato del motor: el primer cuadro ya sale invisible (entradas.ts)
     }),

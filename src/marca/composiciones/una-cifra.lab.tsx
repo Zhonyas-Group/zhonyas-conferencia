@@ -1,7 +1,7 @@
 /**
  * Laboratorio de la composición Una cifra (UnaCifra.tsx).
  *
- * Paso 0: el titular. Paso 1: la cifra a 240 px y su fuente
+ * Paso 0: el titular. Paso 1: la cifra a 300 px y su fuente
  * entran juntas con Z-01 (cifra.entrada.ts).
  */
 import { definirPieza } from '../../motor/laboratorio/tipos';

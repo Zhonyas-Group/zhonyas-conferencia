@@ -54,7 +54,8 @@ function inicial(): EstadoCronometro {
     corriendo: false,
     inicio: null,
     acumulado: 0,
-    objetivo: configuracion.objetivoMinutos * 60,
+    // Redondeado como en fijarObjetivo: 16 min 35 s da 994,999… s en coma flotante.
+    objetivo: Math.round(configuracion.objetivoMinutos * 60),
     epoca: nuevaEpoca(),
     actualizado: ahora,
     version: 0,

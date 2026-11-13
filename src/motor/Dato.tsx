@@ -1,7 +1,7 @@
 /**
  * <Dato id="…" />: la única forma de pintar una cifra en una diapositiva.
  *
- *   <Dato id="gem-actividad-emprendedora" />              → «41,9 %»
+ *   <Dato id="gem-actividad-emprendedora" />              → «41.9 %»
  *   <Dato id="gem-actividad-emprendedora" campo="fuente" /> → «GEM 2021/2022 Global Report, pp. 44 y 106»
  *   const d = useDato('mipymes-efectivo');                  → el registro entero, para maquetarlo a mano
  *

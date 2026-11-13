@@ -1,27 +1,37 @@
 /**
  * Graba el video de respaldo de la demo de Lendex (pieza src/marca/lendex/) y
  * sus pósteres, recorriendo el camino ensayado en la calculadora pública de
- * https://lendexgp.com/app: entrar, bajar hasta «Calculadora de Préstamos»,
- * abrirla y escribir RD$50.000, 5 % y 12 cuotas hasta ver la cuota.
+ * https://lendexgp.com/app.
  *
- *   node scripts/lendex-grabar-demo.mjs                  graba y guarda en public/medios/lendex/
- *   node scripts/lendex-grabar-demo.mjs --comprobar      solo recorre el camino y comprueba (no graba ni escribe)
- *   node scripts/lendex-grabar-demo.mjs --salida carpeta  guarda en otra carpeta
+ *   node scripts/lendex-grabar-demo.mjs --guion               M-07, el respaldo de la 18 (lo que usa la charla)
+ *   node scripts/lendex-grabar-demo.mjs --guion --comprobar   solo recorre y comprueba: no graba ni escribe
+ *   node scripts/lendex-grabar-demo.mjs                       el video del 12-nov (laboratorio de la pieza)
+ *   … --salida carpeta                                         guarda en otra carpeta
+ *
+ * Con --guion (docs/GUION.md, 18 y M-07): la página de escritorio de Lendex a
+ * 1920 × 1080, el clic en «Calculadora de Préstamos» (o nada, si ?calculadora
+ * ya la abre sola), el recorte de la 18 (la tarjeta ampliada 2× en 1344 × 896
+ * en x 288, y 115) y, grabando, RD$10,000 y 20 % hasta ver la cuota de
+ * RD$2,252.65 y el total de RD$27,031.75. Crea respaldo.webm, respaldo-poster.webp
+ * (su primer cuadro) y respaldo-final.webp (el último: el póster del presentador).
+ *
+ * Sin --guion, el camino del 12-nov: la versión estrecha de Lendex, bajar hasta
+ * «Calculadora de Préstamos», abrirla y escribir RD$50.000, 5 % y 12 cuotas.
  *
  * No descarga nada ni necesita ffmpeg: Chrome sin pantalla graba su propia
  * pestaña (getDisplayMedia con --auto-accept-this-tab-capture) con
  * MediaRecorder en WebM VP9, y los pósteres salen del propio video
  * (canvas → WebP). No inicia sesión ni crea cuentas: la calculadora es pública.
  *
- * Crea:
+ * Crea, sin --guion:
  *   demo-calculadora.webm  1920×1080, VP9, ~20 s, sin sonido
  *   demo-inicio.webp       primer fotograma (póster del <video>)
  *   demo-poster.webp       último fotograma, con la cuota (miniaturas, PDF, presentador)
  *
  * Por qué así (medido el 12-nov-2026):
- *   - Lendex a 960×540 px CSS con escala 2 enseña la calculadora entera en
- *     1920×1080 y su letra más pequeña (12 px) sale a 24 px. Es la misma
- *     escala que usa la diapositiva en vivo (iframe de 960×540 con scale(2)).
+ *   - Sin --guion, Lendex a 960×540 px CSS con escala 2 enseña la calculadora
+ *     entera en 1920×1080 y su letra más pequeña (12 px) sale a 24 px. Era la
+ *     geometría de la 18 hasta el 13-nov; ahora la 18 usa la del guion (--guion).
  *   - Tema oscuro: Lendex sigue a prefers-color-scheme; en oscuro la pantalla
  *     de entrar no deslumbra al lado de las diapositivas.
  *   - Sin puntero: la captura de la pestaña no lo pinta (nada de cursor falso).
@@ -39,20 +49,55 @@ const argumento = (nombre) => {
   return i >= 0 ? argumentos[i + 1] : undefined;
 };
 const soloComprobar = argumentos.includes('--comprobar');
+/**
+ * --guion: el respaldo de M-07 (docs/GUION.md, 18 y M-07; docs/MEDIOS.md): la
+ * propia 18 grabada con red, con la geometría de la diapositiva (la página de
+ * escritorio de Lendex, 1920 × 1080, recortada a la tarjeta de la calculadora
+ * y ampliada 2× en 1344 × 896 en x 288, y 115; src/marca/lendex/DemoLendex.tsx)
+ * y lo que se escribe en la charla: RD$10,000 y 20 % (12 cuotas, Mensual y
+ * Francesa ya vienen). Deja respaldo.webm, respaldo-poster.webp (su primer
+ * cuadro) y respaldo-final.webp (el último, con la cuota: el póster del
+ * presentador). Dice también si «?calculadora» ya abre la calculadora sola
+ * (LENDEX_ABRE_LA_CALCULADORA de la pieza).
+ * Sin --guion, el video del 12-nov: la versión estrecha de Lendex (960 × 540
+ * ampliada 2×) con lo que trae (RD$50,000 al 5 %), para el laboratorio.
+ */
+const modoGuion = argumentos.includes('--guion');
 const salida = resolve(raiz, argumento('--salida') ?? 'public/medios/lendex');
 
-export const URL_CALCULADORA = 'https://lendexgp.com/app';
-/** Lo que se escribe, en orden. Los valores por defecto de la calculadora, escritos a mano. */
-const CAMPOS = [
-  { indice: 0, texto: '50000' }, // Monto (RD$)
-  { indice: 1, texto: '5' }, // Tasa de Interes (%)
-  { indice: 2, texto: '12' }, // Plazo (cuotas)
-];
-/** 50 000 × 0,05 / (1 − 1,05⁻¹²) = 5 641,27 (síntesis §6.3; 04 §2, verificado). */
-const CUOTA_ESPERADA = 'RD$5,641.27';
-const ANCHO = 960;
-const ALTO = 540;
-const ESCALA = 2;
+export const URL_CALCULADORA = modoGuion ? 'https://lendexgp.com/app?calculadora' : 'https://lendexgp.com/app';
+/** Lo que se escribe, en orden. */
+const CAMPOS = modoGuion
+  ? [
+      { indice: 0, texto: '10000' }, // Monto (RD$): el «¿Diez mil? Diez mil.» del guion
+      { indice: 1, texto: '20' }, // Tasa: el «20 mensual» de la cita de la 17
+    ]
+  : [
+      { indice: 0, texto: '50000' }, // Monto (RD$): los valores por defecto, escritos a mano
+      { indice: 1, texto: '5' }, // Tasa de Interes (%)
+      { indice: 2, texto: '12' }, // Plazo (cuotas)
+    ];
+/**
+ * Con --guion: 10 000 al 20 % mensual en 12 cuotas francesas: cuota de
+ * RD$2,252.65 y total de RD$27,031.75 (docs/GUION.md, 18, «Datos»; cálculo
+ * con calculateInstallments.ts de Lendex). Sin él: 50 000 × 0,05 / (1 − 1,05⁻¹²)
+ * = 5 641,27 (síntesis §6.3; 04 §2, verificado).
+ */
+const CUOTA_ESPERADA = modoGuion ? 'RD$2,252.65' : 'RD$5,641.27';
+const TOTAL_ESPERADO = modoGuion ? 'RD$27,031.75' : 'RD$67,695.26';
+/** Los archivos que deja, en `salida` (la ficha, en verificacion/lendex/). */
+const NOMBRES = modoGuion
+  ? { video: 'respaldo.webm', inicio: 'respaldo-poster.webp', final: 'respaldo-final.webp', ficha: 'respaldo.json' }
+  : { video: 'demo-calculadora.webm', inicio: 'demo-inicio.webp', final: 'demo-poster.webp', ficha: 'demo-calculadora.json' };
+/** Página de Lendex en px CSS y su escala en la pestaña grabada (sin --guion, la versión estrecha ampliada 2×). */
+const ANCHO = modoGuion ? 1920 : 960;
+const ALTO = modoGuion ? 1080 : 540;
+const ESCALA = modoGuion ? 1 : 2;
+/** Con --guion, la tarjeta en la página de Lendex y dónde queda en la diapositiva (DemoLendex.tsx: TARJETA_LENDEX y RECORTE_LENDEX). */
+const TARJETA = { x: 1104, y: 316, ancho: 672, alto: 448 };
+const RECORTE = { x: 288, y: 115, escala: 2 };
+/** De px CSS de Lendex a px de la pestaña: cambia al recortar (solo con --guion). */
+let aPagina = (x, y) => [x * ESCALA, y * ESCALA];
 
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -215,6 +260,70 @@ const CUOTA = `const t = [...document.querySelectorAll('h3')].find((h) => /Calcu
   const p = [...(t?.closest('.rounded-2xl')?.querySelectorAll('p') ?? [])];
   const i = p.findIndex((x) => /^Cuota /.test(x.textContent));
   return i >= 0 ? p[i + 1] : null;`;
+const TOTAL = `const t = [...document.querySelectorAll('h3')].find((h) => /Calculadora de Pr/.test(h.textContent) && h.getClientRects().length);
+  const p = [...(t?.closest('.rounded-2xl')?.querySelectorAll('p') ?? [])];
+  const i = p.findIndex((x) => /^Total a Pagar/.test(x.textContent));
+  return i >= 0 ? p[i + 1] : null;`;
+const TARJETA_ABIERTA = `const t = [...document.querySelectorAll('h3')].find((h) => /Calculadora de Pr/.test(h.textContent) && h.getClientRects().length);
+  return t?.closest('.rounded-2xl') ?? null;`;
+
+/**
+ * --guion, antes de grabar: abre la calculadora como lo hace Angel (o ve que
+ * ya abrió sola con ?calculadora), comprueba que la tarjeta está donde la
+ * recorta la diapositiva y aplica el recorte de 2×. Devuelve si abrió sola.
+ */
+async function prepararGuion(pagina, marco, { pausa }) {
+  await pausa(800);
+  let tarjeta = await rect(marco, TARJETA_ABIERTA);
+  const abreSola = !!tarjeta;
+  if (!abreSola) {
+    const boton = await rect(marco, BOTON_CALCULADORA);
+    if (!boton) throw new Error('No aparece el botón «Calculadora de Préstamos» en la pantalla de entrar');
+    if (boton.y + boton.h > ALTO) throw new Error(`El botón «Calculadora de Préstamos» no se ve sin desplazar (y ${Math.round(boton.y)})`);
+    const [x, y] = aPagina(boton.cx, boton.cy);
+    await pagina.mouse.click(x, y);
+    await marco.waitForFunction((c) => !!new Function(c)(), TARJETA_ABIERTA, { timeout: 4000 });
+    await pausa(1100); // la entrada de la tarjeta (motion) termina
+    tarjeta = await rect(marco, TARJETA_ABIERTA);
+  }
+  const fuera = ['x', 'y'].some((k) => Math.abs(tarjeta[k] - TARJETA[k]) > 2) || Math.abs(tarjeta.w - TARJETA.ancho) > 2 || Math.abs(tarjeta.h - TARJETA.alto) > 2;
+  if (fuera)
+    throw new Error(
+      `La tarjeta de la calculadora ya no está donde la recorta la diapositiva: ${JSON.stringify(tarjeta)} en vez de ${JSON.stringify(TARJETA)}. Hay que volver a medirla (TARJETA_LENDEX en DemoLendex.tsx).`,
+    );
+  await pagina.evaluate(() => window.recortar());
+  aPagina = (x, y) => [RECORTE.x + (x - TARJETA.x) * RECORTE.escala, RECORTE.y + (y - TARJETA.y) * RECORTE.escala];
+  await pausa(300);
+  return { abreSola, tarjeta };
+}
+
+/** --guion, grabando: la calculadora quieta un momento, el monto y la tasa como Angel, y quieta en la cuota. */
+async function escribirGuion(pagina, marco, { pausa }) {
+  await pausa(1500);
+  for (const campo of CAMPOS) {
+    const r = await rect(marco, CAMPO, campo.indice);
+    if (!r) throw new Error(`No aparece el campo ${campo.indice} de la calculadora`);
+    const [x, y] = aPagina(r.x + Math.min(160, r.w / 2), r.cy);
+    await pagina.mouse.click(x, y);
+    await pausa(250);
+    await pagina.keyboard.press('Control+A');
+    await pausa(200);
+    for (const letra of campo.texto) {
+      await pagina.keyboard.type(letra);
+      await pausa(230);
+    }
+    await pausa(700);
+  }
+  // Soltar el campo: clic en un hueco vacío de la tarjeta, a la derecha del título (así el campo
+  // pierde el foco dentro de Lendex y no se quedan a la vista sus flechitas de número), y el ratón fuera.
+  const [hx, hy] = aPagina(TARJETA.x + TARJETA.ancho - 40, TARJETA.y + 30);
+  await pagina.mouse.click(hx, hy);
+  await pagina.mouse.move(60, ALTO - 40);
+  await pausa(3500);
+  const cuota = await marco.evaluate((c) => new Function(c)()?.textContent ?? null, CUOTA);
+  const total = await marco.evaluate((c) => new Function(c)()?.textContent ?? null, TOTAL);
+  return { cuota, total };
+}
 
 async function recorrer(pagina, marco, { pausa }) {
   // 1. La pantalla de entrar, quieta.
@@ -283,15 +392,28 @@ await mkdir(carpetaTemporal, { recursive: true });
 const estudio = join(carpetaTemporal, 'estudio.html');
 await writeFile(
   estudio,
-  `<!doctype html><meta charset="utf-8"><title>Estudio Lendex</title>
+  (modoGuion
+    ? `<!doctype html><meta charset="utf-8"><title>Estudio Lendex (M-07)</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#010204}
+#caja{position:fixed;left:0;top:0;width:1920px;height:1080px;overflow:hidden}
+#caja.recorte{left:${RECORTE.x}px;top:${RECORTE.y}px;width:${TARJETA.ancho * RECORTE.escala}px;height:${TARJETA.alto * RECORTE.escala}px}
+iframe{position:absolute;left:0;top:0;width:1920px;height:1080px;border:0;display:block;transform-origin:0 0}
+#caja.recorte iframe{transform:scale(${RECORTE.escala}) translate(-${TARJETA.x}px,-${TARJETA.y}px)}</style>
+<!-- La geometría de la 18 (src/marca/lendex/demo-lendex.css): la página de escritorio de Lendex a
+     1920×1080; después, la tarjeta de la calculadora ampliada 2× en 1344×896 en x 288, y 115, sobre
+     el fondo de la marca (#010204, --zh-fondo). -->
+<div id="caja"><iframe id="lendex" src="${URL_CALCULADORA}" sandbox="allow-scripts allow-same-origin allow-forms"></iframe></div>
+<script>
+window.recortar = () => document.getElementById('caja').classList.add('recorte');`
+    : `<!doctype html><meta charset="utf-8"><title>Estudio Lendex</title>
 <style>html,body{margin:0;height:100%;overflow:hidden;background:#000}
 iframe{position:fixed;left:0;top:0;width:${ANCHO}px;height:${ALTO}px;border:0;display:block;transform-origin:0 0;transform:scale(${ESCALA})}</style>
-<!-- La misma geometría que la diapositiva (src/marca/lendex/demo-lendex.css): la página mide
-     1920×1080 y el iframe 960×540 escalado ×2. Si la página midiera 960×540 a escala 2, al
-     grabar la pestaña Chrome la redimensiona al tamaño de la captura y Lendex pasa a su
-     versión de escritorio (medido el 12-nov). -->
+<!-- La geometría del 12-nov: la página mide 1920×1080 y el iframe 960×540 escalado ×2. Si la
+     página midiera 960×540 a escala 2, al grabar la pestaña Chrome la redimensiona al tamaño de
+     la captura y Lendex pasa a su versión de escritorio (medido el 12-nov). -->
 <iframe id="lendex" src="${URL_CALCULADORA}" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
-<script>
+<script>`) +
+    `
 let grabadora = null, trozos = [], flujo = null;
 window.empezar = async () => {
   flujo = await navigator.mediaDevices.getDisplayMedia({
@@ -339,14 +461,25 @@ try {
   await espera(800);
 
   let ajustes = null;
+  let preparado = null;
+  if (modoGuion) {
+    preparado = await prepararGuion(pagina, marco, { pausa: espera });
+    console.log(
+      preparado.abreSola
+        ? 'Lendex YA abre la calculadora sola con ?calculadora: pon LENDEX_ABRE_LA_CALCULADORA = true en src/marca/lendex/DemoLendex.tsx y vuelve a compilar (la 18 pasa a dos pasos).'
+        : 'Lendex todavía no abre la calculadora sola con ?calculadora: la 18 sigue con la pantalla de entrar y Angel pulsa el botón (LENDEX_ABRE_LA_CALCULADORA = false).',
+    );
+  }
   if (!soloComprobar) ajustes = await pagina.evaluate(() => window.empezar());
   const t0 = Date.now();
-  const { cuota } = await recorrer(pagina, marco, { pausa: espera });
+  const { cuota, total } = modoGuion
+    ? await escribirGuion(pagina, marco, { pausa: espera })
+    : { ...(await recorrer(pagina, marco, { pausa: espera })), total: await marco.evaluate((c) => new Function(c)()?.textContent ?? null, TOTAL) };
   const segundos = (Date.now() - t0) / 1000;
-  console.log(`Recorrido: ${segundos.toFixed(1)} s · cuota en pantalla: ${cuota}`);
-  if (cuota !== CUOTA_ESPERADA) {
+  console.log(`Recorrido: ${segundos.toFixed(1)} s · cuota en pantalla: ${cuota} · total: ${total}`);
+  if (cuota !== CUOTA_ESPERADA || total !== TOTAL_ESPERADO) {
     codigoSalida = 1;
-    throw new Error(`La cuota no es ${CUOTA_ESPERADA} sino ${cuota}: Lendex cambió. No se guarda nada.`);
+    throw new Error(`La cuota y el total no son ${CUOTA_ESPERADA} y ${TOTAL_ESPERADO} sino ${cuota} y ${total}: Lendex cambió. No se guarda nada.`);
   }
   if (soloComprobar) {
     console.log('Comprobado: el camino funciona y la cuota es la esperada. No se grabó nada (--comprobar).');
@@ -354,7 +487,7 @@ try {
     const grabado = await pagina.evaluate(() => window.terminar());
     const { webm, resumen } = ponerDuracion(Buffer.from(grabado.base64, 'base64'), grabado.ms);
     await mkdir(salida, { recursive: true });
-    const rutaVideo = join(salida, 'demo-calculadora.webm');
+    const rutaVideo = join(salida, NOMBRES.video);
     await writeFile(rutaVideo, webm);
     console.log(`Captura: ${JSON.stringify(ajustes)}`);
     console.log(`Video: ${(webm.length / 1048576).toFixed(2)} MB · ${JSON.stringify(resumen)}`);
@@ -400,21 +533,23 @@ try {
       await writeFile(join(salida, nombre), datos);
       console.log(`  ${nombre}  (${Math.round(datos.length / 1024)} KB)`);
     };
-    await guardar('demo-inicio.webp', fotogramas.inicio);
-    await guardar('demo-poster.webp', fotogramas.final);
-    console.log(`  demo-calculadora.webm  ${fotogramas.w}×${fotogramas.h}, ${fotogramas.duracion.toFixed(2)} s en Chrome`);
+    await guardar(NOMBRES.inicio, fotogramas.inicio);
+    await guardar(NOMBRES.final, fotogramas.final);
+    console.log(`  ${NOMBRES.video}  ${fotogramas.w}×${fotogramas.h}, ${fotogramas.duracion.toFixed(2)} s en Chrome`);
     // La ficha de la grabación va fuera de public/ para no acabar en dist/.
     const fichas = resolve(raiz, 'verificacion/lendex');
     await mkdir(fichas, { recursive: true });
     await writeFile(
-      join(fichas, 'demo-calculadora.json'),
+      join(fichas, NOMBRES.ficha),
       JSON.stringify(
         {
           grabado: new Date().toISOString(),
           url: URL_CALCULADORA,
           cabeceras,
-          valores: { monto: 50000, tasa: 5, cuotas: 12 },
+          valores: modoGuion ? { monto: 10000, tasa: 20, cuotas: 12 } : { monto: 50000, tasa: 5, cuotas: 12 },
+          ...(preparado ? { abreSola: preparado.abreSola, tarjeta: preparado.tarjeta } : {}),
           cuota,
+          total,
           captura: ajustes,
           video: resumen,
         },

@@ -11,26 +11,61 @@
 }
 
 /*
- * 960×540 px CSS escalado ×2 = 1920×1080: Lendex se maqueta en su versión de
- * pantalla estrecha (< 1024 px, la calculadora a pantalla completa) y su letra
- * de 12 px sale a 24 px. Chrome pinta el contenido del iframe a la escala final
- * (nítido; comprobado en captura a 1920×1080 el 12-nov).
+ * Lendex en su página de escritorio, 1920 × 1080 px CSS (docs/GUION.md, 18 y M-07):
+ *   - sin recorte (la pantalla de entrar, mientras Lendex no abra solo con
+ *     ?calculadora): la página entera, sin ampliar, con «Calculadora de
+ *     Préstamos» a la vista sin desplazar (en x 393, y 760, medido el 13-nov);
+ *   - con recorte ([data-recorte], por corte, sin transición): solo la tarjeta
+ *     de la calculadora (TARJETA_LENDEX, de x 1104 a 1776 y de y 316 a 764)
+ *     ampliada 2× en una caja de 1344 × 896 en x 288, y 115 (RECORTE_LENDEX).
+ *     Las etiquetas de 12 px salen a 24 px y las cifras de 18 px, a 36 px.
+ * Es el mismo iframe en las dos: cambiar de una a otra no lo recarga ni borra
+ * lo escrito. Chrome pinta el contenido del iframe a la escala final (nítido).
+ * Las medidas llegan como variables desde DemoLendex.tsx (GEOMETRIA).
  */
 .lendex-demo__marco {
   position: absolute;
   left: 0;
   top: 0;
-  width: 960px;
-  height: 540px;
+  width: 1920px;
+  height: 1080px;
   border: 0;
   display: block;
   transform-origin: 0 0;
-  transform: scale(2);
   background: transparent;
+}
+
+.lendex-demo__caja[data-recorte] {
+  inset: auto;
+  left: var(--lendex-recorte-x);
+  top: var(--lendex-recorte-y);
+  width: var(--lendex-recorte-ancho);
+  height: var(--lendex-recorte-alto);
+  overflow: hidden;
+}
+
+.lendex-demo__caja[data-recorte] .lendex-demo__marco {
+  transform: scale(var(--lendex-escala)) translate(calc(-1 * var(--lendex-tarjeta-x)), calc(-1 * var(--lendex-tarjeta-y)));
 }
 
 .lendex-demo[data-modo='video'] .lendex-demo__marco {
   visibility: hidden;
+}
+
+/*
+ * La caja del iframe. Dormida solo si Lendex tomó el teclado sin estar a la
+ * vista: sigue cargado (display: none no recarga un iframe), pero no se pinta
+ * y ya no puede volver a pedirlo. `inert`, visibility: hidden y
+ * content-visibility: hidden no lo impiden en Chrome con Lendex ya cargado; un
+ * focus() suyo dejaba la charla sin flechas (DemoLendex.tsx, VistaSala).
+ */
+.lendex-demo__caja {
+  position: absolute;
+  inset: 0;
+}
+
+.lendex-demo__caja[data-dormida] {
+  display: none;
 }
 
 /* Video y póster: 1920×1080, a sangre (§4.3). */
@@ -46,8 +81,9 @@
 /*
  * Franjas transparentes a los lados, encima de la calculadora: al pasar el
  * ratón por ellas la sala recupera el teclado. 64 px: en la pantalla de entrar
- * de Lendex el botón de tema empieza en x = 1776 (888 px CSS × 2) y la tarjeta
- * de la calculadora en x = 288, así que ninguna tapa nada que se pulse.
+ * de escritorio el formulario empieza en x = 256 y el botón de tema está en
+ * x = 888–928; en el recorte la tarjeta empieza en x = 288. Ninguna tapa nada
+ * que se pulse (medido el 13-nov).
  */
 .lendex-demo__borde {
   position: absolute;
@@ -78,16 +114,16 @@
 /*
  * Solo en la ventana del presentador (sobre «En pantalla»): qué ve la sala.
  * Arial 700 a 60 px (escala de lectura, §4.2). Arriba, en la franja libre del
- * póster (la tarjeta de la calculadora empieza en y = 136 y la X en x = 1552),
- * para no tapar la cuota.
+ * póster (la tarjeta de la calculadora empieza en y = 115, RECORTE_LENDEX):
+ * de y 8 a 106, para no tapar la tarjeta ni la cuota.
  */
 .lendex-demo__aviso {
   position: absolute;
   left: var(--zh-margen);
-  top: 16px;
+  top: 8px;
   margin: 0;
-  padding: 16px 28px;
-  max-width: 1420px; /* hasta antes de la X de Lendex (x = 1552) */
+  padding: 12px 24px;
+  max-width: 1690px;
   font-family: var(--zh-sans);
   font-weight: 700;
   font-size: 60px;

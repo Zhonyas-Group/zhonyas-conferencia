@@ -1,12 +1,12 @@
 /**
- * PRUEBA del motor: lienzo WebGL (OGL) que se pausa al salir. Se borra cuando haya diapositivas reales.
+ * PRUEBA del motor: lienzo WebGL (OGL) que se pausa al salir. Es del mazo de prueba del motor (prueba/indice.ts), no de la charla.
  */
 import { useEffect, useState } from 'react';
 import { Mesh, Program, Texture, Triangle } from 'ogl';
-import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
-import { useDiapositiva } from '../motor/contexto';
-import { Entrada } from '../motor/Entrada';
-import { cuadrosOGL, LienzoOGL, type CrearEscenaOGL } from '../motor/LienzoOGL';
+import { definirDiapositiva, type PropsDiapositiva } from '../../motor/tipos';
+import { useDiapositiva } from '../../motor/contexto';
+import { Entrada } from '../../motor/Entrada';
+import { cuadrosOGL, LienzoOGL, type CrearEscenaOGL } from '../../motor/LienzoOGL';
 // Importada desde src/: el build la incrusta en el HTML (en file:// WebGL no acepta imágenes sueltas).
 import urlTextura from './recursos/textura-prueba.png';
 import './prueba.css';
@@ -122,7 +122,7 @@ export default definirDiapositiva({
   id: 'prueba-webgl',
   titulo: 'PRUEBA · WebGL',
   pasos: 1,
-  orador: 'orador2',
+  orador: 'gregory',
   duracion: 35,
   notas: `
     Prueba de **WebGL con OGL** (Orador 2).

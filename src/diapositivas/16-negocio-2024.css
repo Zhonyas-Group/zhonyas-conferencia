@@ -1,0 +1,16 @@
+/*
+ * 16 · negocio-2024, sobre la composición Una cifra (UnaCifra.tsx; la cifra a
+ * 300 px la pone la pieza). docs/GUION.md, Convenciones: las etiquetas en
+ * --zh-texto-2. GUION, 16: la cifra y la comparación, en --zh-texto.
+ */
+
+/* La etiqueta: «de los adultos pidió prestado para un negocio en 2024». */
+.d16-negocio__etiqueta {
+  color: var(--zh-texto-2);
+}
+
+/* «América Latina: 7.5 %»: dato del mundo, en su propia línea, bajo la etiqueta. */
+.d16-negocio__comparacion {
+  display: block;
+  color: var(--zh-texto);
+}

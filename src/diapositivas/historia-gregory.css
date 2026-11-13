@@ -1,0 +1,58 @@
+/*
+ * Historia 1 · Gregory: una libreta (03–08). Lo que las piezas de src/marca/
+ * no ponen por sí solas y el guion pide (docs/GUION.md, 03 a 08). Medidas en
+ * px del escenario de 1920 × 1080; retícula de 115 px (síntesis §4.3).
+ *
+ * El nombre del relevo a 96 px, el personaje al tamaño de la web y la cifra a
+ * 300 px ya los traen las piezas (src/marca/relevo/relevo.css y
+ * src/marca/composiciones/composiciones.css). El color de la etiqueta de la
+ * cifra entra por la prop `etiqueta` de <UnaCifra>, que admite cualquier nodo.
+ */
+
+/* ——— 04 y 05 · una cifra ——— */
+
+/* La etiqueta en --zh-texto-2 (docs/GUION.md, 04 y 05: «60 px, `--zh-texto-2`»). */
+.hg-etiqueta {
+  color: var(--zh-texto-2);
+}
+
+/* ——— 06, 07 y 08 · la evidencia dentro de la retícula ——— */
+
+/*
+ * El guion llama «a sangre» a estas tres, pero la foto o la grabación no van
+ * a pantalla completa: van dentro del margen de 115 px, en la caja que da
+ * cada diapositiva (06: 1690 × 850 en 115, 115; 07: 1440 × 810 en 115, 160;
+ * 08: 1690 × 620 en 115, 345). La caja se escribe en línea en cada diapositiva.
+ */
+.hg-evidencia {
+  position: absolute;
+  overflow: hidden;
+}
+
+.hg-evidencia > :is(img, video) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * El crédito a 32 px en --zh-texto-2 (marca.css .zh-fuente). Bajo la foto en la
+ * 06 y la 08 (docs/GUION.md, 02: «bajo la foto»; la 06 y la 08 repiten esa
+ * composición), separado 16 px como zhonyas.com de la cinta en la 20. No es
+ * imprescindible: puede caer por debajo de y 972 (Convenciones, A-30).
+ */
+.hg-credito {
+  position: absolute;
+  left: var(--zh-margen);
+  max-width: calc(1920px - 2 * var(--zh-margen));
+  white-space: nowrap;
+}
+
+/* 08 · el titular entra en su sitio (x 115, y 115), en dos líneas como mucho. */
+.hg-titular {
+  position: absolute;
+  left: var(--zh-margen);
+  top: var(--zh-margen);
+  width: calc(1920px - 2 * var(--zh-margen));
+}

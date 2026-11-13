@@ -1,0 +1,33 @@
+/*
+ * 12 · iphone (docs/GUION.md, 12 «Composición»): 1,2 : 0,8 de los 1690 px
+ * útiles, 1014 : 676, con la grabación de 676 × 850 a la derecha.
+ */
+
+/* El titular en la columna de 1014 px, sin llegar a la grabación: 1014 − 48 de hueco (--zh-hueco-dividida). */
+.iphone__titular {
+  max-width: calc(1014px - var(--zh-hueco-dividida));
+}
+
+/* El crédito, abajo en la columna del texto, con su pie en y 965, como el de la grabación. */
+.iphone__credito {
+  position: absolute;
+  left: var(--zh-margen);
+  bottom: var(--zh-margen);
+  max-width: calc(1014px - var(--zh-hueco-dividida));
+}
+
+/* La grabación: 676 × 850 en x 1129 (115 + 1014), y 115. */
+.iphone__grabacion {
+  position: absolute;
+  left: calc(var(--zh-margen) + 1014px);
+  top: var(--zh-margen);
+  width: 676px;
+  height: 850px;
+}
+
+.iphone__grabacion :is(img, video) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* la grabación ya viene en 4:5 (M-05): cover no recorta nada */
+}

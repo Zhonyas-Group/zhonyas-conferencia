@@ -1,7 +1,8 @@
 /**
- * Prueba automática del motor sobre la carpeta compilada (dist/).
+ * Prueba automática del motor sobre el mazo de prueba compilado (dist-prueba/:
+ * src/diapositivas/prueba/, con «npm run compilar:prueba»; MOTOR §5 y §8).
  *
- *   npm run probar                    → compila y prueba con Chrome
+ *   npm run probar                    → compila la charla y el mazo de prueba, y prueba con Chrome
  *   node scripts/probar.mjs --canal msedge   → misma prueba con Edge (sin recompilar)
  *
  * Comprueba: escalado en 5 tamaños, teclas y clic, URL, cuadrícula, pantalla
@@ -26,7 +27,8 @@ const canal = argumento('--canal') ?? process.env.CANAL_NAVEGADOR ?? 'chrome';
 process.env.CANAL_NAVEGADOR = canal;
 // --dist otra/carpeta prueba otra compilación (p. ej. «npx vite build --outDir …» de una pieza)
 // sin tocar dist/; --salida cambia dónde quedan las capturas y el resultado.
-const DIST = resolve(argumento('--dist') ?? process.env.DIST_PRUEBA ?? resolve(raiz, 'dist'));
+// Por defecto, el mazo de prueba del motor (npm run compilar:prueba → dist-prueba/; MOTOR §5), no la charla.
+const DIST = resolve(argumento('--dist') ?? process.env.DIST_PRUEBA ?? resolve(raiz, 'dist-prueba'));
 const salida = resolve(argumento('--salida') ?? resolve(raiz, 'verificacion', 'pruebas'));
 const URL_ARCHIVO = pathToFileURL(resolve(DIST, 'index.html')).href;
 const esDistPropio = DIST === resolve(raiz, 'dist');

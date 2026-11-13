@@ -93,6 +93,21 @@
   --zh-hueco-dividida: 48px;
 }
 
+/*
+ * Modo «sala con luz» (tecla L, en la sala o en el presentador; motor/estado.ts).
+ * docs/GUION.md, «Lo que necesita el motor», 10; síntesis §4.1; A-36 y A-37.
+ * Un proyector en un aula con luz sube el negro y lava los grises: medido con
+ * el negro al 30 %, el blanco al 92 % y la saturación al 80 %, --zh-texto-2
+ * queda en unos 4,4:1 y --zh-texto en unos 6,7:1 (revisión del 13-nov). Con la
+ * luz puesta, fuentes, créditos y etiquetas pasan al blanco de la marca, sin
+ * colores nuevos (A-34). El logo pierde su sombra y su halo: en un aula con
+ * luz no se ven y solo ensucian el borde (cinta.css y logo3d.css).
+ * Se decide en la sala con la prueba de sala (T), que enseña el contraste en vivo.
+ */
+:root[data-luz] {
+  --zh-texto-2: var(--zh-texto);
+}
+
 /* ——— Escala de letra (síntesis §4.2): cinco tamaños en todo el mazo ——— */
 
 /* Todos en Arial y con el interletrado negativo de la web (02 §3.2): es lo que la hace reconocible. */

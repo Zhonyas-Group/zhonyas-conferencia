@@ -11,9 +11,12 @@
  *   investigacion/marca/equipo/fotos/<atlas>/photo.jpg (la que usa la web en
  *   escritorio, team-profile.tsx:102): recorte central de proporción
  *   471,6 : 606 (la caja de la foto en la tarjeta, la más ancha de las dos) a
- *   todo el alto, reducido a 620 px de alto (el mayor alto al que se ve).
- *   Así object-fit: cover enseña en la tarjeta y en el retrato el mismo
- *   recorte que la web.
+ *   todo el alto. Así object-fit: cover enseña en la tarjeta y en el retrato
+ *   el mismo recorte que la web. Tamaños (docs/GUION.md, M-09; A-33): la de
+ *   Angel (4160 × 2773) a 965 × 1240, 2× del retrato de 620 px de alto; las de
+ *   Gregory y José (1280 × 853) a su alto nativo, 664 × 853, sin ampliar (el
+ *   original no da para 2×). WebP calidad 0,9 con el Chrome del equipo
+ *   (13-nov). Antes estaban las tres a 1×, de 620 px de alto.
  * - `atlas`: el id de la persona en sprite-atlas.json (copia sin cambios de
  *   zhonyas-web/lib/sprite-atlas.json) y en public/medios/equipo/<atlas>/
  *   personaje.webp (copia sin cambios de public/sprites/atlas/<id>.webp).
@@ -56,7 +59,7 @@ export const EQUIPO: Record<IdOrador, Orador> = {
   angel: {
     nombre: 'Angel Grullon', // team.ts:27 y síntesis §0.1
     hizo: 'Armó los personajes de píxeles e hizo el agujero negro.',
-    fuenteHizo: '08 §4 (Angel: «personajes de píxeles y la herramienta que los arma… el agujero negro»). «Armó» y no «dibujó»: las poses las generó Codex (08 §2, 24-sep)',
+    fuenteHizo: '08 §4 (Angel: «personajes de píxeles y la herramienta que los arma… el agujero negro»). Se dice «armó», no «dibujó» (GUION 09)',
     atlas: 'angel',
     foto: 'medios/equipo/angel/foto.webp',
     personaje: 'medios/equipo/angel/personaje.webp',

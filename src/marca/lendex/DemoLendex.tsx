@@ -7,12 +7,17 @@
  *
  * ——— Cómo se ve ———
  *
- * La calculadora ocupa la diapositiva entera (composición «a sangre», §4.3):
- * un iframe de 960×540 px CSS escalado ×2 a 1920×1080. A ese tamaño Lendex
- * enseña su calculadora completa (la versión de pantalla estrecha, < 1024 px)
- * y su letra más pequeña (text-xs, 12 px) se proyecta a 24 px; los campos, a
- * 32 px, y la cuota, a 36 px. Medido el 12-nov a 960×540, 768×432 y 853×480:
- * solo 960×540 deja ver la cuota sin desplazar (investigación de la pieza).
+ * La calculadora es la protagonista (composición «a sangre», §4.3): un iframe
+ * de la página de escritorio de Lendex, 1920 × 1080 px CSS, recortado a la
+ * tarjeta «Calculadora de Préstamos» y ampliado 2× (`recorte`): 1344 × 896 en
+ * x 288, y 115 (docs/GUION.md, 18). Su letra más pequeña (12 px) se proyecta
+ * a 24 px y las cifras (18 px), a 36 px. Sin `recorte` se ve la página entera
+ * a 1920 × 1080 sin ampliar: es la fase del guion para cuando Lendex todavía
+ * no abre la calculadora con «?calculadora» (M-07): el botón «Calculadora de
+ * Préstamos» se ve sin desplazar y Angel lo pulsa (LENDEX_ABRE_LA_CALCULADORA).
+ * Antes (12-nov) era la versión estrecha de Lendex, 960 × 540 ampliada 2×: la
+ * sala veía su pantalla de entrar ocupando todo y Angel tenía que bajar con la
+ * rueda dentro del iframe para encontrar el botón (revisión del 13-nov).
  *
  * Movimiento: Z-12, «el producto se mueve solo» (síntesis §4.4): lo único que
  * se mueve es Lendex. El cambio entre lo vivo y el video es un corte seco
@@ -29,8 +34,9 @@
  * - Presentador («En pantalla»): el póster quieto y un aviso con el modo de la
  *   sala. Nunca un segundo Lendex en vivo: no estaría sincronizado con el de
  *   la sala y tentaría a escribir en el que el público no ve.
- * - «Siguiente», cuadrícula, capturas, PDF (?revision=1): el póster, que es
- *   el último fotograma del video (la cuota RD$5,641.27).
+ * - «Siguiente», cuadrícula, capturas, PDF (?revision=1): el póster (`poster`).
+ *   En la 18, el último cuadro del video del guion (M-07: RD$10,000 al 20 %,
+ *   cuota de RD$2,252.65), el mismo recorte que ve la sala.
  * - Video (tecla V, o sin red): el video en las dos ventanas, desde el
  *   principio y una sola vez; se queda en la cuota.
  *
@@ -63,7 +69,11 @@
  * - V, en la sala o en el presentador: pasa al video; otra V vuelve a lo vivo
  *   (la calculadora conserva lo que se escribió). Las dos ventanas lo siguen.
  * - Sin red (navigator.onLine falso) la sala ya enseña el video sola.
- * - → · AvPág · clic (fuera de la calculadora): siguen avanzando la charla.
+ * - → · AvPág · Espacio: siguen avanzando la charla. Un clic en la demo, no
+ *   (tampoco sobre el video), y en la sala las teclas de escribir un número
+ *   (cifras, punto, coma, Intro, Retroceso, Supr, Inicio, Fin) no mueven la
+ *   charla mientras la demo está a la vista: «20» + Intro no salta a la 20
+ *   (GUION, «Lo que necesita el motor», 7). El presentador, como siempre.
  *
  * ——— El foco (lo importante el día) ———
  *
@@ -76,34 +86,44 @@
  *   2. Hacer clic en la ventana del presentador (en tu pantalla) y seguir
  *      desde ahí: las dos ventanas se mueven juntas.
  *   3. Pulsar V desde el presentador (paso 2) si lo vivo falla.
- * Al cambiar de diapositiva, el iframe queda `inert`: el foco no puede
- * quedarse escondido en una calculadora que ya no se ve.
+ * Mientras la calculadora no se ve (la diapositiva es la vecina de la que
+ * está en pantalla, la pieza va en una <Entrada> todavía cerrada o el video
+ * está puesto), el iframe va `inert` y un vigilante le devuelve el teclado a
+ * la sala si Lendex lo toma por su cuenta (VistaSala): el teclado nunca se
+ * queda escondido en una calculadora que no se ve.
  *
- * ——— El camino ensayado (el mismo del video) ———
+ * ——— El camino ensayado (el de la 18 mientras Lendex no abra solo) ———
  *
- *   1. En la diapositiva se ve la pantalla de entrar de Lendex (de verdad).
- *   2. Ratón al proyector, rueda hacia abajo sobre el formulario hasta ver
- *      «Calculadora de Préstamos» (debajo de «Entrar al Sistema») y clic.
+ *   1. En la diapositiva se ve la pantalla de entrar de Lendex, sin ampliar.
+ *   2. Ratón al proyector y clic en «Calculadora de Préstamos», abajo a la
+ *      izquierda, bajo «Entrar al Sistema»: la calculadora sale a la derecha.
+ *      La sala recupera el teclado sola (VistaSala) y el clic siguiente del
+ *      puntero pasa al recorte, por corte.
  *   3. Clic en «Monto (RD$)», Ctrl + A y escribir el monto SIN punto ni coma
- *      (80000). Un punto es decimal en ese campo: «80.000» calcula 80 pesos.
- *   4. Igual con la tasa (5) y el plazo (12) si se quieren cambiar. La cuota
- *      cambia sola con cada tecla.
+ *      (10000). Un punto es decimal en ese campo: «10.000» calcula diez pesos.
+ *   4. Igual con la tasa (20). El plazo (12), «Mensual» y «Francesa» ya vienen
+ *      puestos. La cuota cambia sola con cada tecla.
  *   5. Sacar el ratón por un lado (o clic en el presentador) y seguir.
  *   No tocar las listas (Frecuencia, Amortización, Interés): su desplegable es
  *   del sistema, sale pequeño y sin escalar en el proyector.
  *
  * ——— El día antes ———
  *
- * - `node scripts/lendex-grabar-demo.mjs --comprobar`: comprueba que Lendex
- *   se sigue dejando embeber (sin X-Frame-Options ni frame-ancestors), que
- *   el camino funciona y que la cuota da RD$5,641.27. Si Lendex cambió (C-26),
- *   `node scripts/lendex-grabar-demo.mjs` vuelve a grabar el video y los
- *   pósteres en public/medios/lendex/.
- * - Windows en modo oscuro (Configuración → Personalización → Colores →
- *   Modo: Oscuro). Lendex sigue el tema del sistema; en claro, su pantalla de
- *   entrar es blanca y deslumbra entre diapositivas negras. El video está
- *   grabado en oscuro. Si no se puede, el sol/luna de arriba a la derecha de
- *   Lendex lo cambia en vivo.
+ * - `node scripts/lendex-grabar-demo.mjs --guion --comprobar`: comprueba que
+ *   Lendex se sigue dejando embeber (sin X-Frame-Options ni frame-ancestors),
+ *   que el camino de la 18 funciona, que con RD$10,000 al 20 % la cuota da
+ *   RD$2,252.65 y si «?calculadora» ya abre la calculadora sola. Si Lendex
+ *   cambió (C-26), `node scripts/lendex-grabar-demo.mjs --guion` vuelve a
+ *   grabar el respaldo de M-07 y sus cuadros en public/medios/lendex/.
+ * - Lendex en oscuro (ESQUEMA_LENDEX, abajo). Si el presentador avisa en la
+ *   franja roja «Lendex saldrá en claro en la demo», su pantalla de entrar
+ *   saldría blanca entre diapositivas negras (el video está grabado en
+ *   oscuro): Windows con las apps en modo oscuro, o Chrome abierto con
+ *   --force-dark-mode. Lo que el aviso no ve: Lendex recuerda su sol/luna en
+ *   ese navegador (localStorage «theme», por encima del tema), así que al
+ *   recorrer la demo esa mañana hay que mirar que salga oscura. Si no, la luna
+ *   de arriba a la derecha de su pantalla de entrar (x 908, y 32 en la sala)
+ *   la pasa a oscuro en el acto y lo deja guardado (comprobado el 13-nov).
  * - Probar la red de la sala con la demo, no solo con un navegador.
  *
  * ——— Plan B: Lendex en una ventana aparte ———
@@ -129,8 +149,10 @@
  * - El enlace «Términos» abre un aviso propio; las páginas legales con
  *   «[COMPLETAR]» (04 §10) no están en este camino: no salir de él.
  */
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useDiapositiva } from '../../motor/contexto';
+import { fijarProblema } from '../../motor/diagnostico';
+import { useVisibleEnEntrada } from '../../motor/Entrada';
 import { esPresentador, esRevision } from '../../motor/entorno';
 import { medio } from '../../motor/medios';
 import type { NotaPaso, PropsDiapositiva } from '../../motor/tipos';
@@ -138,9 +160,128 @@ import { Video } from '../../motor/Video';
 import { useEnLinea, useModoDemo, useTeclaV } from './modoDemo';
 import './demo-lendex.css';
 
-/** La calculadora pública (no pide cuenta). */
-export const URL_DEMO_LENDEX = 'https://lendexgp.com/app';
-/** Grabado con scripts/lendex-grabar-demo.mjs: 1920×1080, VP9, 13,2 s, el mismo camino. */
+/**
+ * La calculadora pública (no pide cuenta), con «?calculadora»: cuando Lendex lo
+ * tenga, abrirá directo en la calculadora (docs/GUION.md, 18 y M-07). Hoy
+ * (13-nov) Lendex no hace nada con ese parámetro y abre su pantalla de entrar.
+ */
+export const URL_DEMO_LENDEX = 'https://lendexgp.com/app?calculadora';
+
+/**
+ * ¿Lendex ya abre la calculadora sola con «?calculadora»? Hoy no (comprobado
+ * el 13-nov con `node scripts/lendex-grabar-demo.mjs --guion --comprobar`).
+ * Mientras sea false, la 18 sigue el camino del guion para ese caso (M-07,
+ * «Sin ?calculadora»): el iframe arranca sin recorte, a 1920 × 1080 CSS y sin
+ * ampliar, con el botón «Calculadora de Préstamos» a la vista; Angel lo pulsa
+ * y el clic siguiente pasa al recorte de 2× por corte. Cuando José lo
+ * despliegue y ese --comprobar diga «abre sola», se pone en true y se vuelve a
+ * compilar: la 18 abre directo en el recorte, sin la pantalla de entrar.
+ */
+export const LENDEX_ABRE_LA_CALCULADORA = false;
+
+/**
+ * El color-scheme del iframe de Lendex. Lendex se pinta según
+ * prefers-color-scheme, y dentro de un iframe Chrome y Edge 157 se lo dan
+ * según el color-scheme del elemento <iframe>, no según Windows. Medido el
+ * 13-nov en la ThinkPad (Windows con las apps en claro, AppsUseLightTheme = 1;
+ * Playwright sin emular el tema): con `dark` en el iframe, Lendex ve «dark» y
+ * su pantalla de entrar sale oscura; sin él, ve el claro del navegador y la
+ * mitad izquierda del proyector sale blanca, entre diapositivas negras. La
+ * sala ya lo hereda de :root (base.css), pero se declara aquí para que no
+ * dependa de eso.
+ *
+ * Ojo al verificar: Playwright emula por defecto `colorScheme: 'light'`, y la
+ * emulación manda también dentro del iframe; así salía blanca la 18 en las
+ * capturas de la revisión r2. Para ver lo que verá la sala, `colorScheme: null`.
+ */
+export const ESQUEMA_LENDEX = 'dark';
+
+/** El aviso de la franja roja del presentador y de la nota del paso 0 de la 18. */
+export const AVISO_LENDEX_EN_CLARO =
+  'Lendex saldrá en claro en la demo: Windows con las apps en modo oscuro (Configuración → Personalización → Colores) o Chrome con --force-dark-mode (MOTOR §2).';
+
+/**
+ * Lo que verá Lendex, preguntado a una sonda: un iframe vacío del mismo
+ * origen, oculto y con el mismo color-scheme. Un navegador que no pase el
+ * color-scheme al iframe (otra versión, otro navegador) y con el tema claro
+ * la deja en claro. Medido el 13-nov en Chrome y Edge 157: la sonda dice lo
+ * mismo que Lendex con el tema claro y el oscuro, con y sin emular, y con
+ * --force-dark-mode. Con display: none no vale (no calcula su estilo).
+ */
+let sonda: MediaQueryList | null | undefined;
+function consultaLendex(): MediaQueryList | null {
+  if (sonda !== undefined) return sonda;
+  if (typeof document === 'undefined' || !document.body) return null;
+  const marco = document.createElement('iframe');
+  marco.setAttribute('aria-hidden', 'true');
+  marco.tabIndex = -1;
+  marco.inert = true;
+  marco.style.cssText = `position:fixed;left:0;top:0;width:0;height:0;border:0;visibility:hidden;pointer-events:none;color-scheme:${ESQUEMA_LENDEX}`;
+  document.body.append(marco);
+  sonda = marco.contentWindow?.matchMedia('(prefers-color-scheme: dark)') ?? null;
+  return sonda;
+}
+
+/** ¿Lendex saldría ahora en claro en este navegador? */
+export function lendexSaleEnClaro(): boolean {
+  const consulta = consultaLendex();
+  return consulta !== null && !consulta.matches;
+}
+
+/**
+ * Pone el aviso en la franja roja mientras Lendex fuera a salir en claro y lo
+ * quita en cuanto el navegador pasa a oscuro, sin recargar. Solo para el
+ * presentador (la sala no enseña avisos), que está en el mismo navegador.
+ *
+ * El «change» de la sonda no basta: es un iframe de 0 × 0 y oculto, y Chrome
+ * deja de actualizarlo, así que a veces no lo dispara aunque `matches` ya diga
+ * oscuro (medido el 13-nov con probar-notas.mjs: el aviso se quedaba). Por eso
+ * se vuelve a preguntar a la sonda cuando cambia el tema de la propia ventana,
+ * al volver el foco y, por si acaso, cada 2 s: leer `matches` siempre da lo de ahora.
+ */
+export function vigilarTemaLendex(): void {
+  if (typeof document === 'undefined') return;
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', vigilarTemaLendex, { once: true });
+    return;
+  }
+  const consulta = consultaLendex();
+  if (!consulta) return;
+  const revisar = () => fijarProblema('lendex-en-claro', consulta.matches ? null : AVISO_LENDEX_EN_CLARO);
+  revisar();
+  consulta.addEventListener('change', revisar);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', revisar);
+  window.addEventListener('focus', revisar);
+  window.setInterval(revisar, 2000);
+}
+
+/**
+ * La tarjeta «Calculadora de Préstamos» en la página de escritorio de Lendex a
+ * 1920 × 1080 CSS, en tema oscuro: de x 1104 a 1776 y de y 316 a 764 (la
+ * medida del guion visual; vuelta a medir el 13-nov con Playwright sobre
+ * lendexgp.com). Está centrada en la columna derecha (LoginPage.tsx: «flex
+ * items-center justify-center», max-w-2xl = 672 px).
+ */
+export const TARJETA_LENDEX = { x: 1104, y: 316, ancho: 672, alto: 448 } as const;
+
+/**
+ * Dónde queda la tarjeta en la diapositiva: ampliada 2×, 1344 × 896 en x 288,
+ * y 115 (docs/GUION.md, 18). Las etiquetas de 12 px pasan a 24 px y las cifras
+ * de 18 px a 36 px; la fila de la cuota cae hacia y 750–880.
+ */
+export const RECORTE_LENDEX = { x: 288, y: 115, escala: 2 } as const;
+/** Las medidas del recorte para demo-lendex.css, sacadas de las constantes de arriba (una sola fuente). */
+const GEOMETRIA = {
+  '--lendex-tarjeta-x': `${TARJETA_LENDEX.x}px`,
+  '--lendex-tarjeta-y': `${TARJETA_LENDEX.y}px`,
+  '--lendex-recorte-x': `${RECORTE_LENDEX.x}px`,
+  '--lendex-recorte-y': `${RECORTE_LENDEX.y}px`,
+  '--lendex-recorte-ancho': `${TARJETA_LENDEX.ancho * RECORTE_LENDEX.escala}px`,
+  '--lendex-recorte-alto': `${TARJETA_LENDEX.alto * RECORTE_LENDEX.escala}px`,
+  '--lendex-escala': RECORTE_LENDEX.escala,
+} as CSSProperties;
+
+/** Grabado con scripts/lendex-grabar-demo.mjs el 12-nov: 1920×1080, VP9, 13,2 s, con lo que trae Lendex (RD$50,000 al 5 %). */
 export const VIDEO_DEMO_LENDEX = 'medios/lendex/demo-calculadora.webm';
 /** Primer fotograma del video: se ve mientras el video arranca. */
 const INICIO_DEMO_LENDEX = 'medios/lendex/demo-inicio.webp';
@@ -165,47 +306,141 @@ export const FUENTES_DEMO_LENDEX: readonly string[] = [
   'Video de respaldo grabado de lendexgp.com el 12-nov-2026 (scripts/lendex-grabar-demo.mjs).',
 ];
 
+/** Otro video para la V: el del guion (M-07, src/medios-opcionales.ts) cuando llegue. */
+export interface RespaldoDemoLendex {
+  /** El video, relativo a public/ (como lo pide <Video>). */
+  video: string;
+  /** Su primer cuadro: se ve mientras el video arranca. */
+  inicio: string;
+}
+
+export interface PropsDemoLendex extends Partial<PropsDiapositiva> {
+  /**
+   * El video de la V. Sin él (undefined), el del 12-nov (VIDEO_DEMO_LENDEX).
+   * Con null, ninguno: la V no hace nada (la 18 sin M-07: no se enseña un
+   * video con otras cifras que las que se dicen).
+   */
+  respaldo?: RespaldoDemoLendex | null;
+  /**
+   * La página de escritorio recortada a la tarjeta de la calculadora y
+   * ampliada 2× (TARJETA_LENDEX → RECORTE_LENDEX). Sin él, Lendex entero a
+   * 1920 × 1080 sin ampliar, para pulsar «Calculadora de Préstamos».
+   */
+  recorte?: boolean;
+  /** Imagen quieta para el presentador, las miniaturas y las capturas. Por defecto, POSTER_DEMO_LENDEX. */
+  poster?: string;
+}
+
 /**
  * La demo. Se usa como `Componente` de la diapositiva (recibe sus props y no
  * las necesita) o dentro de otra, a pantalla completa.
  */
-export function DemoLendex(_: Partial<PropsDiapositiva> = {}) {
+export function DemoLendex({ respaldo, recorte = false, poster = POSTER_DEMO_LENDEX }: PropsDemoLendex = {}) {
   const { activa, rol, modo } = useDiapositiva();
   const { modo: modoDemo, t } = useModoDemo();
   const enLinea = useEnLinea();
+  // Dentro de una <Entrada> (el <Detalle> de la 18) todavía oculta, la pieza está montada pero no se ve.
+  const visibleEnEntrada = useVisibleEnEntrada();
   const enEscena = modo === 'escenario' && !esRevision;
-  /** La instancia que está en pantalla en esta ventana: la que oye V. */
+  /** La instancia que está en pantalla en esta ventana: la que oye V (también antes de abrirse, para dejar el video puesto). */
   const manda = enEscena && activa && rol === 'actual';
-  useTeclaV(manda);
-  const video = modoDemo === 'video' || !enLinea;
+  const hayVideo = respaldo !== null;
+  useTeclaV(manda && hayVideo);
+  const video = hayVideo && (modoDemo === 'video' || !enLinea);
 
   if (!enEscena) {
     return (
       <div className="lendex-demo">
-        <img className="lendex-demo__lleno" src={medio(POSTER_DEMO_LENDEX)} alt="" decoding="async" draggable={false} />
+        <img className="lendex-demo__lleno" src={medio(poster)} alt="" decoding="async" draggable={false} />
       </div>
     );
   }
-  if (esPresentador) return <VistaPresentador video={video} enLinea={enLinea} reinicio={t} />;
-  return <VistaSala video={video} manda={manda} reinicio={t} />;
+  if (esPresentador)
+    return (
+      <VistaPresentador
+        video={video}
+        enLinea={enLinea}
+        reinicio={t}
+        respaldo={respaldo ?? undefined}
+        recorte={recorte}
+        poster={poster}
+        hayVideo={hayVideo}
+      />
+    );
+  return <VistaSala video={video} aLaVista={manda && visibleEnEntrada} reinicio={t} respaldo={respaldo ?? undefined} recorte={recorte} />;
 }
 
 /** El video, desde el principio cada vez que se pide (la clave lo vuelve a montar). */
-function VideoDemo({ reinicio }: { reinicio: number }) {
+function VideoDemo({ reinicio, respaldo }: { reinicio: number; respaldo?: RespaldoDemoLendex }) {
   return (
     <Video
       key={reinicio}
       className="lendex-demo__lleno"
-      src={VIDEO_DEMO_LENDEX}
-      poster={INICIO_DEMO_LENDEX}
+      src={respaldo?.video ?? VIDEO_DEMO_LENDEX}
+      poster={respaldo?.inicio ?? INICIO_DEMO_LENDEX}
       bucle={false}
     />
   );
 }
 
-function VistaSala({ video, manda, reinicio }: { video: boolean; manda: boolean; reinicio: number }) {
+/**
+ * Teclas de escribir un número en la calculadora. Con la demo a la vista, si
+ * el teclado no está dentro de Lendex (Angel aún no hizo clic en el campo, o
+ * lo hizo en una franja), la sala no las usa: «20» + Intro saltaría a la 20,
+ * Intro sola pasaría a la 19, Retroceso cerraría la calculadora, Inicio y Fin
+ * irían a la portada o al cierre, y el punto pondría la sala en negro
+ * (motor/teclado.ts). docs/GUION.md, «Lo que necesita el motor», 7: en la 18
+ * «número + Intro» no salta. Las flechas, AvPág y RePág, Espacio, B y V siguen
+ * mandando, y desde el presentador todo funciona como siempre.
+ */
+const TECLAS_DE_NUMERO = /^(?:[0-9.,+-]|Enter|Backspace|Delete|Home|End)$/;
+
+/**
+ * La sala. `aLaVista`: esta es la diapositiva en pantalla y la calculadora ya se
+ * ve (en la 18, desde el paso 1, cuando se abre el detalle). Solo entonces, y en
+ * vivo, Lendex puede quedarse con el teclado.
+ *
+ * Mientras no está a la vista (la 18 es la vecina con la 17 o la 19 en
+ * pantalla, el paso 0 de la 18, o el video puesto), el iframe va `inert`. Pero
+ * `inert` no basta: en Chrome 157 una página de otro origen dentro de un iframe
+ * `inert` (o con visibility: hidden, o casi transparente como las vecinas) se
+ * lleva el teclado con un simple focus() en uno de sus campos, y entonces las
+ * flechas y el puntero dejan de mover la charla en la 17 o en el paso 0 de la
+ * 18, sin nada en pantalla que lo explique. Medido el 13-nov con Playwright y
+ * un Lendex falso que pide el foco una vez, o cada 150 ms. Hoy Lendex no lo
+ * pide en /app, pero sí tiene campos con autoFocus en otras pantallas.
+ *
+ * Por eso, mientras no está a la vista, un vigilante devuelve el teclado a la
+ * sala en cuanto Lendex lo toma (al perder la ventana el foco y, por si acaso,
+ * cada 250 ms) y deja su caja dormida (display: none, demo-lendex.css) hasta
+ * que la calculadora se vea: con Lendex ya cargado es lo único que le impide
+ * volver a pedirlo (content-visibility: hidden no basta), y no lo recarga. No
+ * se duerme de entrada: dormido, Lendex no corre sus animaciones, y al abrir
+ * la calculadora se verían el final de su presentación y su entrada (hasta
+ * 1,5 s, medido). Sin robo, Lendex sigue montado y la calculadora sale
+ * asentada en cuanto se abre el detalle (la 18 lo deja pintado en su paso 0:
+ * 18-demo-lendex.css).
+ */
+function VistaSala({
+  video,
+  aLaVista,
+  reinicio,
+  respaldo,
+  recorte,
+}: {
+  video: boolean;
+  aLaVista: boolean;
+  reinicio: number;
+  respaldo?: RespaldoDemoLendex;
+  recorte: boolean;
+}) {
   const marco = useRef<HTMLIFrameElement>(null);
   const ancla = useRef<HTMLSpanElement>(null);
+  /** Lendex en vivo y a la vista: se puede pulsar (el clic de Angel). */
+  const despierta = aLaVista && !video;
+  /** Lendex tomó el teclado sin estar a la vista: queda dormido hasta que se vea. */
+  const [dormida, setDormida] = useState(false);
+  if (despierta && dormida) setDormida(false);
 
   /** Si el teclado está dentro de Lendex, se lo devuelve a la sala (y no deja nada enfocado). */
   const devolverTeclado = useCallback(() => {
@@ -218,32 +453,88 @@ function VistaSala({ video, manda, reinicio }: { video: boolean; manda: boolean;
 
   // El ratón sale de la ventana (hacia la pantalla del portátil): la sala recupera el teclado.
   useEffect(() => {
-    if (!manda) return;
+    if (!despierta) return;
     document.addEventListener('mouseleave', devolverTeclado);
     return () => document.removeEventListener('mouseleave', devolverTeclado);
-  }, [manda, devolverTeclado]);
+  }, [despierta, devolverTeclado]);
 
-  // Al pasar al video o al dejar de estar en pantalla, el teclado vuelve a la charla.
+  // Al pasar al video, al cerrar el detalle o al dejar de estar en pantalla, el
+  // teclado vuelve a la charla. Y mientras no se vea, Lendex no se lo puede llevar.
   useEffect(() => {
-    if (video || !manda) devolverTeclado();
-  }, [video, manda, devolverTeclado]);
+    if (despierta) return;
+    const vigilar = () => {
+      if (document.activeElement !== marco.current) return;
+      devolverTeclado();
+      setDormida(true);
+    };
+    devolverTeclado();
+    window.addEventListener('blur', vigilar);
+    const reloj = window.setInterval(vigilar, 250);
+    return () => {
+      window.removeEventListener('blur', vigilar);
+      window.clearInterval(reloj);
+    };
+  }, [despierta, devolverTeclado]);
+
+  // Sin recorte (la pantalla de entrar, antes de «Calculadora de Préstamos»): ahí no se
+  // escribe nada, solo se pulsa el botón. Tras el clic de Angel, Lendex se queda con el
+  // teclado y el clicker de José ya no pasaría al recorte; así que la sala se lo quita
+  // un momento después, cuando el clic ya llegó al botón (400 ms: el clic de una persona
+  // tarda unos 100 ms entre bajar y subir el botón). En el recorte, Lendex se lo queda
+  // para que Angel escriba (GUION, M-07: «Angel pulsa… y el siguiente clic pasa al recorte»).
+  useEffect(() => {
+    if (!despierta || recorte) return;
+    let temporizador = 0;
+    const alPerderElFoco = () => {
+      window.clearTimeout(temporizador);
+      temporizador = window.setTimeout(devolverTeclado, 400);
+    };
+    window.addEventListener('blur', alPerderElFoco);
+    return () => {
+      window.removeEventListener('blur', alPerderElFoco);
+      window.clearTimeout(temporizador);
+    };
+  }, [despierta, recorte, devolverTeclado]);
+
+  // Con la demo a la vista, escribir un número en la sala no mueve la charla (TECLAS_DE_NUMERO).
+  // En captura, antes que el oyente del motor (teclado.ts, en window y sin captura).
+  useEffect(() => {
+    if (!aLaVista) return;
+    const tragar = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (TECLAS_DE_NUMERO.test(e.key)) e.stopImmediatePropagation();
+    };
+    window.addEventListener('keydown', tragar, { capture: true });
+    return () => window.removeEventListener('keydown', tragar, { capture: true });
+  }, [aLaVista]);
 
   return (
-    <div className="lendex-demo" data-modo={video ? 'video' : 'vivo'}>
-      <iframe
-        ref={marco}
-        className="lendex-demo__marco"
-        src={URL_DEMO_LENDEX}
-        title="Lendex: calculadora de préstamos"
-        // Sin allow-popups ni allow-top-navigation: Lendex no puede abrir ventanas
-        // sobre el proyector ni sacar a la sala de la presentación.
-        sandbox="allow-scripts allow-same-origin allow-forms"
-        tabIndex={-1}
-        inert={!manda || video}
-        aria-hidden={video || undefined}
-      />
-      {video && <VideoDemo reinicio={reinicio} />}
-      {manda && !video &&
+    // Con la demo a la vista, un clic no avanza (Sala.tsx mira [data-sin-clic]): tampoco sobre el video.
+    <div className="lendex-demo" data-modo={video ? 'video' : 'vivo'} data-sin-clic={aLaVista ? '' : undefined}>
+      {/* El mismo iframe en las dos fases: pasar al recorte no lo recarga ni le borra lo escrito (demo-lendex.css). */}
+      <div
+        className="lendex-demo__caja"
+        data-dormida={dormida ? '' : undefined}
+        data-recorte={recorte ? '' : undefined}
+        style={GEOMETRIA}
+      >
+        <iframe
+          ref={marco}
+          className="lendex-demo__marco"
+          src={URL_DEMO_LENDEX}
+          title="Lendex: calculadora de préstamos"
+          // Sin allow-popups ni allow-top-navigation: Lendex no puede abrir ventanas
+          // sobre el proyector ni sacar a la sala de la presentación.
+          sandbox="allow-scripts allow-same-origin allow-forms"
+          // Lendex en oscuro aunque Windows esté en claro (ESQUEMA_LENDEX).
+          style={{ colorScheme: ESQUEMA_LENDEX }}
+          tabIndex={-1}
+          inert={!despierta}
+          aria-hidden={video || undefined}
+        />
+      </div>
+      {video && <VideoDemo reinicio={reinicio} respaldo={respaldo} />}
+      {despierta &&
         (['izquierda', 'derecha'] as const).map((lado) => (
           <div
             key={lado}
@@ -261,18 +552,39 @@ function VistaSala({ video, manda, reinicio }: { video: boolean; manda: boolean;
   );
 }
 
-function VistaPresentador({ video, enLinea, reinicio }: { video: boolean; enLinea: boolean; reinicio: number }) {
+function VistaPresentador({
+  video,
+  enLinea,
+  reinicio,
+  respaldo,
+  recorte,
+  poster,
+  hayVideo,
+}: {
+  video: boolean;
+  enLinea: boolean;
+  reinicio: number;
+  respaldo?: RespaldoDemoLendex;
+  recorte: boolean;
+  poster: string;
+  hayVideo: boolean;
+}) {
+  const conV = hayVideo ? ' · V pone el video' : ' · sin video de respaldo';
   const aviso = !enLinea
-    ? 'Sin red: la sala enseña el video'
+    ? hayVideo
+      ? 'Sin red: la sala enseña el video'
+      : 'Sin red y sin video de respaldo'
     : video
       ? 'La sala enseña el video · V vuelve a lo vivo'
-      : 'La sala enseña Lendex en vivo · V pone el video';
+      : recorte
+        ? `La sala enseña Lendex en vivo${conV}`
+        : 'Sala: la entrada de Lendex · Angel la abre';
   return (
     <div className="lendex-demo" data-modo={video ? 'video' : 'vivo'}>
       {video ? (
-        <VideoDemo reinicio={reinicio} />
+        <VideoDemo reinicio={reinicio} respaldo={respaldo} />
       ) : (
-        <img className="lendex-demo__lleno" src={medio(POSTER_DEMO_LENDEX)} alt="" decoding="async" draggable={false} />
+        <img className="lendex-demo__lleno" src={medio(poster)} alt="" decoding="async" draggable={false} />
       )}
       <p className="lendex-demo__aviso">{aviso}</p>
     </div>

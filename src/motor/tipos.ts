@@ -55,10 +55,27 @@ export interface Transicion {
 export interface NotaPaso {
   /** La frase de entrada completa: lo primero que se dice al llegar a este paso. */
   decir: string;
-  /** 3–4 palabras para no perderse («GEM · 47 países · récord»). */
+  /**
+   * 3–4 apoyos para no perderse, separados por « · » («GEM · 47 países ·
+   * récord»): el «Apoyo» del guion. Sin «·», 3–4 palabras.
+   */
   claves: string;
-  /** Qué hacer si falla (demos, video, WebGL): se ve aparte, en otro color. */
+  /**
+   * Lo que se DICE en el mismo paso, después de la entrada: el «Remate» del
+   * guion (lo que se dice igual), un segundo tiempo, el «En vivo», el puente a
+   * la siguiente… Un párrafo por cosa (línea en blanco entre ellos), con su
+   * rótulo en negrita: «**Remate:** …». Se ve justo debajo de la entrada y antes
+   * de las claves, para que no quede fuera del panel (Notas.tsx).
+   */
+  despues?: string;
+  /** Qué hacer si falla (demos, video, WebGL): va plegado al final, en otro color. */
   siFalla?: string;
+  /**
+   * Lo que NO se dice: avisos de medios que faltan («Sin la foto… (M-01)»),
+   * frases por confirmar, instrucciones para quien maneja la demo. Va plegado
+   * al final, junto al «Si falla», para que no le quite sitio a lo que se dice.
+   */
+  aparte?: string;
 }
 
 /** Definición completa de una diapositiva (lo que exporta cada archivo de src/diapositivas). */

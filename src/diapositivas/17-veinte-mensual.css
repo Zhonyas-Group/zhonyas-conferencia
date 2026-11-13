@@ -1,0 +1,9 @@
+/*
+ * 17 · veinte-mensual. La cita va «en el lugar de la cifra, a 128 px,
+ * alineada a la izquierda y en dos líneas» (docs/GUION.md, 17): la clase
+ * .zh-portadilla de marca.css (128 px, 700, −0,075 em) con el reparto
+ * equilibrado de líneas del titular (A-51: ninguna línea con una sola palabra).
+ */
+.d17-veinte__cita {
+  text-wrap: balance; /* marca.css, .zh-titular (A-51) */
+}

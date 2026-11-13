@@ -1,0 +1,17 @@
+/*
+ * 15 · prestamista-2014, sobre la composición Una cifra (UnaCifra.tsx; la
+ * cifra a 300 px la pone la pieza). docs/GUION.md, Convenciones: «las cifras
+ * van en --zh-texto, que es el dato del país o del mundo, y las etiquetas en
+ * --zh-texto-2».
+ */
+
+/* La etiqueta: «de los adultos pidió prestado a un prestamista en 2014». */
+.d15-prestamista__etiqueta {
+  color: var(--zh-texto-2);
+}
+
+/* «1.º de 143 economías»: dato del mundo, en su propia línea, bajo la etiqueta. */
+.d15-prestamista__puesto {
+  display: block;
+  color: var(--zh-texto);
+}

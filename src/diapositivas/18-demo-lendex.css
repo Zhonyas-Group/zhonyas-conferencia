@@ -1,0 +1,27 @@
+/*
+ * 18 · demo-lendex. Mientras José pide el monto (paso 0), la calculadora está
+ * cerrada: el <Detalle> de Z-08 lleva [data-oculto] y el motor lo oculta con
+ * visibility: hidden (motor.css, «Entradas por paso»). Oculto, Chrome deja de
+ * darle cuadros a Lendex (su requestAnimationFrame se para, medido el 13-nov);
+ * en la 17 tampoco los tiene, porque la vecina queda tapada por la diapositiva
+ * en pantalla. Al abrirse, la sala veía en sus primeros 300–1500 ms lo que
+ * Lendex tenía pendiente: el final de su presentación y la entrada de su
+ * pantalla, encima del fundido de Z-08.
+ *
+ * Por eso, en el paso 0 el detalle cerrado no se oculta: se queda pintado a
+ * 0,002 de opacidad, la misma que las vecinas (motor.css, .capa[data-rol='oculta']:
+ * Chrome no pinta lo que está a 0, y a 0,002 el ojo no lo ve), y sin recibir el
+ * ratón (un clic sigue avanzando la charla). Lendex termina lo suyo durante la
+ * pregunta y la calculadora se abre ya asentada. El teclado no corre peligro:
+ * con el detalle cerrado el iframe va `inert` y el vigilante de la pieza
+ * (src/marca/lendex/DemoLendex.tsx, VistaSala) se lo devuelve a la sala.
+ *
+ * En las capturas (?revision=1) no hace falta y no se aplica: el paso 0 queda
+ * exactamente como lo pinta el motor. Z-08 sigue saliendo de 0 (fill: backwards
+ * en detalle.entrada.ts), así que el fundido no parte de 0,002.
+ */
+html:not(.revision) .d18-demo__detalle[data-oculto] {
+  visibility: visible;
+  opacity: 0.002; /* motor.css: la opacidad de las vecinas ya montadas */
+  pointer-events: none;
+}

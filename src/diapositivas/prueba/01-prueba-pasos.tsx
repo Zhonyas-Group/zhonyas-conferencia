@@ -1,10 +1,10 @@
 /**
  * PRUEBA del motor: varios pasos («builds»), notas por paso y un dato del
- * registro. Se borra cuando haya diapositivas reales.
+ * registro. Es del mazo de prueba del motor (prueba/indice.ts), no de la charla.
  */
-import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
-import { Dato } from '../motor/Dato';
-import { Entrada } from '../motor/Entrada';
+import { definirDiapositiva, type PropsDiapositiva } from '../../motor/tipos';
+import { Dato } from '../../motor/Dato';
+import { Entrada } from '../../motor/Entrada';
 import './prueba.css';
 
 const PUNTOS = ['Primer paso: aparece de golpe', 'Segundo: sin animación propia', 'Tercero: y el último paso'];

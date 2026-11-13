@@ -21,9 +21,16 @@
  *   - en vistas previas y miniaturas (activa = false) y con «menos
  *     movimiento» se queda en su primer cuadro (sprite-character.css:23-24);
  *   - con la sala en negro o algo encima (pausada) se congela y sigue desde ahí;
- *   - en modo revisión el motor apaga las animaciones CSS: primer cuadro.
+ *   - en modo revisión el motor apaga las animaciones CSS: primer cuadro;
+ *   - con `vueltas` y `luego`, al terminar las vueltas pasa a la pose `luego` y
+ *     se queda quieta, sin el respiro de las poses de un cuadro. Es lo que pide
+ *     el guion para el relevo (docs/GUION.md, 03: «Saluda una vez con wave […]
+ *     y se queda quieto en idle, sin el respiro de 1 px (C-11)»; «Lo que
+ *     necesita el motor», 4). En revisión, miniaturas, vistas previas, con menos
+ *     movimiento y al volver a la diapositiva ya completa (←) se ve ya en esa
+ *     pose: es su estado final.
  */
-import type { CSSProperties } from 'react';
+import { useEffect, useState, type AnimationEvent, type CSSProperties } from 'react';
 import { useDiapositiva, useMovimiento } from '../../motor/contexto';
 import { useVisibleEnEntrada } from '../../motor/Entrada';
 import { medio } from '../../motor/medios';
@@ -74,33 +81,58 @@ interface PropsPersonaje {
   animacion: AnimacionPersonaje;
   /**
    * Píxeles de pantalla por píxel del atlas (--s de sprite-character.css:3).
-   * Dentro del relevo no se usa: allí manda 1em / 200 (team-contact.css:40).
+   * Dentro del relevo no se usa: allí manda el 1em / 200 del h2 de la web,
+   * 108,8 / 200 = 0,544 (team-contact.css:40 y :46; relevo.css).
    */
   escala?: number;
   /**
    * Cuántas pasadas da el ciclo antes de quedarse en su primer cuadro. Sin
    * él, como en la web: sin fin (sprite-character.css:10). En `wave` cada
-   * pasada es una ida o una vuelta de 0,5 s (2 = un saludo completo).
+   * pasada es un saludo entero, con los cuadros 1-2-3-2-1 (5 cuadros a 6 fps,
+   * 0,83 s; personaje.css, zh-sprite-saludo): 1 = un saludo (docs/GUION.md, 03).
    */
   vueltas?: number;
+  /** Con `vueltas`: la pose en la que se queda al terminarlas, quieta (relevo: «idle»). */
+  luego?: AnimacionPersonaje;
   className?: string;
 }
 
-export function Personaje({ atlas: id, animacion, escala = 1, vueltas, className }: PropsPersonaje) {
-  const { activa, pausada } = useDiapositiva();
-  const { reducido } = useMovimiento();
+export function Personaje({ atlas: id, animacion, escala = 1, vueltas, luego, className }: PropsPersonaje) {
+  const { activa, pausada, direccion } = useDiapositiva();
+  const { reducido, instantaneo } = useMovimiento();
   const visible = useVisibleEnEntrada();
   const hoja = HOJAS[id];
-  const fila = hoja.animations[animacion];
   const detenido = !visible || !activa || reducido;
+  // ¿Ya dio sus vueltas? Se rearma cada vez que se detiene (sale de la pantalla, vuelve al paso anterior).
+  const [acabo, setAcabo] = useState(false);
+  useEffect(() => {
+    if (detenido) setAcabo(false);
+  }, [detenido]);
+  const conFinal = !!luego && vueltas !== undefined;
+  const final = conFinal && (acabo || instantaneo || reducido || !activa || direccion < 0);
+  const pose = final && luego ? luego : animacion;
+  const fila = hoja.animations[pose];
+  // wave con vueltas: un saludo de ida y vuelta por pasada, sin repetir el último cuadro (personaje.css).
+  const saludo = pose === 'wave' && vueltas !== undefined;
+  const cuadros = saludo ? 2 * fila.frames - 1 : fila.frames;
+  const alTerminar =
+    conFinal && !final
+      ? (e: AnimationEvent<HTMLSpanElement>) => {
+          if (e.target !== e.currentTarget) return;
+          if (e.animationName === 'zh-sprite-ciclo' || e.animationName === 'zh-sprite-saludo') setAcabo(true);
+        }
+      : undefined;
   return (
     <span
       className={className ? `zh-sprite ${className}` : 'zh-sprite'}
-      data-animation={animacion}
+      data-animation={pose}
       data-loop={String(fila.loop)}
+      data-quieto={final ? '' : undefined}
+      onAnimationEnd={alTerminar}
       data-detenido={detenido ? '' : undefined}
       data-pausado={pausada ? '' : undefined}
       data-vueltas={vueltas !== undefined ? '' : undefined}
+      data-saludo={saludo ? '' : undefined}
       aria-hidden="true"
       style={
         {
@@ -113,7 +145,7 @@ export function Personaje({ atlas: id, animacion, escala = 1, vueltas, className
           '--ax': fila.ax,
           '--ay': fila.ay,
           '--frames': fila.frames,
-          '--duration': `${fila.frames / fila.fps}s`, // sprite-character.tsx:12
+          '--duration': `${cuadros / fila.fps}s`, // sprite-character.tsx:12; el saludo, 5 cuadros: 0,83 s
           '--s': escala,
           '--vueltas': vueltas,
         } as CSSProperties

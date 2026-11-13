@@ -11,7 +11,9 @@
  *     «clic +50 ms») y el fondo liso se funde en 500 ms;
  *   - el nombre y lo que hizo entran desde +60 px en 450 ms, a los 180 ms;
  *   - su personaje aparece a los 500 ms (sube 10 px en 400 ms) y saluda
- *     (wave: 3 cuadros a 6 fps, ida y vuelta).
+ *     (wave: 3 cuadros a 6 fps, ida y vuelta); con `vueltas`, saluda con los
+ *     cuadros 1-2-3-2-1 y después se queda quieto en idle, sin respiro
+ *     (docs/GUION.md, 03; C-11).
  * Los valores y su fuente están en geometria.ts y relevo.entrada.ts.
  *
  * La foto sale de algo que ya estaba (03 §1, regla 4; crítica C-10 b): de su
@@ -58,8 +60,9 @@ interface PropsRelevo {
   /** Cambia lo que hizo de equipo.ts (sin cifras: una cifra va con <Dato>). */
   hizo?: string;
   /**
-   * Pasadas del saludo (cada una, una ida o una vuelta de 0,5 s). Sin él, como
-   * en la web: saluda mientras esté en pantalla (crítica C-11, pendiente).
+   * Saludos (cada uno, los cuadros 1-2-3-2-1 de wave a 6 fps, 0,83 s). Al
+   * terminarlos se queda quieto en idle (docs/GUION.md, 03: `vueltas={1}`).
+   * Sin él, como en la web: saluda mientras esté en pantalla (crítica C-11).
    */
   vueltas?: number;
 }
@@ -121,7 +124,7 @@ export function Relevo({ orador, desde = 1, tarjetas = ORDEN_TARJETAS, origen, n
               <span className="relevo-nombre-fin">
                 {fin}
                 <span className="relevo-avatar" data-relevo="avatar" aria-hidden="true">
-                  <Personaje atlas={persona.atlas} animacion="wave" vueltas={vueltas} />
+                  <Personaje atlas={persona.atlas} animacion="wave" vueltas={vueltas} luego="idle" />
                 </span>
               </span>
             </h2>

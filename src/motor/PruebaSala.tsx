@@ -12,9 +12,12 @@
  *     reescalando: poner Windows a su resolución nativa, C-22);
  *   - un patrón de bordes: el borde de la imagen, el 2,5 % y el 5 % (lo que
  *     suelen recortar los proyectores) y el margen de 115 px de la retícula.
- * De ahí se decide si hace falta el «modo sala con luz».
+ * De ahí se decide si hace falta el «modo sala con luz» (tecla L, aquí mismo:
+ * motor/estado.ts y marca.css, :root[data-luz]). Con la luz puesta, «texto 2»
+ * pasa al blanco de «texto» y su contraste se vuelve a medir en vivo.
  */
 import { useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useNavegacion } from './estado';
 import '../estilos/prueba-sala.css';
 
 const TAMANOS = [
@@ -71,7 +74,7 @@ const hex = (c: [number, number, number]) => `#${c.map((v) => v.toString(16).pad
 const coma = (n: number, decimales = 1) => n.toFixed(decimales).replace('.', ',');
 
 /** Lee el color real de cada muestra (desde el CSS) y escribe su hex y su contraste con el fondo. */
-function useMedidas(raiz: RefObject<HTMLDivElement | null>) {
+function useMedidas(raiz: RefObject<HTMLDivElement | null>, luz: boolean) {
   const [medidas, setMedidas] = useState<Record<string, string>>({});
   useLayoutEffect(() => {
     const el = raiz.current;
@@ -85,13 +88,14 @@ function useMedidas(raiz: RefObject<HTMLDivElement | null>) {
       nuevas[muestra.dataset.token!] = tipo === 'texto' ? `${coma(contraste(color, fondo))}:1` : hex(color);
     }
     setMedidas(nuevas);
-  }, [raiz]);
+  }, [raiz, luz]);
   return medidas;
 }
 
 export function PruebaSala() {
   const raiz = useRef<HTMLDivElement>(null);
-  const medidas = useMedidas(raiz);
+  const { luz } = useNavegacion();
+  const medidas = useMedidas(raiz, luz);
   return (
     <div className="prueba-sala" ref={raiz}>
       {/* Bordes: la imagen entera, lo que suelen recortar los proyectores y el margen de la retícula. */}
@@ -112,7 +116,10 @@ export function PruebaSala() {
             <div className="ps-pixeles__muestra ps-pixeles__muestra--verticales" />
             <div className="ps-pixeles__muestra ps-pixeles__muestra--horizontales" />
             <div className="ps-pixeles__muestra ps-pixeles__muestra--damero" />
-            <p className="zh-fuente">Líneas de 1 px · T o Esc para salir</p>
+            {/* Una sola línea: una segunda pisaba el margen de 115 px de abajo. */}
+            <p className="zh-fuente" data-luz-estado={luz ? 'puesta' : 'quitada'}>
+              Líneas de 1 px · T o Esc: salir · L: luz, {luz ? 'sí' : 'no'}
+            </p>
           </div>
         </div>
 

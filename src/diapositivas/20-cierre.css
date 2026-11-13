@@ -1,0 +1,42 @@
+/*
+ * El estado final del cierre (docs/GUION.md, «20 · cierre»), sobre la capa
+ * que LogoCinta enseña por corte al terminar Z-02 (.zh-logo-cinta__despues).
+ * La cinta es de la pieza y no se toca: lo demás se coloca alrededor.
+ */
+
+/* La idea: el <Titular> va en x 115, y 115 por el relleno de .zh-reticula; 96 px en dos líneas, hasta y ≈ 307. */
+
+/*
+ * La acción, a 60 px, a la izquierda y bajo la idea, en dos líneas (GUION:
+ * x 115, y ≈ 430, hasta x ≈ 940). `balance` reparte las dos líneas como el
+ * titular (A-51).
+ */
+.zh-cierre__accion {
+  position: absolute;
+  left: var(--zh-margen);
+  top: 384px;
+  width: 825px;
+  text-wrap: balance;
+}
+
+/* «zhonyas.com»: right y bottom los calcula 20-cierre.tsx desde CAJA_CINTA_FINAL. Una línea de 60 px de alto. */
+.zh-cierre__web {
+  position: absolute;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/*
+ * El QR (M-08): 363 px, 11 px por módulo exactos (33 módulos con la zona de
+ * silencio) en la pantalla de 1920 × 1080; M-08 pide 360 o más. Abajo a la
+ * izquierda: termina en y 972 (A-30) y empieza en el margen (x 115). El
+ * porqué de no ir abajo a la derecha está en 20-cierre.tsx.
+ */
+.zh-cierre__qr {
+  position: absolute;
+  left: var(--zh-margen);
+  top: calc(972px - 363px);
+  width: 363px;
+  height: 363px;
+  display: block;
+}

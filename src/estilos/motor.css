@@ -538,6 +538,17 @@
   color: var(--p-bien);
 }
 
+/* Modo sala con luz puesto (tecla L): que se vea que la sala no está como se diseñó. */
+.p-luz {
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--p-aviso);
+  color: var(--p-aviso);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .p-reloj {
   font-size: 22px;
   font-variant-numeric: tabular-nums;
@@ -605,13 +616,41 @@
 }
 
 .p-notas {
+  position: relative; /* para «sigue ↓» */
   flex: 1 1 0;
+}
+
+/*
+ * La nota no cabía ni a 18 px (Presentador.tsx, useNotasQueCaben): queda
+ * texto debajo. Se ve hasta que se desplaza al final.
+ */
+.p-notas__sigue {
+  position: absolute;
+  right: 18px;
+  bottom: 10px;
+  padding: 2px 10px;
+  border-radius: 6px;
+  background: var(--p-aviso);
+  color: #000;
+  font-size: 14px;
+  font-weight: 700;
+  pointer-events: none;
 }
 
 /* Las notas mandan: las fuentes se quedan con lo que sobre, y como mucho un tercio. */
 .p-fuentes {
   flex: 0 1 auto;
   max-height: 34%;
+}
+
+/* Con poco alto (menos de 800 px), plegadas en la línea de su rótulo con «Ver». */
+.p-fuentes[data-plegadas] {
+  flex: 0 0 auto;
+  padding-bottom: 8px;
+}
+
+.p-fuentes[data-plegadas] .p-rotulo {
+  margin-bottom: 0;
 }
 
 .p-fuentes__texto {
@@ -650,7 +689,11 @@
   color: var(--p-aviso);
 }
 
-/* Nota de un paso: la frase de entrada en grande, las claves y el «si falla» aparte. */
+/*
+ * Nota de un paso, en el orden en que se dice: la entrada en grande, lo que se
+ * dice después (remate, segundo tiempo, «En vivo»), las claves y, plegado al
+ * final, lo que no se dice («Si falla» y avisos).
+ */
 .nota-paso {
   display: grid;
   gap: 0.6em;
@@ -666,12 +709,64 @@
   color: var(--p-aviso);
 }
 
+/* Lo que sigue en el mismo paso (el remate, un segundo tiempo…): más chico que la entrada. */
+.nota-paso__despues {
+  display: grid;
+  gap: 0.4em;
+  font-size: 0.8em;
+  color: var(--p-tinta);
+}
+
+.nota-paso__despues p {
+  margin: 0;
+}
+
 .nota-paso__falla {
   padding: 0.4em 0.6em;
   border-radius: 8px;
   border: 1px solid color-mix(in srgb, var(--p-mal) 55%, transparent);
   background: color-mix(in srgb, var(--p-mal) 14%, transparent);
   font-size: 0.7em;
+}
+
+/* «▸ Si falla y avisos»: una línea, sin foco (Notas.tsx). Abierta, debajo. */
+.nota-paso__plegado {
+  display: grid;
+  gap: 0.4em;
+}
+
+.nota-paso__pliegue {
+  justify-self: start;
+  padding: 0.15em 0.6em;
+  border-radius: 6px;
+  border: 1px solid var(--p-borde);
+  background: rgb(255 255 255 / 0.04);
+  color: var(--p-suave);
+  font: inherit;
+  font-size: 0.6em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nota-paso__plegado[data-abierto] .nota-paso__pliegue {
+  color: var(--p-tinta);
+}
+
+.nota-paso__plegable:not([hidden]) {
+  display: grid;
+  gap: 0.4em;
+}
+
+/* Lo que no se dice: medios que faltan, frases por confirmar, instrucciones. */
+.nota-paso__aparte {
+  display: grid;
+  gap: 0.4em;
+  font-size: 0.7em;
+  color: var(--p-suave);
+}
+
+.nota-paso__aparte p {
+  margin: 0;
 }
 
 /* Pasado el +20 % de su duración sugerida, el panel del tiempo se pone en rojo (01 P1-17). */

@@ -1,19 +1,18 @@
 node_modules/
 dist/
+
+# Mazo de prueba del motor compilado (npm run compilar:prueba)
+dist-prueba/
 .DS_Store
 
 # Investigación: se queda solo en el disco de José (capturas de terceros y notas internas del equipo)
 investigacion/
 
-# Resultados de pruebas y capturas (se regeneran con npm run probar / capturas)
-verificacion/capturas/
-verificacion/pruebas/
-verificacion/pruebas-motor/
-
 # Laboratorio de piezas compilado (npx vite build --mode lab)
 dist-lab/
 
-# Cuadros de las piezas del laboratorio (node scripts/lab-cuadros.mjs)
-verificacion/lab/
-verificacion/fidelidad/
-verificacion/auditoria*
+# Verificación: capturas, pruebas, auditorías, revisiones, cuadros del laboratorio y hojas de
+# contacto. Se regeneran (npm run probar, capturas, auditar, lab:cuadros) o son solo para revisar
+# en este disco. Lo que ya estaba en git (verificacion/lendex/, del 12-nov) sigue en el índice
+# hasta que alguien lo saque con «git rm -r --cached verificacion/lendex».
+verificacion/

@@ -11,7 +11,7 @@
  *   - laboratorio: índice, ?pieza=&paso=, reproducción cuadro a cuadro con
  *     valores exactos, salida animada, transición entre escenas, momentos (A-54).
  *
- *   node scripts/probar-novedades.mjs                    (sobre dist/)
+ *   node scripts/probar-novedades.mjs                    (sobre dist-prueba/, el mazo de prueba)
  *   node scripts/probar-novedades.mjs --dist otra/carpeta --canal msedge
  *
  * Deja capturas y el resultado en verificacion/pruebas/novedades/.
@@ -28,7 +28,8 @@ const argumento = (nombre) => {
 };
 const canal = argumento('--canal') ?? process.env.CANAL_NAVEGADOR ?? 'chrome';
 process.env.CANAL_NAVEGADOR = canal;
-const DIST = resolve(argumento('--dist') ?? process.env.DIST_PRUEBA ?? resolve(raiz, 'dist'));
+// Por defecto, el mazo de prueba del motor (npm run compilar:prueba → dist-prueba/; MOTOR §5), no la charla.
+const DIST = resolve(argumento('--dist') ?? process.env.DIST_PRUEBA ?? resolve(raiz, 'dist-prueba'));
 const salida = resolve(argumento('--salida') ?? resolve(raiz, 'verificacion', 'pruebas', 'novedades'));
 const URL_ARCHIVO = pathToFileURL(resolve(DIST, 'index.html')).href;
 
@@ -146,7 +147,7 @@ console.log('Sala (file://)');
   comprobar('Esc también la cierra', !(await p.isVisible('.capa-prueba-sala')));
 
   const dato = await p.textContent('.sala .capa[data-rol="actual"] [data-dato="gem-actividad-emprendedora"]');
-  comprobar('<Dato> pinta la cifra del registro (src/datos.ts)', dato === '41,9 %', dato ?? 'no está');
+  comprobar('<Dato> pinta la cifra del registro (src/datos.ts)', dato === '41.9 %', dato ?? 'no está');
 
   // Entrada sin efecto: de golpe.
   const entrada = await p.evaluate(async () => {
@@ -224,7 +225,7 @@ console.log('\nPresentador (P en la sala, file://)');
   const fuentes = (await pres.textContent('.p-fuentes').catch(() => '')) ?? '';
   comprobar(
     'Panel de fuentes aparte: la cifra con su fuente y su fecha, y las fuentes escritas a mano',
-    fuentes.includes('41,9 %') && fuentes.includes('GEM 2021/2022 Global Report') && fuentes.includes('(2021)') && fuentes.includes('Texto de prueba del motor'),
+    fuentes.includes('41.9 %') && fuentes.includes('GEM 2021/2022 Global Report') && fuentes.includes('(2021)') && fuentes.includes('Texto de prueba del motor'),
     fuentes.slice(0, 120),
   );
   await pres.screenshot({ path: resolve(salida, 'presentador-notas-y-fuentes.png') });

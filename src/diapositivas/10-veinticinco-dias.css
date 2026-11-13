@@ -1,0 +1,26 @@
+/*
+ * 10 · veinticinco-dias (docs/GUION.md). La composición Una cifra la pone
+ * src/marca/composiciones/; aquí solo lo propio de esta diapositiva.
+ */
+
+/* «para 1.5 segundos» va en --zh-texto-2, a 60 px (docs/GUION.md, 10 «En pantalla»). */
+.veinticinco-dias__etiqueta {
+  color: var(--zh-texto-2);
+}
+
+/*
+ * El video de respaldo de Z-10 (M-04, tecla V): a pantalla completa, encima de
+ * la cifra, como el efecto en zhonyas.com (1920 × 1080). Entra y sale por corte (Z-00).
+ */
+.veinticinco-dias__respaldo {
+  position: absolute;
+  inset: 0;
+  background: var(--zh-fondo);
+}
+
+.veinticinco-dias__respaldo > :is(video, img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

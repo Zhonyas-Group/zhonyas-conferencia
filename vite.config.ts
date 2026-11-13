@@ -179,18 +179,118 @@ function registroDeDatos(): Plugin {
   };
 }
 
+/** Normaliza una ruta para compararla (Windows no distingue mayúsculas ni barras). */
+const comparable = (ruta: string) => resolve(ruta).replace(/\\/g, '/').toLowerCase();
+
+/**
+ * Modo «prueba» (`vite build --mode prueba`, `vite --mode prueba`): el mazo
+ * de prueba del motor en lugar de la charla. Cambia src/diapositivas/indice.ts
+ * por src/diapositivas/prueba/indice.ts y src/configuracion.ts por
+ * src/diapositivas/prueba/configuracion.ts, vengan de donde vengan los
+ * imports (main.tsx, el motor). Las pruebas automáticas del motor
+ * (scripts/probar.mjs, probar-novedades.mjs) se escribieron para ese mazo.
+ */
+function mazoDePrueba(): Plugin {
+  const cambios = new Map([
+    [comparable(join(RAIZ, 'src', 'diapositivas', 'indice.ts')), resolve(RAIZ, 'src', 'diapositivas', 'prueba', 'indice.ts')],
+    [comparable(join(RAIZ, 'src', 'configuracion.ts')), resolve(RAIZ, 'src', 'diapositivas', 'prueba', 'configuracion.ts')],
+  ]);
+  return {
+    name: 'zhonyas:mazo-de-prueba',
+    enforce: 'pre',
+    async resolveId(fuente, importador, opciones) {
+      if (!importador || !/(?:diapositivas\/indice|configuracion)(?:\.ts)?$/.test(fuente)) return null;
+      const resuelto = await this.resolve(fuente, importador, { ...opciones, skipSelf: true });
+      if (!resuelto) return null;
+      return cambios.get(comparable(resuelto.id.split('?')[0])) ?? null;
+    },
+  };
+}
+
+/**
+ * Medios opcionales (src/medios-opcionales.ts; docs/MEDIOS.md): los que el
+ * guion espera y todavía pueden no existir. El módulo virtual
+ * «virtual:medios-presentes» dice qué archivos hay en public/medios/ al
+ * compilar (o al arrancar el servidor de desarrollo) y el texto de los .txt
+ * que los acompañan (créditos, nombres). Así, al dejar el archivo en su ruta y
+ * volver a compilar, la diapositiva lo usa sin tocar el código. En desarrollo,
+ * añadir o quitar un archivo de public/medios/ recarga la página sola.
+ */
+function mediosPresentes(): Plugin {
+  const VIRTUAL = 'virtual:medios-presentes';
+  const RESUELTO = `\0${VIRTUAL}`;
+  const carpeta = resolve(RAIZ, 'public', 'medios');
+  /** Un crédito o un nombre son una línea; más de esto no es un texto de los que se esperan. */
+  const MAX_TEXTO = 4000;
+
+  function listar(dir: string, prefijo: string, salida: string[]) {
+    if (!existsSync(dir)) return;
+    for (const entrada of readdirSync(dir, { withFileTypes: true })) {
+      if (entrada.name.startsWith('.')) continue;
+      const rel = `${prefijo}/${entrada.name}`;
+      if (entrada.isDirectory()) listar(join(dir, entrada.name), rel, salida);
+      else salida.push(rel);
+    }
+  }
+
+  function codigo(): string {
+    const archivos: string[] = [];
+    listar(carpeta, 'medios', archivos);
+    archivos.sort();
+    const textos: Record<string, string> = {};
+    for (const rel of archivos) {
+      if (!rel.toLowerCase().endsWith('.txt')) continue;
+      const texto = readFileSync(resolve(RAIZ, 'public', rel), 'utf8').replace(/^﻿/, '').trim();
+      if (texto && texto.length <= MAX_TEXTO) textos[rel] = texto;
+    }
+    return `export const archivos = ${JSON.stringify(archivos)};\nexport const textos = ${JSON.stringify(textos)};\n`;
+  }
+
+  return {
+    name: 'zhonyas:medios-presentes',
+    resolveId(fuente) {
+      return fuente === VIRTUAL ? RESUELTO : null;
+    },
+    load(id) {
+      return id === RESUELTO ? codigo() : null;
+    },
+    configureServer(servidor) {
+      servidor.watcher.add(carpeta);
+      const dentro = comparable(carpeta) + '/';
+      const alCambiar = (ruta: string, esCambio = false) => {
+        if (!comparable(ruta).startsWith(dentro)) return;
+        if (esCambio && !ruta.toLowerCase().endsWith('.txt')) return;
+        for (const entorno of Object.values(servidor.environments)) {
+          const modulo = entorno.moduleGraph.getModuleById(RESUELTO);
+          if (modulo) entorno.moduleGraph.invalidateModule(modulo);
+        }
+        servidor.ws.send({ type: 'full-reload' });
+      };
+      servidor.watcher.on('add', (ruta) => alCambiar(ruta));
+      servidor.watcher.on('unlink', (ruta) => alCambiar(ruta));
+      servidor.watcher.on('change', (ruta) => alCambiar(ruta, true));
+    },
+  };
+}
+
 // La presentación tiene que abrirse con doble clic desde un USB (file://).
 // Por eso todo el JS y el CSS van dentro de dist/index.html (vite-plugin-singlefile)
 // y los medios de public/ se copian tal cual a dist/ y se piden con rutas relativas.
 //
 // Con --mode lab se compila el laboratorio de piezas (lab.html, ver docs/MOTOR.md §9)
 // en dist-lab/, también en un solo HTML que se abre desde file://.
+//
+// Con --mode prueba se compila el mazo de prueba del motor (mazoDePrueba) en
+// dist-prueba/: es lo que miran scripts/probar.mjs y probar-novedades.mjs.
 export default defineConfig(({ mode }) => {
   const lab = mode === 'lab';
+  const prueba = mode === 'prueba';
   return {
     base: './',
     plugins: [
       ...(lab ? [] : [distLibre()]),
+      ...(prueba ? [mazoDePrueba()] : []),
+      mediosPresentes(),
       registroDeDatos(),
       react(),
       viteSingleFile({ removeViteModuleLoader: true }),
@@ -199,7 +299,7 @@ export default defineConfig(({ mode }) => {
     build: {
       // Margen para navegadores algo viejos en los equipos de la universidad (Chrome/Edge 80+).
       target: 'es2020',
-      outDir: lab ? 'dist-lab' : 'dist',
+      outDir: lab ? 'dist-lab' : prueba ? 'dist-prueba' : 'dist',
       emptyOutDir: true,
       reportCompressedSize: false,
       chunkSizeWarningLimit: 4000,
