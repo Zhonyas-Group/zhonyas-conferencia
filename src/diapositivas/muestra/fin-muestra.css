@@ -1,0 +1,47 @@
+/* Cierre de la muestra: titular centrado arriba de la mitad y los tres al pie, como en la portada. */
+.fin-muestra {
+  position: absolute;
+  inset: 0;
+}
+
+.fin-muestra__titular {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 330px;
+  text-align: center;
+}
+
+.fin-muestra__titular .zh-titular {
+  margin: 0;
+}
+
+.fin-muestra__nota {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 500px;
+  margin: 0;
+  text-align: center;
+}
+
+.fin-muestra__tres {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 920px;
+  height: 0;
+  display: flex;
+  justify-content: center;
+  gap: 120px;
+}
+
+.fin-muestra__persona {
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+.fin-muestra__persona > .zh-sprite[data-saludo] {
+  animation-delay: calc(1100ms + var(--orden) * 150ms);
+}

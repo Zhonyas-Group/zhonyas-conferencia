@@ -13,6 +13,7 @@
  *   04 sin-rnc        la cifra cuenta y 852 de 1000 puntos se encienden en cascada
  *   06 libreta        la libreta que se escribe sola
  *   11 tres-arreglos  la raya se dibuja y Angel camina de fecha en fecha
+ *   fin               «Hasta aquí la muestra.» (sin ella, la 11 parecía trabada)
  */
 import type { Diapositiva } from '../../motor/tipos';
 import portada from '../01-portada';
@@ -21,5 +22,6 @@ import relevoGregory from '../03-relevo-gregory';
 import sinRnc from '../04-sin-rnc';
 import libreta from '../06-libreta';
 import tresArreglos from '../11-tres-arreglos';
+import finMuestra from './fin-muestra';
 
-export const diapositivas: readonly Diapositiva[] = [portada, suCalle, relevoGregory, sinRnc, libreta, tresArreglos];
+export const diapositivas: readonly Diapositiva[] = [portada, suCalle, relevoGregory, sinRnc, libreta, tresArreglos, finMuestra];
