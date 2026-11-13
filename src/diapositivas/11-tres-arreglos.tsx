@@ -27,7 +27,7 @@ import type { IdDato } from '../datos';
 import { iphone } from '../medios-opcionales';
 import { ASangre } from '../marca/composiciones';
 import { Personaje, type AnimacionPersonaje } from '../marca/relevo/Personaje';
-import { Palabras, cortina } from '../marca/wow';
+import { Palabras, camara } from '../marca/wow';
 import { useDiapositiva, useMovimiento } from '../motor/contexto';
 import { Dato } from '../motor/Dato';
 import { Entrada } from '../motor/Entrada';
@@ -233,6 +233,7 @@ export default definirDiapositiva({
     'Es una secuencia de verdad (A-26). La escala está comprobada: 1690 px ÷ 25 días = 67.6 px por día (juicio de reglas).',
   ],
   medios: ['medios/equipo/angel/personaje.webp'],
-  transicion: cortina('angel'),
+  // Angel ya tiene la palabra desde la 09 (su cortina va allí): aquí, la cámara.
+  transicion: camara,
   Componente: TresArreglos,
 });

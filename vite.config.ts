@@ -209,7 +209,7 @@ function mazoDePrueba(): Plugin {
 
 /**
  * Modo «muestra» (`vite build --mode muestra`, `vite --mode muestra`): las
- * seis diapositivas de la muestra de la dirección nueva (rama diseno-wow) en
+ * diapositivas de la muestra de la dirección nueva (rama diseno-wow) en
  * lugar de las 20. Cambia src/diapositivas/indice.ts por
  * src/diapositivas/muestra/indice.ts; la configuración es la de la charla.
  */
@@ -255,6 +255,11 @@ function mediosEnLinea(activo: boolean): Plugin {
           const tipo = TIPOS[archivo.split('.').pop()!];
           mapa[`medios/equipo/${persona}/${archivo}`] = `data:${tipo};base64,${readFileSync(ruta).toString('base64')}`;
         }
+      }
+      // El póster de la 09 (pesada): el presentador y las miniaturas la enseñan quieta.
+      for (const rel of ['medios/posters/relevo-angel.webp']) {
+        const ruta = resolve(RAIZ, 'public', rel);
+        if (existsSync(ruta)) mapa[rel] = `data:image/webp;base64,${readFileSync(ruta).toString('base64')}`;
       }
       return `export const enLinea = ${JSON.stringify(mapa)};\n`;
     },

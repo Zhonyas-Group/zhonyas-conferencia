@@ -33,6 +33,7 @@
  */
 import { mediosRelevo } from '../marca/relevo/equipo';
 import { RETRASO_RELEVO, Relevo } from '../marca/relevo/Relevo';
+import { cortina } from '../marca/wow';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 
 /** Solo la tarjeta de Angel, en la primera caja de la web (la del guion de la 03). */
@@ -67,5 +68,7 @@ export default definirDiapositiva({
   // En el presentador y en las miniaturas, quieta (C-02; GUION 10, «Si falla», 4). La sala la pinta en vivo.
   pesada: true,
   poster: 'medios/posters/relevo-angel.webp',
+  // Cambio de orador: la cortina con Angel corriendo encima (src/marca/wow/transiciones.ts), como la 03.
+  transicion: cortina('angel'),
   Componente: RelevoAngel,
 });

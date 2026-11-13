@@ -21,7 +21,7 @@ function FinMuestra(_: PropsDiapositiva) {
           <Palabras texto="Hasta aquí la muestra." clave={['muestra.']} />
         </h1>
       </Entrada>
-      <p className="zh-fuente fin-muestra__nota">Las otras 14 diapositivas se rehacen con esta misma dirección.</p>
+      <p className="zh-fuente fin-muestra__nota">Las otras 12 diapositivas se rehacen con esta misma dirección.</p>
       <Entrada desde={0} efecto="caer" className="fin-muestra__tres">
         <span data-retraso="600" hidden />
         {TRES.map((atlas, i) => (

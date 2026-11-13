@@ -25,6 +25,7 @@
 import { RETRASO_RELEVO, Relevo } from '../marca/relevo/Relevo';
 import { mediosRelevo } from '../marca/relevo/equipo';
 import { TARJETAS } from '../marca/relevo/geometria';
+import { cortina } from '../marca/wow';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 
 function RelevoJose(_: PropsDiapositiva) {
@@ -53,5 +54,7 @@ export default definirDiapositiva({
     'El cuaderno sale de la propia landing de Lendex: la sección «El cambio» pone «Sin Lendex» el cuaderno, el Excel y el WhatsApp (04 §2). Aquí se presenta para que la 19 lo pueda recordar.',
     'Lendex no presta dinero: es el programa del prestamista (FAQ de la landing, 04 §2). Por eso se dice «lleva los préstamos», nunca «presta».',
   ],
+  // Cambio de orador: la cortina con José corriendo encima (src/marca/wow/transiciones.ts), como la 03.
+  transicion: cortina('jose-leonardo'),
   Componente: RelevoJose,
 });
