@@ -18,6 +18,8 @@
     "compilar:prueba": "vite build --mode prueba",
     "dev:muestra": "vite --mode muestra --port 5480",
     "compilar:muestra": "tsc --noEmit -p tsconfig.json && vite build --mode muestra",
+    "dev:vitrina": "vite --mode vitrina --port 5481",
+    "compilar:vitrina": "tsc --noEmit -p tsconfig.json && vite build --mode vitrina",
     "servir": "node scripts/servir.mjs",
     "capturas": "npm run build && node scripts/capturas.mjs",
     "pdf": "npm run build && node scripts/pdf.mjs",

@@ -1,7 +1,7 @@
 /**
  * Muestra de la dirección nueva (rama diseno-wow): una captura de cada paso,
  * ya quieto, de dist-muestra/index.html abierto por file://.
- *   node scripts/wow-capturas.mjs [--espera 2600]
+ *   node scripts/wow-capturas.mjs [--espera 2600] [--solo 03] [--dist dist-vitrina --salida vitrina]
  * Deja verificacion/wow/pasos/NN-id-pP.png.
  */
 import { mkdirSync } from 'node:fs';
@@ -10,7 +10,10 @@ import { pathToFileURL } from 'node:url';
 import { abrirNavegador } from './navegador.mjs';
 
 const raiz = resolve(import.meta.dirname, '..');
-const salida = join(raiz, 'verificacion', 'wow', 'pasos');
+const arg = (n, def) => (process.argv.includes(n) ? process.argv[process.argv.indexOf(n) + 1] : def);
+// --dist dist-vitrina --salida vitrina: la muestra de la vitrina (npm run compilar:vitrina).
+const dist = arg('--dist', 'dist-muestra');
+const salida = join(raiz, 'verificacion', 'wow', arg('--salida', 'pasos'));
 mkdirSync(salida, { recursive: true });
 const i = process.argv.indexOf('--espera');
 const espera = i > 0 ? Number(process.argv[i + 1]) : 2600;
@@ -22,7 +25,7 @@ try {
   const errores = [];
   pagina.on('pageerror', (e) => errores.push(String(e)));
   pagina.on('console', (m) => m.type() === 'error' && errores.push(m.text()));
-  await pagina.goto(pathToFileURL(join(raiz, 'dist-muestra', 'index.html')).href);
+  await pagina.goto(pathToFileURL(join(raiz, dist, 'index.html')).href);
   await pagina.waitForFunction(() => window.__motor?.total > 0);
   const lista = await pagina.evaluate(() => window.__motor.diapositivas());
   await pagina.waitForTimeout(800);

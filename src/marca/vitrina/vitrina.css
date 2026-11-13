@@ -1,0 +1,241 @@
+/*
+ * La vitrina (rama diseno-wow): las diapositivas de producto. Texto a la
+ * izquierda en la retícula de 115 px; las piezas, a la derecha, en px del
+ * escenario de 1920 × 1080, con perspectiva para su giro.
+ */
+.vitrina {
+  position: absolute;
+  inset: 0;
+}
+
+/* auditar-excepcion-inicio: A-34, A-38 — la vitrina: el brillo del color de cada producto y el marco de navegador y de teléfono (gris claro de la barra, negro del teléfono), sin texto de la charla encima */
+
+/* El brillo del color del producto detrás de las piezas (como el halo violeta del fondo de la web, globals.css:92). */
+.vitrina__brillo {
+  position: absolute;
+  left: 760px;
+  top: 40px;
+  width: 1200px;
+  height: 1000px;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-producto) 34%, transparent), transparent);
+  pointer-events: none;
+}
+
+.vitrina--galeria .vitrina__brillo {
+  left: 260px;
+  top: 220px;
+  width: 1400px;
+  height: 900px;
+}
+
+.vitrina__texto {
+  position: absolute;
+  left: var(--zh-margen);
+  top: 300px;
+  width: 700px;
+}
+
+.vitrina__nombre {
+  margin: 0 0 40px;
+}
+
+.vitrina__promesa {
+  margin: 0;
+  text-wrap: balance; /* A-51: ninguna línea final con una sola palabra */
+}
+
+.vitrina__que-hace {
+  margin: 36px 0 0;
+  max-width: 600px;
+}
+
+.vitrina__direccion {
+  margin: 28px 0 0;
+  color: var(--zh-texto);
+}
+
+.vitrina__titular {
+  position: absolute;
+  left: var(--zh-margen);
+  top: var(--zh-margen);
+  right: var(--zh-margen);
+}
+
+.vitrina__escena {
+  position: absolute;
+  inset: 0;
+  perspective: 2200px;
+}
+
+/* Quien presenta: abajo a la izquierda, con los pies en y 1000 (como los tres de la portada). */
+.vitrina__orador {
+  position: absolute;
+  left: 180px;
+  top: 1000px;
+  width: 0;
+  height: 0;
+}
+
+.vitrina--galeria .vitrina__orador {
+  left: auto;
+  right: 160px;
+  top: 190px;
+}
+
+.vitrina__nombre-pieza {
+  position: absolute;
+  margin: 0;
+  transform: translateX(-50%);
+  color: var(--zh-texto);
+  white-space: nowrap;
+}
+
+/* ——— Piezas ——— */
+
+.vitrina-pieza {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+/* El giro en reposo y un flotar lento: el período de 9 s de capabilities-aurora (capabilities-heading.css:11). */
+.vitrina-flota {
+  transform: rotateY(var(--giro));
+  animation: vitrina-flotar 9s ease-in-out var(--fase) infinite alternate; /* capabilities-heading.css:11: 9s ease-in-out infinite */
+}
+
+@keyframes vitrina-flotar {
+  from {
+    transform: rotateY(var(--giro)) translateY(-8px);
+  }
+  to {
+    transform: rotateY(var(--giro)) translateY(8px);
+  }
+}
+
+/* La ventana: el marco de navegador del video de Pymex (barra clara, tres puntos y la dirección). */
+.vitrina-ventana {
+  overflow: hidden;
+  border-radius: 14px; /* --zh-radio-consola */
+  background: #ffffff;
+  box-shadow:
+    0 0 0 1px var(--zh-linea),
+    0 40px 90px #000000a6,
+    0 0 70px color-mix(in srgb, var(--color-producto) 30%, transparent);
+}
+
+.vitrina-ventana__barra {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 46px;
+  padding: 0 18px;
+  background: #f1f1f4;
+  border-bottom: 1px solid #00000014;
+}
+
+.vitrina-ventana__barra > i {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--zh-punto-rojo);
+}
+
+.vitrina-ventana__barra > i:nth-child(2) {
+  background: var(--zh-punto-ambar);
+}
+
+.vitrina-ventana__barra > i:nth-child(3) {
+  background: var(--zh-punto-verde);
+}
+
+.vitrina-ventana__url {
+  flex: 1;
+  margin-left: 14px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3b3842;
+  font-family: var(--zh-sans);
+  font-size: 18px;
+  text-align: center;
+}
+
+.vitrina-ventana__pagina {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.vitrina-ventana__pagina > img,
+.vitrina-ventana__pagina > video {
+  display: block;
+  width: 100%;
+}
+
+.vitrina-ventana__pagina > video {
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * La página se recorre sola: baja hasta el final y vuelve a subir, sin fin.
+ * Lineal como la cinta de tecnologías de Servicios (capabilities-section.css:38: 32s linear infinite).
+ */
+.vitrina-ventana__pagina > img[data-recorre] {
+  animation: vitrina-recorrer var(--recorrido) linear 1.8s infinite alternate; /* capabilities-section.css:38 (linear infinite); empieza cuando la ventana ya llegó */
+}
+
+@keyframes vitrina-recorrer {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% + var(--alto)));
+  }
+}
+
+/* El teléfono: el marco negro con las esquinas de un teléfono de verdad. */
+.vitrina-telefono {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 54px;
+  background: #000000;
+  box-shadow:
+    0 0 0 1px var(--zh-borde-consola),
+    0 40px 90px #000000b3,
+    0 0 70px color-mix(in srgb, var(--color-producto) 34%, transparent);
+}
+
+.vitrina-telefono__pantalla {
+  position: relative;
+  overflow: hidden;
+  border-radius: 42px;
+  background: #ffffff;
+}
+
+/* La tarjeta del video promocional: la esquina de las tarjetas de la web (--zh-radio-tarjeta). */
+.vitrina-tarjeta {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--zh-radio-tarjeta);
+  box-shadow:
+    0 0 0 1px var(--zh-linea),
+    0 40px 90px #000000a6,
+    0 0 80px color-mix(in srgb, var(--color-producto) 40%, transparent);
+}
+
+.vitrina-tarjeta > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* auditar-excepcion-fin */
+
+@media (prefers-reduced-motion: reduce) {
+  .vitrina-flota,
+  .vitrina-ventana__pagina > img[data-recorre] {
+    animation: none;
+  }
+}

@@ -6,6 +6,7 @@ dist-prueba/
 
 # Muestra de la dirección nueva compilada (npm run compilar:muestra): un solo HTML para José
 dist-muestra/
+dist-vitrina/
 .DS_Store
 
 # Investigación: se queda solo en el disco de José (capturas de terceros y notas internas del equipo)

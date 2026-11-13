@@ -8,12 +8,12 @@
 import { Personaje } from '../../marca/relevo/Personaje';
 import { Palabras } from '../../marca/wow';
 import { Entrada } from '../../motor/Entrada';
-import { definirDiapositiva, type PropsDiapositiva } from '../../motor/tipos';
+import { definirDiapositiva, type Diapositiva, type PropsDiapositiva } from '../../motor/tipos';
 import './fin-muestra.css';
 
 const TRES = ['jose-leonardo', 'gregory', 'angel'] as const;
 
-function FinMuestra(_: PropsDiapositiva) {
+function FinMuestra({ nota }: { nota: string }) {
   return (
     <div className="fin-muestra">
       <Entrada desde={0} efecto="palabras" className="fin-muestra__titular">
@@ -21,7 +21,7 @@ function FinMuestra(_: PropsDiapositiva) {
           <Palabras texto="Hasta aquí la muestra." clave={['muestra.']} />
         </h1>
       </Entrada>
-      <p className="zh-fuente fin-muestra__nota">Las otras 12 diapositivas se rehacen con esta misma dirección.</p>
+      <p className="zh-fuente fin-muestra__nota">{nota}</p>
       <Entrada desde={0} efecto="caer" className="fin-muestra__tres">
         <span data-retraso="600" hidden />
         {TRES.map((atlas, i) => (
@@ -34,13 +34,18 @@ function FinMuestra(_: PropsDiapositiva) {
   );
 }
 
-export default definirDiapositiva({
-  id: 'fin-muestra',
-  titulo: 'Fin de la muestra',
-  orador: 'angel',
-  duracion: 5,
-  pasos: 0,
-  notas: [{ decir: 'Fin de la muestra: con ← se vuelve a cualquiera de las seis.', claves: 'fin de la muestra' }],
-  fuentes: [],
-  Componente: FinMuestra,
-});
+/** La tarjeta de cierre de una muestra, con su nota debajo del titular. */
+export function crearFin(nota: string, orador: Diapositiva['orador'] = 'angel'): Diapositiva {
+  return definirDiapositiva({
+    id: 'fin-muestra',
+    titulo: 'Fin de la muestra',
+    orador,
+    duracion: 5,
+    pasos: 0,
+    notas: [{ decir: 'Fin de la muestra: con ← se vuelve a cualquiera de las anteriores.', claves: 'fin de la muestra' }],
+    fuentes: [],
+    Componente: (_: PropsDiapositiva) => <FinMuestra nota={nota} />,
+  });
+}
+
+export default crearFin('Las otras 12 diapositivas se rehacen con esta misma dirección.');

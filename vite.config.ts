@@ -213,9 +213,9 @@ function mazoDePrueba(): Plugin {
  * lugar de las 20. Cambia src/diapositivas/indice.ts por
  * src/diapositivas/muestra/indice.ts; la configuración es la de la charla.
  */
-function mazoDeMuestra(): Plugin {
+function mazoDeMuestra(carpeta = 'muestra'): Plugin {
   const original = comparable(join(RAIZ, 'src', 'diapositivas', 'indice.ts'));
-  const muestra = resolve(RAIZ, 'src', 'diapositivas', 'muestra', 'indice.ts');
+  const muestra = resolve(RAIZ, 'src', 'diapositivas', carpeta, 'indice.ts');
   return {
     name: 'zhonyas:mazo-de-muestra',
     enforce: 'pre',
@@ -345,6 +345,10 @@ export default defineConfig(({ mode }) => {
   const lab = mode === 'lab';
   const prueba = mode === 'prueba';
   const muestra = mode === 'muestra';
+  // Modo «vitrina» (13-nov): la muestra de las diapositivas de productos
+  // (src/diapositivas/vitrina/indice.ts) en dist-vitrina/, con medios/ al lado
+  // (lleva videos: no caben como data: URI).
+  const vitrina = mode === 'vitrina';
   return {
     base: './',
     // La muestra lleva dentro del HTML lo que usa (mediosEnLinea): sin carpeta medios/ al lado.
@@ -353,6 +357,7 @@ export default defineConfig(({ mode }) => {
       ...(lab ? [] : [distLibre()]),
       ...(prueba ? [mazoDePrueba()] : []),
       ...(muestra ? [mazoDeMuestra()] : []),
+      ...(vitrina ? [mazoDeMuestra('vitrina')] : []),
       mediosEnLinea(muestra),
       mediosPresentes(),
       registroDeDatos(),
@@ -363,7 +368,7 @@ export default defineConfig(({ mode }) => {
     build: {
       // Margen para navegadores algo viejos en los equipos de la universidad (Chrome/Edge 80+).
       target: 'es2020',
-      outDir: lab ? 'dist-lab' : prueba ? 'dist-prueba' : muestra ? 'dist-muestra' : 'dist',
+      outDir: lab ? 'dist-lab' : prueba ? 'dist-prueba' : muestra ? 'dist-muestra' : vitrina ? 'dist-vitrina' : 'dist',
       emptyOutDir: true,
       reportCompressedSize: false,
       chunkSizeWarningLimit: 4000,
