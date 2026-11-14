@@ -186,7 +186,16 @@
   background: transparent;
 }
 
-/* El velo del perfil del relevo (relevo.css, .relevo-fondo) deja ver el fondo, más oscuro. */
-.sala[data-fondo-vivo] .relevo-fondo {
-  background: rgba(1, 2, 4, 0.5);
+/*
+ * El velo del perfil del relevo (relevo.css, .relevo-fondo) y el fondo de la
+ * demo de Lendex no pintan nada: el fondo vivo llena toda la ventana (fuera de
+ * los 1920 × 1080 también) y un velo que solo cubre la diapositiva dibujaba
+ * (lo mismo el panel de Z-08, .zh-detalle, que en la demo de Lendex se abre
+ * cuando la frase del paso 0 ya se fue)
+ * dos bandas a los lados cuando la ventana no es 16:9 (José, 13-nov).
+ */
+.sala[data-fondo-vivo] .relevo-fondo,
+.sala[data-fondo-vivo] .lendex-demo,
+.sala[data-fondo-vivo] .zh-detalle {
+  background: transparent;
 }
