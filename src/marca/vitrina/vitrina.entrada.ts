@@ -8,8 +8,10 @@
  *   pieza      x +220 px, rotateY −26°, scale .9, opacidad 0 → reposo  900   200 + 140 × orden   (0.22, 1, 0.36, 1)
  *   nombre     y +24 px, opacidad 0 → reposo                     450   700 + 140 × orden   easeOut de motion
  *
- * Cada pieza solo trae el fotograma de partida: el de llegada es el de su CSS
- * (el giro en reposo de --giro), así la animación nunca pisa la composición.
+ * Cada pieza solo trae el fotograma de partida, con `offset: 0`: el de llegada
+ * es el de su CSS (el giro en reposo de --giro), así la animación nunca pisa
+ * la composición. Sin el `offset: 0`, un fotograma suelto es el de LLEGADA
+ * (Web Animations): las piezas salían ya puestas, se iban y volvían de golpe.
  */
 import { registrarEntrada } from '../../motor/entradas';
 
@@ -41,7 +43,7 @@ registrarEntrada({
     return [
       ...piezas.map((p) =>
         p.animate(
-          [{ opacity: 0, transform: 'translateX(220px) rotateY(-26deg) scale(0.9)' }], // team-profile.tsx:98-99: el retrato gira en Y al volar
+          [{ opacity: 0, transform: 'translateX(220px) rotateY(-26deg) scale(0.9)', offset: 0 }], // team-profile.tsx:98-99: el retrato gira en Y al volar
           {
             duration: 900, // project-gallery.css:32 (transform 900 ms)
             delay: 200 + 140 * orden(p), // 140 ms entre piezas: el escalonado de las letras de capabilities-heading.css:11 (--letter-delay)
@@ -51,7 +53,7 @@ registrarEntrada({
         ),
       ),
       ...nombres.map((n) =>
-        n.animate([{ opacity: 0, transform: 'translateY(24px)' }], {
+        n.animate([{ opacity: 0, transform: 'translateY(24px)', offset: 0 }], {
           duration: 450, // team-profile.tsx:105 (duration 0.45)
           delay: 700 + 140 * orden(n), // cuando su pieza ya está casi en su sitio
           easing: CURVA_MOTION, // team-profile.tsx:105 sin ease → easeOut de motion
