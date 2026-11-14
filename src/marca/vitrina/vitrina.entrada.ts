@@ -53,7 +53,9 @@ registrarEntrada({
         ),
       ),
       ...nombres.map((n) =>
-        n.animate([{ opacity: 0, transform: 'translateY(24px)', offset: 0 }], {
+        // Con `translate` y no `transform`: el nombre ya lleva translateX(-50%) para centrarse bajo su
+        // pieza, y un transform lo pisaba (el nombre se deslizaba de lado medio ancho al aparecer).
+        n.animate([{ opacity: 0, translate: '0 24px', offset: 0 }], {
           duration: 450, // team-profile.tsx:105 (duration 0.45)
           delay: 700 + 140 * orden(n), // cuando su pieza ya está casi en su sitio
           easing: CURVA_MOTION, // team-profile.tsx:105 sin ease → easeOut de motion
