@@ -25,11 +25,18 @@ export function Escenario({
   children,
   className,
   fondo,
+  fondoCompleto,
 }: {
   children: ReactNode;
   className?: string;
   /** Color de las bandas (por defecto, var(--fondo)). */
   fondo?: string;
+  /**
+   * Lo que va DETRÁS de la diapositiva y llena toda la ventana (rama
+   * diseno-wow: el fondo vivo). Se escala para cubrir, no para caber: así no
+   * quedan bandas negras a los lados cuando la ventana no es 16:9 (José, 13-nov).
+   */
+  fondoCompleto?: ReactNode;
 }) {
   const marco = useRef<HTMLDivElement>(null);
   const [medida, setMedida] = useState<Medida | null>(null);
@@ -51,6 +58,7 @@ export function Escenario({
   }, []);
 
   let estilo: CSSProperties = { visibility: 'hidden' };
+  let estiloCubre: CSSProperties = { visibility: 'hidden' };
   let escala = 1;
   if (medida && medida.ancho > 0 && medida.alto > 0) {
     escala = Math.min(medida.ancho / ANCHO, medida.alto / ALTO);
@@ -58,10 +66,20 @@ export function Escenario({
     const x = Math.round((medida.ancho - ANCHO * escala) / 2);
     const y = Math.round((medida.alto - ALTO * escala) / 2);
     estilo = { transform: `translate(${x}px, ${y}px) scale(${escala})` };
+    // El fondo completo cubre la ventana entera (centrado, se recorta lo que sobra).
+    const cubre = Math.max(medida.ancho / ANCHO, medida.alto / ALTO);
+    const xc = Math.round((medida.ancho - ANCHO * cubre) / 2);
+    const yc = Math.round((medida.alto - ALTO * cubre) / 2);
+    estiloCubre = { transform: `translate(${xc}px, ${yc}px) scale(${cubre})` };
   }
 
   return (
     <div ref={marco} className={`marco ${className ?? ''}`} style={fondo ? { background: fondo } : undefined}>
+      {fondoCompleto ? (
+        <div className="escenario escenario--fondo" style={estiloCubre} aria-hidden="true">
+          {fondoCompleto}
+        </div>
+      ) : null}
       <div className="escenario" style={estilo}>
         <ContextoEscala.Provider value={escala}>{children}</ContextoEscala.Provider>
       </div>

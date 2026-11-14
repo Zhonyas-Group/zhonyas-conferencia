@@ -185,9 +185,12 @@ export function Sala() {
       style={{ background: d.fondo ?? undefined }}
       data-fondo-vivo={FONDO_VIVO ? '' : undefined}
     >
-      <Escenario fondo={d.fondo}>
-        {/* El fondo vivo (rama diseno-wow) va debajo de la secuencia y sobrevive a los cambios de diapositiva. */}
-        {FONDO_VIVO && <FondoVivo pausado={nav.negro || ui.cuadricula || nav.prueba} />}
+      <Escenario
+        fondo={d.fondo}
+        // El fondo vivo (rama diseno-wow) va debajo de la secuencia, sobrevive a los cambios de
+        // diapositiva y llena toda la ventana: sin bandas negras si la ventana no es 16:9.
+        fondoCompleto={FONDO_VIVO ? <FondoVivo pausado={nav.negro || ui.cuadricula || nav.prueba} /> : undefined}
+      >
         {/* Con la pantalla en negro, la cuadrícula o la prueba de sala encima nadie ve la diapositiva: video y WebGL se paran. */}
         <Secuencia
           indice={nav.indice}
