@@ -34,7 +34,7 @@ import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 const TARJETAS = ['gregory'] as const;
 
 function RelevoGregory(_: PropsDiapositiva) {
-  return <Relevo orador="gregory" tarjetas={TARJETAS} hizo="" vueltas={1} automatico={RETRASO_RELEVO} />;
+  return <Relevo orador="gregory" tarjetas={TARJETAS} tema="Hoy habla de Pymex." vueltas={1} automatico={RETRASO_RELEVO} />;
 }
 
 export default definirDiapositiva({

@@ -60,6 +60,14 @@ interface PropsRelevo {
   /** Cambia lo que hizo de equipo.ts (sin cifras: una cifra va con <Dato>). */
   hizo?: string;
   /**
+   * Rama diseno-wow (13-nov, José: «cuando cada quien se presente, ponle algo
+   * para que sepan quién es»): su cargo en Zhonyas (equipo.ts) debajo del
+   * nombre. `false` lo quita.
+   */
+  cargo?: string | false;
+  /** De qué va a hablar, en una línea al pie del texto («Hoy habla de Pymex.»). */
+  tema?: string;
+  /**
    * Saludos (cada uno, los cuadros 1-2-3-2-1 de wave a 6 fps, 0,83 s). Al
    * terminarlos se queda quieto en idle (docs/GUION.md, 03: `vueltas={1}`).
    * Sin él, como en la web: saluda mientras esté en pantalla (crítica C-11).
@@ -83,7 +91,7 @@ function estiloCaja(c: Caja): CSSProperties {
   return { left: c.left, top: c.top, width: c.width, height: c.height };
 }
 
-export function Relevo({ orador, desde: desdePedido, tarjetas = ORDEN_TARJETAS, origen, nombre, hizo, vueltas, automatico }: PropsRelevo) {
+export function Relevo({ orador, desde: desdePedido, tarjetas = ORDEN_TARJETAS, origen, nombre, hizo, cargo, tema, vueltas, automatico }: PropsRelevo) {
   const { id, paso } = useDiapositiva();
   const desde = desdePedido ?? (automatico !== undefined ? 0 : 1);
   const persona = EQUIPO[orador];
@@ -142,7 +150,9 @@ export function Relevo({ orador, desde: desdePedido, tarjetas = ORDEN_TARJETAS, 
                 </span>
               </span>
             </h2>
-            <p className="zh-lectura relevo-hizo">{hizo ?? persona.hizo}</p>
+            {cargo === false ? null : <p className="zh-lectura zh-lectura--fuerte relevo-cargo">{cargo ?? persona.cargo}</p>}
+            {(hizo ?? persona.hizo) ? <p className="zh-lectura relevo-hizo">{hizo ?? persona.hizo}</p> : null}
+            {tema ? <p className="zh-fuente relevo-tema">{tema}</p> : null}
           </div>
         </div>
       </Entrada>

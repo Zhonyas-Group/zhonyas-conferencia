@@ -195,6 +195,21 @@
   animation-delay: calc(500ms + var(--relevo-retraso, 0ms)); /* team-profile.tsx:110 (delay 0.5), cuando aparece el personaje; más el retraso del relevo automático */
 }
 
+/* El cargo en Zhonyas, a 60 px y en negrita (rama diseno-wow). */
+.relevo-cargo {
+  margin-top: 40px;
+  color: var(--zh-lila); /* el cargo es la segunda línea del nombre: entera, en lila (marca.css, .zh-segunda-linea; A-47) */
+}
+
+/* El tema de su parte, al pie del texto (rama diseno-wow). */
+.relevo-tema {
+  margin-top: 40px;
+}
+
+.relevo-cargo + .relevo-hizo {
+  margin-top: 24px;
+}
+
 /* Lo que hizo, a 60 px (zh-lectura). Separación de la bio: margin-top 2rem + padding-top 1,4rem (team-contact.css:47). */
 .relevo-hizo {
   margin-top: 54.4px;

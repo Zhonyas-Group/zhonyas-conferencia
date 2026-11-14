@@ -29,7 +29,7 @@ import { cortina } from '../marca/wow';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 
 function RelevoJose(_: PropsDiapositiva) {
-  return <Relevo orador="jose" origen={TARJETAS[0]} nombre="José Leonardo Reyes" hizo="" vueltas={1} automatico={RETRASO_RELEVO} />;
+  return <Relevo orador="jose" origen={TARJETAS[0]} nombre="José Leonardo Reyes" hizo="" tema="Ahora, Lendex." vueltas={1} automatico={RETRASO_RELEVO} />;
 }
 
 export default definirDiapositiva({

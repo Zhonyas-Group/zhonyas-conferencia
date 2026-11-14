@@ -27,6 +27,8 @@ export type IdOrador = 'jose' | 'gregory' | 'angel';
 export interface Orador {
   /** Nombre completo. La última palabra lleva al lado el personaje (team-profile.tsx:31-33, 108). */
   nombre: string;
+  /** Su cargo en Zhonyas, tal cual lo pone la web (lib/team.ts, `role`). */
+  cargo: string;
   /** Lo que hizo, a 60 px (zh-lectura). Una frase corta. */
   hizo: string;
   /** De dónde sale `hizo`. */
@@ -42,6 +44,7 @@ export interface Orador {
 export const EQUIPO: Record<IdOrador, Orador> = {
   jose: {
     nombre: 'José Leonardo', // team.ts:18
+    cargo: 'Dirección creativa', // team.ts:21
     hizo: 'Hizo la cinta, el logo 3D y la animación de zhonyas.com.',
     fuenteHizo: '08 §4 (José: «hizo el logo 3D, la cinta… y la política de animación») y §5, «La propia web» («José hizo la narrativa y la animación»)',
     atlas: 'jose-leonardo',
@@ -50,6 +53,7 @@ export const EQUIPO: Record<IdOrador, Orador> = {
   },
   gregory: {
     nombre: 'Gregory Martínez', // team.ts:36 escribe «Martinez»; la síntesis §0.1, «Martínez»
+    cargo: 'Product design', // team.ts:39
     hizo: 'Escribe con José la tesis de Pymex en el ITLA.',
     fuenteHizo: '08 §4 (Gregory: «es coautor de la tesis de Pymex»; no tiene commits) y síntesis §0.1. Su parte de diseño la tiene que contar él (08, pregunta 26)',
     atlas: 'gregory',
@@ -58,6 +62,7 @@ export const EQUIPO: Record<IdOrador, Orador> = {
   },
   angel: {
     nombre: 'Angel Grullon', // team.ts:27 y síntesis §0.1
+    cargo: 'Desarrollo full-stack', // team.ts:30
     hizo: 'Armó los personajes de píxeles e hizo el agujero negro.',
     fuenteHizo: '08 §4 (Angel: «personajes de píxeles y la herramienta que los arma… el agujero negro»). Se dice «armó», no «dibujó» (GUION 09)',
     atlas: 'angel',

@@ -4,7 +4,7 @@
  * Con lo que ya aprobó (la portada, los relevos con un solo clic y las piezas
  * de src/marca/vitrina) y en el orden de los tres oradores:
  *
- *   José     portada · somos Zhonyas · lo que construimos
+ *   José     portada · se presenta · somos Zhonyas · lo que construimos
  *   Gregory  relevo · Pymex
  *   Angel    relevo · zhonyas.com · landings
  *   José     relevo · Lendex · Lendex en vivo (Angel al teclado) · cierre
@@ -24,10 +24,12 @@ import equipo from './equipo';
 import landings from './landings';
 import lendex from './lendex';
 import pymex from './pymex';
+import relevoJoseInicio from './relevo-jose-inicio';
 import zhonyasWeb from './zhonyas-web';
 
 export const diapositivas: readonly Diapositiva[] = [
   portada,
+  relevoJoseInicio,
   equipo,
   construimos,
   relevoGregory,

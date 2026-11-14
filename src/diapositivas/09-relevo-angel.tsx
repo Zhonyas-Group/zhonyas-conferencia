@@ -41,7 +41,7 @@ const TARJETAS = ['angel'] as const;
 
 function RelevoAngel(_: PropsDiapositiva) {
   // vueltas 1: un saludo, cuadros 1-2-3-2-1 a 6 fps, 0,83 s (GUION 03; personaje.css).
-  return <Relevo orador="angel" tarjetas={TARJETAS} hizo="" vueltas={1} automatico={RETRASO_RELEVO} />;
+  return <Relevo orador="angel" tarjetas={TARJETAS} tema="Hoy habla de nuestra web y de las landings." vueltas={1} automatico={RETRASO_RELEVO} />;
 }
 
 export default definirDiapositiva({
