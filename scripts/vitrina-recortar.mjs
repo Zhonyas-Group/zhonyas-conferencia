@@ -9,7 +9,8 @@ const nav = await abrirNavegador();
 try {
   const p = await nav.newPage();
   const datos = `data:image/jpeg;base64,${readFileSync(entrada).toString('base64')}`;
-  const b64 = await p.evaluate(async ([src, y0, y1, w2]) => {
+  const tipo = /\.png$/i.test(salida) ? 'image/png' : 'image/jpeg';
+  const b64 = await p.evaluate(async ([src, y0, y1, w2, tipo]) => {
     const img = new Image();
     img.src = src;
     await img.decode();
@@ -19,8 +20,8 @@ try {
     c.width = Math.round(img.naturalWidth * escala);
     c.height = Math.round(alto * escala);
     c.getContext('2d').drawImage(img, 0, y0, img.naturalWidth, alto, 0, 0, c.width, c.height);
-    return c.toDataURL(src.includes('png') ? 'image/png' : 'image/jpeg', 0.8).split(',')[1];
-  }, [datos, Number(y0), Number(y1), Number(anchoSalida) || 0]);
+    return c.toDataURL(tipo, 0.82).split(',')[1];
+  }, [datos, Number(y0), Number(y1), Number(anchoSalida) || 0, tipo]);
   writeFileSync(salida, Buffer.from(b64, 'base64'));
   console.log('ok', salida);
 } finally {

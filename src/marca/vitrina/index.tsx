@@ -26,7 +26,11 @@ import './vitrina.entrada';
 
 /** Los colores de cada producto (sus propias marcas) solo van en el brillo y el marco, nunca en el texto. */
 export const EXCEPCION_COLOR_PRODUCTO =
-  'A-34, A-38: el brillo y el marco van del color de la marca de cada producto (el azul de Pymex, reference_pymex_marca; el verde de lendexgp.com); sin texto encima';
+  'A-34, A-38, A-40, P0-10, A-43: la vitrina (aprobada por José el 13-nov): el brillo de fondo es luz del color de cada producto (el azul de Pymex, reference_pymex_marca; el verde de lendexgp.com), no una caja ni un degradado de adorno; los marcos de ventana y teléfono llevan el filo de 1 px de --zh-linea y su sombra';
+
+/** La barra de direcciones reproduce la de un navegador a su tamaño; no es texto de la charla. */
+const EXCEPCION_BARRA =
+  'A-48, A-49, A-36: la barra de direcciones de un navegador a su tamaño real (18 px, gris oscuro sobre su píldora blanca), como en el video de Pymex; es interfaz reproducida, no texto de la charla';
 
 interface PropsPieza {
   /** Orden de entrada (0, 1, 2…): cada una sale 140 ms después de la anterior. */
@@ -76,7 +80,7 @@ export function Ventana({ url, imagen, video, poster, alto, recorrido, ...pieza 
     <div className="vitrina-pieza" data-vitrina-pieza="" style={estiloPieza(pieza)}>
       <div className="vitrina-flota">
         <div className="vitrina-ventana">
-          <div className="vitrina-ventana__barra" aria-hidden="true">
+          <div className="vitrina-ventana__barra" aria-hidden="true" data-auditar-excepcion={EXCEPCION_BARRA}>
             <i />
             <i />
             <i />
@@ -163,6 +167,33 @@ export function TarjetaVideo({ video, poster, proporcion, ...pieza }: PropsTarje
   );
 }
 
+interface PropsTarjetaFoto extends PropsPieza {
+  foto: string;
+  alt: string;
+  /** Alto de la foto (px). */
+  alto: number;
+  /** Su personaje de píxeles, de pie encima de la tarjeta: saluda una vez y se queda quieto. */
+  personaje?: IdAtlas;
+}
+
+/** La tarjeta del equipo de la web (la foto con las esquinas de las tarjetas), con su personaje encima. */
+export function TarjetaFoto({ foto, alt, alto, personaje, ...pieza }: PropsTarjetaFoto) {
+  return (
+    <div className="vitrina-pieza" data-vitrina-pieza="" style={estiloPieza(pieza)}>
+      <div className="vitrina-flota">
+        {personaje ? (
+          <span className="vitrina-foto__personaje" aria-hidden="true">
+            <Personaje atlas={personaje} animacion="wave" vueltas={1} luego="idle" escala={0.6} />
+          </span>
+        ) : null}
+        <div className="vitrina-foto" style={{ height: alto }}>
+          <img src={medio(foto)} alt={alt} decoding="async" draggable={false} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface PropsProducto {
   nombre: string;
   /** La promesa del producto, tal cual la dice su sitio. */
@@ -212,16 +243,19 @@ export function Producto({ nombre, promesa, clave, queHace, direccion, color, or
 interface PropsGaleria {
   titular: string;
   clave?: readonly string[];
+  /** Una línea bajo el titular (32 px). */
+  bajada?: string;
   color: string;
-  orador: IdAtlas;
+  /** Quién presenta, arriba a la derecha (sin él, nadie: las piezas ya traen personajes). */
+  orador?: IdAtlas;
   animacion?: AnimacionPersonaje;
-  /** Los nombres debajo de cada pieza, en px del escenario: [texto, x centro, y]. */
-  nombres: readonly (readonly [string, number, number])[];
+  /** Los nombres debajo de cada pieza, en px del escenario: [texto, x centro, y, segunda línea]. */
+  nombres: readonly (readonly [string, number, number, string?])[];
   children: ReactNode;
 }
 
 /** Varias piezas a lo ancho con el titular arriba (la portada de la vitrina y las landings). */
-export function Galeria({ titular, clave, color, orador, animacion = 'draw', nombres, children }: PropsGaleria) {
+export function Galeria({ titular, clave, bajada, color, orador, animacion = 'draw', nombres, children }: PropsGaleria) {
   return (
     <div className="vitrina vitrina--galeria" data-auditar-excepcion={EXCEPCION_COLOR_PRODUCTO} style={{ ['--color-producto' as string]: color }}>
       <div className="vitrina__brillo" aria-hidden="true" />
@@ -229,10 +263,11 @@ export function Galeria({ titular, clave, color, orador, animacion = 'draw', nom
         <h2 className="zh-titular">
           <Palabras texto={titular} clave={clave} />
         </h2>
+        {bajada ? <p className="zh-fuente vitrina__bajada">{bajada}</p> : null}
       </Entrada>
       <Entrada desde={0} efecto="vitrina" className="vitrina__escena">
         {children}
-        {nombres.map(([texto, x, y], i) => (
+        {nombres.map(([texto, x, y, segunda], i) => (
           <p
             key={texto}
             className="zh-fuente vitrina__nombre-pieza"
@@ -240,12 +275,15 @@ export function Galeria({ titular, clave, color, orador, animacion = 'draw', nom
             style={{ left: x, top: y, ['--orden' as string]: i }}
           >
             {texto}
+            {segunda ? <span className="vitrina__segunda">{segunda}</span> : null}
           </p>
         ))}
       </Entrada>
-      <div className="vitrina__orador" aria-hidden="true">
-        <Personaje atlas={orador} animacion={animacion} escala={0.9} />
-      </div>
+      {orador ? (
+        <div className="vitrina__orador" aria-hidden="true">
+          <Personaje atlas={orador} animacion={animacion} escala={0.9} />
+        </div>
+      ) : null}
     </div>
   );
 }

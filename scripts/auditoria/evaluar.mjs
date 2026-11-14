@@ -303,10 +303,12 @@ export function evaluarPantalla({ hechos, pixeles, cruces, degradados, tk, ctx =
       agregar({ regla: 'A-31', mensaje: `«${g.texto}» escrito en mayúsculas`, caja: g.caja, donde: g.t.donde }, g.excepciones);
   }
 
-  // A-49: tamaños y pesos distintos en la pantalla.
-  const tamanos = [...new Set(textos.map((t) => Math.round(t.tamEf)))].sort((a, b) => b - a);
+  // A-49: tamaños y pesos distintos en la pantalla. No cuenta el texto con su excepción A-49
+  // declarada (la barra de direcciones de una ventana de la vitrina: interfaz reproducida).
+  const contados = textos.filter((t) => !excepcionPara('A-49', t.excepciones));
+  const tamanos = [...new Set(contados.map((t) => Math.round(t.tamEf)))].sort((a, b) => b - a);
   if (tamanos.length > UMBRAL.tamanosMaximos) agregar({ regla: 'A-49', mensaje: `${tamanos.length} tamaños de letra: ${tamanos.join(', ')} px`, medida: `${tamanos.length}`, limite: `${UMBRAL.tamanosMaximos}`, caja: null });
-  const pesos = [...new Set(textos.map((t) => t.peso))].sort();
+  const pesos = [...new Set(contados.map((t) => t.peso))].sort();
   if (pesos.length > UMBRAL.pesosMaximos) agregar({ regla: 'A-49', mensaje: `${pesos.length} pesos de letra: ${pesos.join(', ')}`, medida: `${pesos.length}`, limite: `${UMBRAL.pesosMaximos}`, caja: null });
 
   // Elementos: color (A-34), listas (A-10), Lucide (A-61), degradados (A-38), halos (A-43), vidrio (A-44).

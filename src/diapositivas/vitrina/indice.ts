@@ -1,25 +1,42 @@
 /**
- * Muestra de la vitrina (rama diseno-wow, 13-nov). José: «olvídate del guion
+ * El mazo de la vitrina (rama diseno-wow, 13-nov). José: «olvídate del guion
  * por ahora; quiero que la diapositiva muestre cosas: Lendex, Pymex y demás».
- * Cuatro diapositivas de producto con las mismas piezas (src/marca/vitrina),
- * entre la portada y una tarjeta de cierre.
+ * Con lo que ya aprobó (la portada, los relevos con un solo clic y las piezas
+ * de src/marca/vitrina) y en el orden de los tres oradores:
+ *
+ *   José     portada · somos Zhonyas · lo que construimos
+ *   Gregory  relevo · Pymex
+ *   Angel    relevo · zhonyas.com · landings
+ *   José     relevo · Lendex · Lendex en vivo (Angel al teclado) · cierre
  *
  * Se compila con `npm run compilar:vitrina` (vite build --mode vitrina) en
  * dist-vitrina/, con la carpeta medios/ al lado (lleva videos).
  */
 import type { Diapositiva } from '../../motor/tipos';
 import portada from '../01-portada';
-import { crearFin } from '../muestra/fin-muestra';
+import relevoGregory from '../03-relevo-gregory';
+import relevoAngel from '../09-relevo-angel';
+import relevoJose from '../14-relevo-jose';
+import demoLendex from '../18-demo-lendex';
+import cierre from './cierre';
 import construimos from './construimos';
+import equipo from './equipo';
 import landings from './landings';
 import lendex from './lendex';
 import pymex from './pymex';
+import zhonyasWeb from './zhonyas-web';
 
 export const diapositivas: readonly Diapositiva[] = [
   portada,
+  equipo,
   construimos,
+  relevoGregory,
   pymex,
-  lendex,
+  relevoAngel,
+  zhonyasWeb,
   landings,
-  crearFin('Si te gusta, sigo con Matriz ZH, Cantus y el resto del mazo.', 'jose'),
+  relevoJose,
+  lendex,
+  demoLendex,
+  cierre,
 ];

@@ -87,7 +87,19 @@
   margin: 0;
   transform: translateX(-50%);
   color: var(--zh-texto);
-  white-space: nowrap;
+  width: max-content;
+  max-width: 280px; /* las tarjetas del equipo miden 250 con 38 de aire: un cargo largo pasa a dos líneas */
+  text-align: center;
+  text-wrap: balance;
+}
+
+.vitrina__segunda {
+  display: block;
+  color: var(--zh-rotulo); /* sobre el brillo, --zh-texto-2 quedaba a 6,5:1 (A-36 pide 7:1 a 32 px) */
+}
+
+.vitrina__bajada {
+  margin: 24px 0 0;
 }
 
 /* ——— Piezas ——— */
@@ -229,6 +241,35 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* La tarjeta del equipo: la foto con la esquina de las tarjetas de la web (--zh-radio-tarjeta). */
+.vitrina-foto {
+  overflow: hidden;
+  border-radius: var(--zh-radio-tarjeta);
+  box-shadow:
+    0 0 0 1px var(--zh-linea),
+    0 30px 70px #000000a6;
+}
+
+.vitrina-foto > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* El personaje de pie sobre la tarjeta, centrado; saluda cuando la tarjeta ya llegó, uno detrás de otro (como los tres de la portada, 01-portada.css). */
+.vitrina-foto__personaje {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+
+.vitrina-foto__personaje > .zh-sprite[data-saludo] {
+  animation-delay: calc(1300ms + var(--orden) * 150ms); /* 01-portada.css: saludan 500 ms después de llegar, 150 ms uno detrás de otro (team-profile.tsx:110) */
 }
 
 /* auditar-excepcion-fin */

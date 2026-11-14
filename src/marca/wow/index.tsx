@@ -58,7 +58,8 @@ export function Letras({ texto }: { texto: string }) {
     <span aria-label={texto}>
       {Array.from(texto).map((letra, i) => (
         <span key={i} className="wow-letra" data-letra="" aria-hidden="true">
-          {letra}
+          {/* Un espacio suelto en su propia caja se pierde: va como espacio duro. */}
+          {letra === ' ' ? ' ' : letra}
         </span>
       ))}
     </span>

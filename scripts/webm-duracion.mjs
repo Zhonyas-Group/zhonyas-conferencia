@@ -1,6 +1,7 @@
-// Copiado de scripts/lendex-grabar-demo.mjs:115-240 (la duración del WebM de MediaRecorder).
-// ——— WebM de MediaRecorder: le falta la duración. Se añade en Info. ———
-
+/**
+ * Pone la duración a un WebM de MediaRecorder (le falta en Info). Copiado de
+ * scripts/lendex-grabar-demo.mjs (leerVint, tamanoVint, analizarWebm, ponerDuracion).
+ */
 function leerVint(buf, pos, conMarca) {
   const primero = buf[pos];
   let largo = 1;
@@ -95,7 +96,7 @@ function analizarWebm(buf) {
  * refresco por segundo): la duración se pone con el tiempo real grabado
  * (`grabadoMs`), para que la pausa final sobre la cuota no se pierda.
  */
-function ponerDuracion(buf, grabadoMs) {
+export function ponerDuracion(buf, grabadoMs) {
   const a = analizarWebm(buf);
   if (!a.info) throw new Error('El WebM no tiene Info');
   if (a.seekHead || a.cues) throw new Error('El WebM trae SeekHead o Cues: no se toca (cambiaría sus posiciones)');
@@ -125,5 +126,4 @@ function ponerDuracion(buf, grabadoMs) {
   return { webm: Buffer.concat([buf.subarray(0, a.info.inicio), nuevaInfo, buf.subarray(a.info.fin)]), resumen };
 }
 
-
-export { ponerDuracion };
+// ——— El recorrido ———

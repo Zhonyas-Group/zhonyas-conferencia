@@ -61,8 +61,8 @@ interface HojaAtlas {
   animations: Record<AnimacionPersonaje, FilaAtlas>;
 }
 
-/** Personas con atlas en public/medios/equipo/ (los tres oradores). */
-export type IdAtlas = 'jose-leonardo' | 'gregory' | 'angel';
+/** Personas con atlas en public/medios/equipo/: los tres oradores y, desde la vitrina (13-nov), los otros tres del equipo. */
+export type IdAtlas = 'jose-leonardo' | 'gregory' | 'angel' | 'cristopher' | 'jose-carlos' | 'steven';
 
 const HOJAS = atlas as unknown as Record<IdAtlas, HojaAtlas>;
 

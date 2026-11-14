@@ -1,0 +1,61 @@
+/* Cierre de la vitrina: la frase arriba a la izquierda, el QR a la derecha y los tres al pie. */
+.vitrina-cierre {
+  position: absolute;
+  inset: 0;
+}
+
+.vitrina-cierre__brillo {
+  --color-producto: var(--zh-acento);
+}
+
+.vitrina-cierre__frase {
+  position: absolute;
+  left: var(--zh-margen);
+  top: 170px;
+  width: 1200px;
+}
+
+.vitrina-cierre__frase .zh-titular + .zh-titular {
+  margin-top: 8px;
+}
+
+.vitrina-cierre__datos {
+  position: absolute;
+  left: var(--zh-margen);
+  top: 600px; /* la frase ocupa tres líneas de 96 px (y 170–482) */
+}
+
+.vitrina-cierre__datos .zh-fuente {
+  margin-top: 16px;
+}
+
+/* El QR trae su placa clara y su zona de silencio (scripts/generar-qr.mjs). */
+.vitrina-cierre__qr {
+  display: block;
+  width: 100%;
+  border-radius: var(--zh-radio-tarjeta);
+  box-shadow:
+    0 0 0 1px var(--zh-linea),
+    0 40px 90px #000000a6;
+}
+
+.vitrina-cierre__tres {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1000px;
+  height: 0;
+  display: flex;
+  justify-content: center;
+  gap: 140px;
+}
+
+.vitrina-cierre__persona {
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+.vitrina-cierre__persona > .zh-sprite[data-saludo] {
+  animation-delay: calc(1600ms + var(--orden) * 150ms); /* 01-portada.css: caen (aquí a los 900 ms) y saludan 500 ms después, 150 ms uno detrás de otro (team-profile.tsx:110) */
+}
