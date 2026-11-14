@@ -106,21 +106,25 @@
 
 .vitrina-pieza {
   position: absolute;
-  transform-style: preserve-3d;
 }
 
-/* El giro en reposo y un flotar lento: el período de 9 s de capabilities-aurora (capabilities-heading.css:11). */
+/*
+ * El giro en reposo y un flotar lento: el período de 9 s de capabilities-aurora (capabilities-heading.css:11).
+ * Cada pieza lleva su PROPIA perspectiva (perspective() dentro del transform), no la de la escena con
+ * preserve-3d: mientras la pieza entra con opacidad < 1 el navegador la aplana, y al terminar la
+ * animación aparecía la perspectiva de golpe y la ventana se ensanchaba 35 px (José, 13-nov).
+ */
 .vitrina-flota {
-  transform: rotateY(var(--giro));
+  transform: perspective(2200px) rotateY(var(--giro));
   animation: vitrina-flotar 9s ease-in-out var(--fase) infinite alternate; /* capabilities-heading.css:11: 9s ease-in-out infinite */
 }
 
 @keyframes vitrina-flotar {
   from {
-    transform: rotateY(var(--giro)) translateY(-8px);
+    transform: perspective(2200px) rotateY(var(--giro)) translateY(-8px);
   }
   to {
-    transform: rotateY(var(--giro)) translateY(8px);
+    transform: perspective(2200px) rotateY(var(--giro)) translateY(8px);
   }
 }
 
