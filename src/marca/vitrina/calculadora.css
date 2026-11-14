@@ -1,0 +1,166 @@
+/*
+ * La calculadora pública de Lendex (Calculadora.tsx), con las clases de
+ * Tailwind de Lendex/src/components/PublicCalculator.tsx pasadas a CSS y la
+ * letra al tamaño de la sala: lo que en la web va a 12 px (text-xs) aquí va
+ * a 22 px, los campos a 30 px y las cifras a 34 px.
+ */
+
+/* Mientras Angel escribe, la ventana deja de flotar: el campo no se le mueve debajo del cursor. */
+.vitrina-flota:has(.calc-lendex :focus) {
+  animation-play-state: paused;
+}
+
+/* auditar-excepcion-inicio: A-34, A-36, A-38, A-40, A-43, A-48, A-49, P0-10 — la calculadora pública de Lendex reproducida (PublicCalculator.tsx): sus colores de Tailwind, sus cajas y sus campos */
+
+.calc-lendex {
+  height: 100%;
+  padding: 26px;
+  color-scheme: dark; /* las flechas de los desplegables, en oscuro como en Lendex */
+  font-family: var(--zh-sans);
+  letter-spacing: 0;
+  color: #ffffff;
+  /* El panel derecho de la pantalla de entrar de Lendex, donde se abre la calculadora: verde muy oscuro con luz arriba. */
+  background:
+    radial-gradient(ellipse at 85% 0%, #12a57c40, transparent 60%),
+    linear-gradient(135deg, #0b1a26, #062a21);
+}
+
+/* bg-white/10 rounded-2xl p-6 border border-white/20 */
+.calc-lendex__tarjeta {
+  height: 100%;
+  padding: 30px 32px;
+  border: 1px solid #ffffff33;
+  border-radius: 22px;
+  background: #ffffff1a;
+  cursor: default;
+}
+
+/* flex items-center gap-2 mb-6; Calculator w-5 h-5 text-emerald-400; text-lg font-semibold */
+.calc-lendex__titulo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 26px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.calc-lendex__icono {
+  width: 36px;
+  height: 36px;
+  color: #34d399;
+}
+
+/* grid sm:grid-cols-2 gap-4 */
+.calc-lendex__campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+}
+
+.calc-lendex__campos > label {
+  display: block;
+}
+
+/* block text-xs font-medium text-gray-300 mb-1 */
+.calc-lendex__campos > label > span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #d1d5db;
+}
+
+/* w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white */
+.calc-lendex__campos input,
+.calc-lendex__campos select {
+  display: block;
+  width: 100%;
+  height: 62px;
+  padding: 0 18px;
+  border: 1px solid #ffffff33;
+  border-radius: 12px;
+  background: #ffffff1a;
+  color: #ffffff;
+  font: inherit;
+  font-size: 30px;
+  outline: none;
+}
+
+/* focus:ring-2 focus:ring-emerald-500 focus:border-transparent */
+.calc-lendex__campos input:focus,
+.calc-lendex__campos select:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 3px #10b981;
+}
+
+/* className="bg-gray-800" en cada opción */
+.calc-lendex__campos option {
+  background: #1f2937;
+  font-size: 20px;
+}
+
+/* grid sm:grid-cols-3 gap-3 */
+.calc-lendex__resultados {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 26px;
+}
+
+/* rounded-xl p-3 text-center; la caja no cambia de tamaño con la cifra (la letra baja si no cabe). */
+.calc-lendex__resultado {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 112px;
+  padding: 0 10px;
+  border: 1px solid;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.calc-lendex__resultado > span {
+  font-size: 22px;
+}
+
+/* text-lg font-bold text-white */
+.calc-lendex__resultado > strong {
+  margin-top: 6px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* bg-emerald-500/20 border-emerald-500/30; text-emerald-300 */
+.calc-lendex__resultado--cuota {
+  background: #10b98133;
+  border-color: #10b9814d;
+}
+
+.calc-lendex__resultado--cuota > span {
+  color: #6ee7b7;
+}
+
+/* bg-blue-500/20 border-blue-500/30; text-blue-300 */
+.calc-lendex__resultado--total {
+  background: #3b82f633;
+  border-color: #3b82f64d;
+}
+
+.calc-lendex__resultado--total > span {
+  color: #93c5fd;
+}
+
+/* bg-amber-500/20 border-amber-500/30; text-amber-300 */
+.calc-lendex__resultado--interes {
+  background: #f59e0b33;
+  border-color: #f59e0b4d;
+}
+
+.calc-lendex__resultado--interes > span {
+  color: #fcd34d;
+}
+
+/* auditar-excepcion-fin */

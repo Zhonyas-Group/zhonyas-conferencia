@@ -71,10 +71,12 @@ interface PropsVentana extends PropsPieza {
   alto: number;
   /** Recorrer la página (s que tarda en bajar; luego sube). Sin él, la imagen queda quieta arriba. */
   recorrido?: number;
+  /** Una página viva en vez de imagen o video (la calculadora de Lendex). */
+  children?: ReactNode;
 }
 
 /** Una ventana de navegador con la página de verdad. */
-export function Ventana({ url, imagen, video, poster, alto, recorrido, ...pieza }: PropsVentana) {
+export function Ventana({ url, imagen, video, poster, alto, recorrido, children, ...pieza }: PropsVentana) {
   const { activa } = useDiapositiva();
   return (
     <div className="vitrina-pieza" data-vitrina-pieza="" style={estiloPieza(pieza)}>
@@ -87,7 +89,9 @@ export function Ventana({ url, imagen, video, poster, alto, recorrido, ...pieza 
             <span className="vitrina-ventana__url">{url}</span>
           </div>
           <div className="vitrina-ventana__pagina" style={{ height: alto, ['--alto' as string]: `${alto}px` }}>
-            {video ? (
+            {children ? (
+              children
+            ) : video ? (
               <Video src={video} poster={poster} />
             ) : imagen ? (
               <img
@@ -202,7 +206,8 @@ interface PropsProducto {
   clave?: readonly string[];
   /** Lo que hace, en una línea (el texto de la web de Zhonyas, lib/projects.ts). */
   queHace?: string;
-  direccion: string;
+  /** La dirección, abajo del texto. Sin ella, nada (la de Lendex en vivo ya va en la barra de su ventana). */
+  direccion?: string;
   /** Color del brillo detrás de las piezas (la marca del producto). */
   color: string;
   /** Quién lo presenta, abajo a la izquierda, con lo que hace el guía de la web (project-guide.tsx:42). */
@@ -228,7 +233,7 @@ export function Producto({ nombre, promesa, clave, queHace, direccion, color, or
           </p>
         </Entrada>
         {queHace ? <p className="zh-fuente vitrina__que-hace">{queHace}</p> : null}
-        <p className="zh-fuente vitrina__direccion">{direccion}</p>
+        {direccion ? <p className="zh-fuente vitrina__direccion">{direccion}</p> : null}
       </div>
       <Entrada desde={0} efecto="vitrina" className="vitrina__escena">
         {children}

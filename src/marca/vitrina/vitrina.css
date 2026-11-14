@@ -37,6 +37,7 @@
 
 .vitrina__nombre {
   margin: 0 0 40px;
+  text-wrap: balance; /* «Díganme un monto.» en dos líneas parejas, sin «monto.» sola (A-51) */
 }
 
 .vitrina__promesa {
