@@ -12,8 +12,8 @@
  *   nombre y el personaje saluda una vez con `wave` (cuadros 1-2-3-2-1).
  * - El clic siguiente lleva a la 10 por el agujero negro (Z-10, de la 10).
  *
- * En pantalla, solo «Angel Grullon» (2 palabras, 96 px): `hizo=""` quita la
- * frase de lo que hizo que la pieza pone por defecto, que el guion no lleva.
+ * En pantalla, «Angel Grullon» (2 palabras, 96 px), su cargo, quién es («Es
+ * el que dirige el backend.», equipo.ts) y su tema.
  * El nombre a 96 px y el personaje al tamaño de la web los pone la pieza,
  * igual que en la 03 (src/marca/relevo/relevo.css).
  *
@@ -53,17 +53,15 @@ export default definirDiapositiva({
   notas: [
     {
       decir:
-        'La foto vuela sola mientras Gregory entrega el clicker. Yo soy Angel Grullon. En la web de Zhonyas armé los muñequitos de píxeles que ven saludando y el agujero negro de la página de contacto. Fíjense en el centro de la pantalla.',
-      claves: 'el clicker · muñequitos · agujero negro · «fíjense en el centro» · clic y callarse',
+        'La foto vuela sola mientras Gregory entrega el clicker. Yo soy Angel Grullon y en Zhonyas dirijo el backend. Les voy a enseñar nuestra web y las landings que hacemos.',
+      claves: 'el clicker · dirijo el backend · la web y las landings',
       aparte:
         'El clic siguiente abre Z-10 y lleva a la 10.\n\n' +
-        '**[CONFIRMAR con Angel cómo escribe su nombre].**\n\n' +
-        // Revisión del 13-nov: el personaje saluda una vez entre los 0,5 y los 1,3 s del clic (GUION, 03) y Angel lo nombra a los 4–5 s.
-        '**[CONFIRMAR con Angel y José]** «que ven saludando»: cuando Angel lo dice, el personaje ya saludó y está quieto. Propuesta: «que acaban de ver saludar», o decir el nombre y esa frase antes del clic.',
+        '**[CONFIRMAR con Angel cómo escribe su nombre].**',
       siFalla: 'Si la foto o el atlas no cargan, como en la 03. Lo del agujero negro, en la 10.',
     },
   ],
-  fuentes: ['Angel armó los personajes y el agujero negro (08 §4; commits #77–89 y #90 de zhonyas-web). Se dice «armé», no «hice».'],
+  fuentes: ['Angel dirige el backend (José, 14-nov).'],
   medios: mediosRelevo('angel', TARJETAS),
   // En el presentador y en las miniaturas, quieta (C-02; GUION 10, «Si falla», 4). La sala la pinta en vivo.
   pesada: true,

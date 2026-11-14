@@ -17,7 +17,7 @@
  *   - el fondo con degradado y vidrio (team-contact.css:26): queda el fondo de
  *     la marca, liso (--zh-fondo), con la misma opacidad y el mismo tiempo;
  *   - el rótulo «NUESTRO EQUIPO / cargo», la marca de agua «EQUIPO», la bio,
- *     los enlaces y el botón: en su lugar va lo que esa persona hizo;
+ *     los enlaces y el botón: en su lugar van su cargo y quién es en Zhonyas;
  *   - en la tarjeta: el vidrio y la sombra (globals.css:334-339), el icono
  *     (:383), el oscurecido (:409), el brillo (:432), el número y el cargo
  *     (:467), el nombre en MAYÚSCULAS (:507) y la línea con degradado (:577).
@@ -206,11 +206,12 @@
   margin-top: 40px;
 }
 
-.relevo-cargo + .relevo-hizo {
+.relevo-cargo + .relevo-papel {
   margin-top: 24px;
 }
 
-/* Lo que hizo, a 60 px (zh-lectura). Separación de la bio: margin-top 2rem + padding-top 1,4rem (team-contact.css:47). */
-.relevo-hizo {
+/* Quién es en Zhonyas, a 60 px (zh-lectura). Separación de la bio: margin-top 2rem + padding-top 1,4rem (team-contact.css:47). */
+.relevo-papel {
   margin-top: 54.4px;
+  text-wrap: balance; /* «Fue el desarrollador principal de Pymex.» no cabe en una línea: que no quede «Pymex.» sola */
 }

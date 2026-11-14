@@ -4,9 +4,12 @@
  * - `nombre`: el de zhonyas-web/lib/team.ts (l. 18, 27 y 36), con la tilde de
  *   «Martínez» como lo escribe la síntesis (§0.1). Pendiente: que cada uno diga
  *   cómo quiere salir.
- * - `hizo`: lo que esa persona HIZO, no su cargo (síntesis §7.2, «Quién hizo
- *   qué»; 08 §4 y §5). Sin cifras: una cifra iría por el registro de datos.
- *   Pendiente: que cada uno lo confirme (08, preguntas 25 y 26).
+ * - `papel`: quién es en Zhonyas, en una frase, como lo pidió José el 14-nov
+ *   («No hable de lo que hizo, información como Gregory: fue el desarrollador
+ *   principal de Pymex; Angel: es el que dirige el backend; José: es el
+ *   creador principal de Lendex»). Antes iba lo que cada uno hizo en la web
+ *   (la cinta, los personajes…). Sin cifras: una cifra iría por el registro
+ *   de datos.
  * - `foto`: public/medios/equipo/<atlas>/foto.webp, sacada de
  *   investigacion/marca/equipo/fotos/<atlas>/photo.jpg (la que usa la web en
  *   escritorio, team-profile.tsx:102): recorte central de proporción
@@ -29,10 +32,10 @@ export interface Orador {
   nombre: string;
   /** Su cargo en Zhonyas, tal cual lo pone la web (lib/team.ts, `role`). */
   cargo: string;
-  /** Lo que hizo, a 60 px (zh-lectura). Una frase corta. */
-  hizo: string;
-  /** De dónde sale `hizo`. */
-  fuenteHizo: string;
+  /** Quién es en Zhonyas, a 60 px (zh-lectura). Una frase corta. */
+  papel: string;
+  /** De dónde sale `papel`. */
+  fuentePapel: string;
   /** Id del atlas de su personaje (sprite-atlas.json). */
   atlas: 'jose-leonardo' | 'gregory' | 'angel';
   /** Foto al tamaño de uso, relativa a index.html. */
@@ -45,8 +48,8 @@ export const EQUIPO: Record<IdOrador, Orador> = {
   jose: {
     nombre: 'José Leonardo', // team.ts:18
     cargo: 'Dirección creativa', // team.ts:21
-    hizo: 'Hizo la cinta, el logo 3D y la animación de zhonyas.com.',
-    fuenteHizo: '08 §4 (José: «hizo el logo 3D, la cinta… y la política de animación») y §5, «La propia web» («José hizo la narrativa y la animación»)',
+    papel: 'Es el creador principal de Lendex.',
+    fuentePapel: 'José, 14-nov: «Jose: Es el creador principal de LENDEX»',
     atlas: 'jose-leonardo',
     foto: 'medios/equipo/jose-leonardo/foto.webp',
     personaje: 'medios/equipo/jose-leonardo/personaje.webp',
@@ -54,8 +57,8 @@ export const EQUIPO: Record<IdOrador, Orador> = {
   gregory: {
     nombre: 'Gregory Martínez', // team.ts:36 escribe «Martinez»; la síntesis §0.1, «Martínez»
     cargo: 'Product design', // team.ts:39
-    hizo: 'Escribe con José la tesis de Pymex en el ITLA.',
-    fuenteHizo: '08 §4 (Gregory: «es coautor de la tesis de Pymex»; no tiene commits) y síntesis §0.1. Su parte de diseño la tiene que contar él (08, pregunta 26)',
+    papel: 'Fue el desarrollador principal de Pymex.',
+    fuentePapel: 'José, 14-nov: «Gregory: Fue el desarrolador principal de Pymex»',
     atlas: 'gregory',
     foto: 'medios/equipo/gregory/foto.webp',
     personaje: 'medios/equipo/gregory/personaje.webp',
@@ -63,8 +66,8 @@ export const EQUIPO: Record<IdOrador, Orador> = {
   angel: {
     nombre: 'Angel Grullon', // team.ts:27 y síntesis §0.1
     cargo: 'Desarrollo full-stack', // team.ts:30
-    hizo: 'Armó los personajes de píxeles e hizo el agujero negro.',
-    fuenteHizo: '08 §4 (Angel: «personajes de píxeles y la herramienta que los arma… el agujero negro»). Se dice «armó», no «dibujó» (GUION 09)',
+    papel: 'Es el que dirige el backend.',
+    fuentePapel: 'José, 14-nov: «Angel: Es el que dirige el backend»',
     atlas: 'angel',
     foto: 'medios/equipo/angel/foto.webp',
     personaje: 'medios/equipo/angel/personaje.webp',

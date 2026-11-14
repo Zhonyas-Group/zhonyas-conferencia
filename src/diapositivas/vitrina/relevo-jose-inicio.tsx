@@ -4,7 +4,8 @@
  * presentan en su relevo; José abría con la portada y su relevo llegaba en la
  * novena, ya de vuelta. Aquí va su relevo completo, justo después de la
  * portada: la foto vuela sola, el nombre, su cargo en Zhonyas (lib/team.ts),
- * lo que hizo (equipo.ts) y de qué habla. En la novena queda «Ahora, Lendex.».
+ * quién es (equipo.ts: «Es el creador principal de Lendex.») y de qué habla.
+ * En la décima vuelve con «Ahora, Lendex.».
  */
 import { mediosRelevo } from '../../marca/relevo/equipo';
 import { TARJETAS } from '../../marca/relevo/geometria';
@@ -34,11 +35,11 @@ export default definirDiapositiva({
   notas: [
     {
       decir:
-        'Buenas tardes. Soy José Leonardo Reyes, estudio aquí en el ITLA y en Zhonyas llevo la dirección creativa: hice la cinta, el logo 3D y la animación de nuestra web.',
-      claves: 'buenas tardes · ITLA · dirección creativa · la web',
+        'Buenas tardes. Soy José Leonardo Reyes, estudio aquí en el ITLA, en Zhonyas llevo la dirección creativa y soy el creador principal de Lendex, que les enseño al final.',
+      claves: 'buenas tardes · ITLA · dirección creativa · creador de Lendex',
     },
   ],
-  fuentes: ['Cargo: lib/team.ts de zhonyas-web; lo que hizo: src/marca/relevo/equipo.ts (08 §4).'],
+  fuentes: ['Cargo: lib/team.ts de zhonyas-web; quién es: src/marca/relevo/equipo.ts (José, 14-nov).'],
   medios: mediosRelevo('jose', ['jose']),
   transicion: cortina('jose-leonardo'),
   Componente: RelevoJoseInicio,

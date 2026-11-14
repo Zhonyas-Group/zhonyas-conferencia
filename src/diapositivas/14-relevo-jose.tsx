@@ -12,8 +12,8 @@
  *   y el personaje saluda una vez (`vueltas={1}`: un saludo, cuadros
  *   1-2-3-2-1; sprite-atlas.json, wave a 6 fps).
  *
- * En pantalla, solo el nombre (3 palabras): sin la línea de «lo que hizo» de
- * equipo.ts, que el guion no pone. El nombre a 96 px como pide el guion y el
+ * En pantalla, el nombre (3 palabras), su cargo, quién es («Es el creador
+ * principal de Lendex.», equipo.ts) y «Ahora, Lendex.». El nombre a 96 px como pide el guion y el
  * personaje al tamaño de la web, como en la 03, los pone la pieza
  * (src/marca/relevo/relevo.css).
  *
@@ -29,7 +29,7 @@ import { cortina } from '../marca/wow';
 import { definirDiapositiva, type PropsDiapositiva } from '../motor/tipos';
 
 function RelevoJose(_: PropsDiapositiva) {
-  return <Relevo orador="jose" origen={TARJETAS[0]} nombre="José Leonardo Reyes" hizo="" tema="Ahora, Lendex." vueltas={1} automatico={RETRASO_RELEVO} />;
+  return <Relevo orador="jose" origen={TARJETAS[0]} nombre="José Leonardo Reyes" tema="Ahora, Lendex." vueltas={1} automatico={RETRASO_RELEVO} />;
 }
 
 export default definirDiapositiva({
@@ -43,7 +43,7 @@ export default definirDiapositiva({
   notas: [
     {
       decir:
-        'La foto vuela sola mientras Angel entrega el clicker y se queda junto a la laptop para la 18. Yo otra vez. Mi historia es la de un prestamista y la de Lendex, un producto mío: ahí el prestamista lleva los préstamos y los cobros que hoy apunta en un cuaderno.',
+        'La foto vuela sola mientras Angel entrega el clicker y se queda junto a la laptop para la 18. Yo otra vez. Lendex lo creé yo: es el programa del prestamista, donde lleva los préstamos y los cobros que hoy apunta en un cuaderno.',
       claves: 'prestamista · Lendex · cuaderno · Angel a la laptop',
       siFalla:
         'Si la foto o el atlas no cargan, como en la 03: el motor deja el estado final (retrato y nombre) y José sigue.',

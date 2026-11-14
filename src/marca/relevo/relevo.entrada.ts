@@ -104,7 +104,7 @@ registrarEntrada({
         }),
       );
 
-    // El nombre y lo que hizo entran desde la derecha (team-profile.tsx:105).
+    // El nombre, el cargo y quién es entran desde la derecha (team-profile.tsx:105).
     const texto = parte('texto');
     if (texto)
       animaciones.push(

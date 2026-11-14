@@ -9,8 +9,8 @@
  *   - paso 1: el vuelo, el nombre y el personaje, que saluda UNA vez
  *     (`vueltas={1}`: un saludo, cuadros 1-2-3-2-1 a 6 fps, 0,83 s; personaje.css)
  *     y se queda quieto, sin el respiro (C-11);
- *   - en pantalla, solo «Gregory Martínez» (2 palabras, 96 px): sin la frase
- *     de lo que hizo (`hizo=""`), que el guion no pone.
+ *   - en pantalla, «Gregory Martínez» (2 palabras, 96 px), su cargo, quién
+ *     es («Fue el desarrollador principal de Pymex.», equipo.ts) y su tema.
  * El nombre a 96 px y el personaje al tamaño de la web los pone la pieza
  * (src/marca/relevo/relevo.css).
  *
@@ -46,12 +46,12 @@ export default definirDiapositiva({
   notas: [
     {
       decir:
-        'La foto vuela sola mientras José le da el clicker a Gregory. Gracias, José. Soy Gregory Martínez y hago diseño de producto en Zhonyas. Pymex es nuestro proyecto final del ITLA, el de José y mío. Y en un proyecto final, lo primero que te piden es el problema, con datos.',
-      claves: 'el clicker · diseño de producto · proyecto final · el problema, con datos',
+        'La foto vuela sola mientras José le da el clicker a Gregory. Gracias, José. Soy Gregory Martínez, hago diseño de producto en Zhonyas y fui el desarrollador principal de Pymex. Pymex es nuestro proyecto final del ITLA, el de José y mío. Y en un proyecto final, lo primero que te piden es el problema, con datos.',
+      claves: 'el clicker · desarrollador principal de Pymex · proyecto final · el problema, con datos',
       siFalla: 'Si la foto o el atlas no cargan, el motor deja el estado final (retrato y nombre) y Gregory sigue.',
     },
   ],
-  fuentes: ['Pymex es el proyecto final de José y Gregory en el ITLA (decisión 3).'],
+  fuentes: ['Pymex es el proyecto final de José y Gregory en el ITLA (decisión 3).', 'Gregory fue el desarrollador principal de Pymex (José, 14-nov).'],
   medios: mediosRelevo('gregory', TARJETAS),
   transicion: cortina('gregory'),
   Componente: RelevoGregory,

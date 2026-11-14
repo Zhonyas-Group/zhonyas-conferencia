@@ -9,7 +9,7 @@
  *     scale .94, rotateY 12°, rotateZ −3°, en 700 ms (0.22, 1, 0.36, 1);
  *   - las tarjetas se van de golpe en ese cuadro (como en la web, hoja 05,
  *     «clic +50 ms») y el fondo liso se funde en 500 ms;
- *   - el nombre y lo que hizo entran desde +60 px en 450 ms, a los 180 ms;
+ *   - el nombre, el cargo y quién es entran desde +60 px en 450 ms, a los 180 ms;
  *   - su personaje aparece a los 500 ms (sube 10 px en 400 ms) y saluda
  *     (wave: 3 cuadros a 6 fps, ida y vuelta); con `vueltas`, saluda con los
  *     cuadros 1-2-3-2-1 y después se queda quieto en idle, sin respiro
@@ -57,8 +57,8 @@ interface PropsRelevo {
   origen?: Caja;
   /** Cambia el nombre de equipo.ts. */
   nombre?: string;
-  /** Cambia lo que hizo de equipo.ts (sin cifras: una cifra va con <Dato>). */
-  hizo?: string;
+  /** Cambia quién es (equipo.ts, `papel`); "" lo quita. Sin cifras: una cifra va con <Dato>. */
+  papel?: string;
   /**
    * Rama diseno-wow (13-nov, José: «cuando cada quien se presente, ponle algo
    * para que sepan quién es»): su cargo en Zhonyas (equipo.ts) debajo del
@@ -91,7 +91,7 @@ function estiloCaja(c: Caja): CSSProperties {
   return { left: c.left, top: c.top, width: c.width, height: c.height };
 }
 
-export function Relevo({ orador, desde: desdePedido, tarjetas = ORDEN_TARJETAS, origen, nombre, hizo, cargo, tema, vueltas, automatico }: PropsRelevo) {
+export function Relevo({ orador, desde: desdePedido, tarjetas = ORDEN_TARJETAS, origen, nombre, papel, cargo, tema, vueltas, automatico }: PropsRelevo) {
   const { id, paso } = useDiapositiva();
   const desde = desdePedido ?? (automatico !== undefined ? 0 : 1);
   const persona = EQUIPO[orador];
@@ -151,7 +151,7 @@ export function Relevo({ orador, desde: desdePedido, tarjetas = ORDEN_TARJETAS, 
               </span>
             </h2>
             {cargo === false ? null : <p className="zh-lectura zh-lectura--fuerte relevo-cargo">{cargo ?? persona.cargo}</p>}
-            {(hizo ?? persona.hizo) ? <p className="zh-lectura relevo-hizo">{hizo ?? persona.hizo}</p> : null}
+            {(papel ?? persona.papel) ? <p className="zh-lectura relevo-papel">{papel ?? persona.papel}</p> : null}
             {tema ? <p className="zh-fuente relevo-tema">{tema}</p> : null}
           </div>
         </div>
