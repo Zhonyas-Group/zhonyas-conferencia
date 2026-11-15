@@ -1,0 +1,50 @@
+# Publica la vitrina (el mazo de 13 diapositivas, src/diapositivas/vitrina)
+# en GitHub Pages cada vez que se sube algo a main. 14-nov, José: «sube la
+# presentación a GitHub Actions, es decir, deploya».
+#
+# Compila con `npm run compilar:vitrina`: dist-vitrina/index.html (un solo
+# archivo) y, al lado, medios/ con los videos y las fotos. Las rutas son
+# relativas (base './' en vite.config.ts), así que funciona igual en
+# https://zhonyas-group.github.io/zhonyas-conferencia/ que desde un USB.
+name: Publicar la vitrina
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Si llegan dos pushes seguidos, se publica solo el último.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run compilar:vitrina
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist-vitrina
+
+  publicar:
+    needs: compilar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@v4
