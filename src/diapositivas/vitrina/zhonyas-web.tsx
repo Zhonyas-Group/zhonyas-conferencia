@@ -3,8 +3,9 @@
  * columna de 700) en una ventana grande que se recorre sola de verdad: un video de la página en vivo
  * bajando de principio a fin (el logo, la cinta, «Nosotros», el equipo,
  * Servicios, Proyectos y la galaxia de Contacto), grabado con
- * scripts/vitrina-grabar-web.mjs el 13-nov. La presenta Angel, que hizo los
- * personajes y el agujero negro.
+ * scripts/vitrina-grabar-web.mjs el 13-nov. La presenta Angel. Sus notas no
+ * dicen quién hizo los personajes ni el agujero negro (José, 14-nov: «quita lo
+ * de que él fue quien hizo los 3D»).
  */
 import { Producto, Ventana } from '../../marca/vitrina';
 import { definirDiapositiva, type PropsDiapositiva } from '../../motor/tipos';
@@ -37,12 +38,12 @@ export default definirDiapositiva({
   notas: [
     {
       decir:
-        'Esta es nuestra web, zhonyas.com. Yo armé los muñequitos de cada uno y el agujero negro que se abre al final, en Contacto. Todo lo que ven se mueve en el navegador, sin videos.',
+        'Esta es nuestra web, zhonyas.com. Cada uno del equipo tiene su muñequito, y al final, en Contacto, se abre un agujero negro. Todo lo que ven se mueve en el navegador, sin videos.',
       claves: 'zhonyas.com · los muñequitos · el agujero negro al final',
       aparte: 'El video dura 51 s y vuelve a empezar: el agujero negro y la galaxia salen al final.',
     },
   ],
-  fuentes: ['Lema: el pie de zhonyas.com («De una idea a algo extraordinario.»); Angel hizo los personajes y el agujero negro (08 §4).'],
+  fuentes: ['Lema: el pie de zhonyas.com («De una idea a algo extraordinario.»).'],
   medios: [VIDEO, POSTER],
   Componente: ZhonyasWeb,
 });

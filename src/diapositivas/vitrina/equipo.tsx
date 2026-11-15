@@ -61,7 +61,7 @@ export default definirDiapositiva({
   notas: [
     {
       decir:
-        'Somos Zhonyas, un estudio de software y diseño de Santiago. Somos seis; hoy venimos tres: Gregory, Angel y yo. Cada uno tiene su muñequito: Angel los hizo para la web.',
+        'Somos Zhonyas, un estudio de software y diseño de Santiago. Somos seis; hoy venimos tres: Gregory, Angel y yo. Cada uno tiene su muñequito, el mismo de la web.',
       claves: 'estudio de Santiago · somos seis · hoy venimos tres · los muñequitos',
     },
   ],
