@@ -15,6 +15,7 @@ import { cuadrosOGL } from './LienzoOGL';
 import { pendientesEnCapa } from './medios';
 import { momentosDe } from './momentos';
 import { aplicarModoRevision } from './revision';
+import type { Diapositiva } from './tipos';
 
 export interface EstadoMotor {
   /** Número de diapositiva, contando desde 1 (como en la URL y en la cuadrícula). */
@@ -45,7 +46,8 @@ export interface ApiMotor {
   estado: () => EstadoMotor;
   /** Resuelve cuando la diapositiva actual terminó de cargar (fuentes, imágenes, video, WebGL). */
   esperar: (limiteMs?: number) => Promise<boolean>;
-  diapositivas: () => Array<{ n: number; id: string; titulo: string; pasos: number; orador: string; duracion: number }>;
+  /** El orden del mazo; con las notas del orador, para el guion en PDF (scripts/guion-pdf.mjs). */
+  diapositivas: () => Array<{ n: number; id: string; titulo: string; pasos: number; orador: string; duracion: number; notas: Diapositiva['notas'] }>;
   canales: () => typeof estadisticasCanal;
   /** Cronómetro compartido (objetivo en segundos) y milisegundos transcurridos. */
   cronometro: () => EstadoCronometro & { transcurrido: number };
@@ -128,6 +130,7 @@ export function prepararAutomatizacion() {
         pasos: d.pasos,
         orador: d.orador,
         duracion: d.duracion,
+        notas: d.notas,
       })),
     canales: () => ({ ...estadisticasCanal }),
     cronometro: () => {
