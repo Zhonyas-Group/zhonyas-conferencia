@@ -53,7 +53,7 @@ export default definirDiapositiva({
       despues:
         '**Angel escribe el monto. Sin clic:** «Miren la cuota: [cuota] al mes. En un año pagan [total]: casi tres veces lo que pidieron.»\n\n' +
         '**Remate:** «Esta calculadora no pide cuenta. La puede usar el prestamista, y también el que va a pedir prestado, antes de firmar.»',
-      claves: 'sin cuenta · un 20 mensual · díganme un monto · cuota · casi tres veces · antes de firmar',
+      claves: 'sin cuenta · un 20 mensual · díganme un monto · casi tres veces',
       aparte:
         '**Angel, en la laptop:** clic en «Monto» (se selecciona solo) y escribir el número sin punto ni coma. El 20 % y las 12 cuotas ya están puestos. Lo que se escribe en la ventana del presentador sale también en la de la sala.\n\n' +
         'Si nadie dice nada: «¿Diez mil? Diez mil.» Ya viene puesto.\n\n' +

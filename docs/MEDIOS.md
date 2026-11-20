@@ -196,6 +196,8 @@ Si se regenera el QR, se vuelve a sacar `public/medios/cierre/cierre-poster.webp
 |---|---|---|
 | `public/medios/equipo/angel/foto.webp` | 965 × 1240 (2× del retrato de 620 px de alto), WebP 0,9 | 09 |
 | `public/medios/equipo/gregory/foto.webp` | 664 × 853, su alto nativo, sin ampliar | 03 |
-| `public/medios/equipo/jose-leonardo/foto.webp` | 664 × 853, su alto nativo, sin ampliar | 14 |
+| `public/medios/equipo/jose-leonardo/foto.webp` | 965 × 1240 (2× del retrato), WebP 0,9 | 14 |
 
 **Ya están (13-nov).** Reexportadas de `investigacion/marca/equipo/fotos/*/photo.jpg` con el mismo recorte central de proporción 471,6 : 606 que usaban (src/marca/relevo/equipo.ts), con el Chrome del equipo. Antes estaban las tres a 1× (482 × 620 y 483 × 620). La de Angel (4160 × 2773) da para 2×; las de Gregory y José (1280 × 853) no: si José las quiere a 2×, hacen falta fotos nuevas de los dos (GUION, M-09). Los atlas y su JSON ya estaban.
+
+**José cambia la suya (18 y 20-nov).** El 18 pidió su foto de GitHub en vez de la del polo azul; el 20 la cambió por una suya, la de los lentes (1066 × 1600, la dejó en Descargas). Mismo recorte de 471,6 : 606 a todo el ancho (1066 × 1370 desde y 110), llevado a 965 × 1240 (2×, como la de Angel) con Lanczos.

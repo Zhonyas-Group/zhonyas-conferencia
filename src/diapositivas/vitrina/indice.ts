@@ -54,7 +54,7 @@ const portadaVitrina = conNotas(portada, [
 const relevoGregoryVitrina = conNotas(relevoGregory, [
   {
     decir:
-      'La foto vuela sola mientras José le da el clicker a Gregory. Gracias, José. Soy Gregory Martínez, hago diseño de producto en Zhonyas y fui el desarrollador principal de Pymex. Pymex es nuestro proyecto final del ITLA, el de José y mío. Se lo enseño.',
+      'La foto vuela sola mientras José le da el clicker. Gracias, José. Soy Gregory Martínez, hago diseño de producto en Zhonyas y fui el desarrollador principal de Pymex, nuestro proyecto final del ITLA, de José y mío. Se lo enseño.',
     claves: 'el clicker · desarrollador principal de Pymex · proyecto final',
     siFalla: 'Si la foto o el personaje no cargan, queda el estado final (retrato y nombre) y Gregory sigue.',
   },
@@ -73,8 +73,9 @@ const relevoAngelVitrina = conNotas(relevoAngel, [
 const relevoJoseVitrina = conNotas(relevoJose, [
   {
     decir:
-      'La foto vuela sola mientras Angel entrega el clicker y se queda junto a la laptop para la calculadora de la 12. Yo otra vez. Lendex lo creé yo: es el programa del prestamista, donde lleva los préstamos y los cobros que hoy apunta en un cuaderno.',
+      'La foto vuela sola mientras Angel entrega el clicker y se queda en la laptop. Yo otra vez. Lendex lo creé yo: es el programa del prestamista, donde lleva los préstamos y cobros que hoy apunta en un cuaderno.',
     claves: 'prestamista · Lendex · cuaderno · Angel a la laptop',
+    aparte: 'Angel se queda en la laptop para escribir el monto en la calculadora de la 12.',
     siFalla: 'Si la foto o el personaje no cargan, queda el estado final (retrato y nombre) y José sigue.',
   },
 ]);

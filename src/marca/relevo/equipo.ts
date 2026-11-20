@@ -16,10 +16,15 @@
  *   471,6 : 606 (la caja de la foto en la tarjeta, la más ancha de las dos) a
  *   todo el alto. Así object-fit: cover enseña en la tarjeta y en el retrato
  *   el mismo recorte que la web. Tamaños (docs/GUION.md, M-09; A-33): la de
- *   Angel (4160 × 2773) a 965 × 1240, 2× del retrato de 620 px de alto; las de
- *   Gregory y José (1280 × 853) a su alto nativo, 664 × 853, sin ampliar (el
+ *   Angel (4160 × 2773) a 965 × 1240, 2× del retrato de 620 px de alto; la de
+ *   Gregory (1280 × 853) a su alto nativo, 664 × 853, sin ampliar (el
  *   original no da para 2×). WebP calidad 0,9 con el Chrome del equipo
  *   (13-nov). Antes estaban las tres a 1×, de 620 px de alto.
+ *   La de José ya no es la de la web (la del polo azul): el 18-nov pidió su
+ *   foto de GitHub y el 20-nov la cambió por una suya (la de los lentes, que
+ *   dejó en Descargas, 1066 × 1600). Mismo recorte de 471,6 : 606 a todo el
+ *   ancho (1066 × 1370 desde y 110), llevado a 965 × 1240 (2×, como la de
+ *   Angel) con Lanczos y guardado en WebP calidad 90 con Pillow.
  * - `atlas`: el id de la persona en sprite-atlas.json (copia sin cambios de
  *   zhonyas-web/lib/sprite-atlas.json) y en public/medios/equipo/<atlas>/
  *   personaje.webp (copia sin cambios de public/sprites/atlas/<id>.webp).
